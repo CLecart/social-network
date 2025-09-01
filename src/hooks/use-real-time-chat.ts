@@ -1,4 +1,5 @@
 'use client';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 
 interface ChatMessage {
@@ -26,10 +27,10 @@ interface UseRealTimeChatProps {
   type?: 'direct' | 'group';
 }
 
-export function useRealTimeChat({ 
-  receiverId, 
-  conversationId, 
-  type = 'direct' 
+export function useRealTimeChat({
+  receiverId,
+  conversationId,
+  type = 'direct'
 }: UseRealTimeChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isConnected, setIsConnected] = useState(false);
@@ -38,6 +39,7 @@ export function useRealTimeChat({
   const [typingUsersData, setTypingUsersData] = useState<Map<string, any>>(new Map());
   const eventSourceRef = useRef<EventSource | null>(null);
   const typingEventSourceRef = useRef<EventSource | null>(null);
+  const router = useRouter();
 
   // Load initial messages
   useEffect(() => {
@@ -52,8 +54,13 @@ export function useRealTimeChat({
 
         const response = await fetch(`/api/private/chat/messages?${params}`);
         const data = await response.json();
-        
-        if (data.messages) {
+
+        if (response.status === 403) {
+          router.replace("/denied");
+          return;
+        }
+
+        if (data.messages && response.ok) {
           setMessages(data.messages);
         }
       } catch (error) {
@@ -84,7 +91,7 @@ export function useRealTimeChat({
     eventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        
+
         if (data.type === 'connected') {
           console.log('Connected to real-time chat');
           return;
@@ -97,8 +104,8 @@ export function useRealTimeChat({
             const updated = prev.map(msg => {
               if (msg.id === data.messageId) {
                 console.log(`Updating message ${msg.id} from status ${msg.status} to ${data.status}`);
-                return { 
-                  ...msg, 
+                return {
+                  ...msg,
                   status: data.status,
                   deliveredAt: data.deliveredAt,
                   readAt: data.readAt
@@ -117,7 +124,7 @@ export function useRealTimeChat({
           // Check if message already exists (avoid duplicates)
           const exists = prev.some(msg => msg.id === data.id);
           if (exists) return prev;
-          
+
           return [...prev, data];
         });
       } catch (error) {
@@ -149,7 +156,7 @@ export function useRealTimeChat({
     typingEventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        
+
         if (data.type === 'connected') {
           console.log('Connected to typing indicator');
           return;

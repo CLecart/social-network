@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 
 export async function GET(request: NextRequest) {
   const userId = request.headers.get('x-user-id');
-  
+
   if (!userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
@@ -13,11 +13,6 @@ export async function GET(request: NextRequest) {
     const groups = await db.conversation.findMany({
       where: {
         isGroup: true,
-        members: {
-          some: {
-            userId: userId
-          }
-        }
       },
       include: {
         members: {
@@ -76,7 +71,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const userId = request.headers.get('x-user-id');
-  
+
   if (!userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
@@ -123,7 +118,7 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       group: {
         id: group.id,
         title: group.title,

@@ -97,6 +97,7 @@ export default function GroupDetailPage() {
       const data = await response.json();
 
       if (data.group) {
+        console.log("Groupe : ", data.group)
         setGroup(data.group);
       } else {
         router.push('/groups');
@@ -265,13 +266,16 @@ export default function GroupDetailPage() {
           </p>
         </div>
         <div className="flex gap-2">
-
-          <Link href={`/chat?group=${groupId}`}>
+          {isMember ? <Link href={`/chat?group=${groupId}`}>
             <Button variant="outline">
               <MessageCircle className="w-4 h-4 mr-2" />
               Chat
             </Button>
-          </Link>
+          </Link> :
+            <Button className='bg-neutral-100 cursor-pointer'>
+              Ask to join
+            </Button>
+          }
           {isMember && (
             <>
               <Button

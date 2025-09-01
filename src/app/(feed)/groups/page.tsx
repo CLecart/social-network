@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Users, MessageCircle, Plus, Settings, ArrowLeft } from 'lucide-react';
+import { Users, Plus, Settings, ArrowLeft } from 'lucide-react';
 import { CreateGroupModal } from '@/components/groups/CreateGroupModal';
 import Link from 'next/link';
+import { Input } from '@/components/ui/input';
 
 interface Group {
   id: string;
@@ -28,10 +29,24 @@ interface Group {
   createdAt: string;
 }
 
+// --- Hook debounce très simple
+function useDebouncedValue<T>(value: T, delay = 300) {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const id = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(id);
+  }, [value, delay]);
+  return debounced;
+}
+
 export default function GroupsPage() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  // --- Recherche (simple, insensible à la casse)
+  const [query, setQuery] = useState('');
+  const debouncedQuery = useDebouncedValue(query, 300);
 
   useEffect(() => {
     loadGroups();
@@ -42,10 +57,7 @@ export default function GroupsPage() {
       setIsLoading(true);
       const response = await fetch('/api/private/groups');
       const data = await response.json();
-
-      if (data.groups) {
-        setGroups(data.groups);
-      }
+      if (data.groups) setGroups(data.groups);
     } catch (error) {
       console.error('Error loading groups:', error);
     } finally {
@@ -58,6 +70,12 @@ export default function GroupsPage() {
     setIsCreateModalOpen(false);
   };
 
+  // --- Filtrage sur title (case-insensitive)
+  const filteredGroups = useMemo(() => {
+    const q = debouncedQuery.trim().toLowerCase();
+    if (!q) return groups;
+    return groups.filter(g => g.title.toLowerCase().includes(q));
+  }, [groups, debouncedQuery]);
 
   if (isLoading) {
     return (
@@ -72,7 +90,7 @@ export default function GroupsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           <Link href={"/"}>
             <Button
               variant="ghost"
@@ -82,39 +100,53 @@ export default function GroupsPage() {
               <ArrowLeft className="w-6 h-6" />
             </Button>
           </Link>
-
           <h1 className="text-3xl font-bold">Mes Groupes</h1>
-
         </div>
-        <Button
-          onClick={() => setIsCreateModalOpen(true)}
-          className="bg-[var(--blue40)] hover:bg-[var(--blue60)] text-white"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Créer un groupe
-        </Button>
+
+        {/* Search bar + action */}
+        <div className="flex items-center max-w-md w-full">
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Rechercher un groupe..."
+            className="rounded-r-none border-r-0 focus-visible:ring-0 focus-visible:border-[var(--blue40)]"
+          />
+          <Button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="rounded-l-none bg-[var(--blue40)] hover:bg-[var(--blue60)] text-white"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Créer
+          </Button>
+        </div>
       </div>
 
-      {groups.length === 0 ? (
+      {filteredGroups.length === 0 ? (
         <Card className="text-center py-12 bg-[var(--bgLevel2)]">
           <CardContent>
             <Users className="w-16 h-16 text-[var(--textNeutral)] mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Aucun groupe pour le moment</h3>
-            <p className="text-[var(--textNeutral)] mb-6">
-              Créez votre premier groupe pour commencer à échanger avec plusieurs personnes à la fois.
-            </p>
-            <Button
-              onClick={() => setIsCreateModalOpen(true)}
-              className="bg-[var(--blue40)] hover:bg-[var(--blue60)] "
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Créer mon premier groupe
-            </Button>
+            <h3 className="text-lg font-semibold mb-2">
+              {query ? `Aucun groupe pour « ${query} »` : 'Aucun groupe pour le moment'}
+            </h3>
+            {!query && (
+              <>
+                <p className="text-[var(--textNeutral)] mb-6">
+                  Créez votre premier groupe pour commencer à échanger avec plusieurs personnes à la fois.
+                </p>
+                <Button
+                  onClick={() => setIsCreateModalOpen(true)}
+                  className="bg-[var(--blue40)] hover:bg-[var(--blue60)] "
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Créer mon premier groupe
+                </Button>
+              </>
+            )}
           </CardContent>
         </Card>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {groups.map((group) => (
+          {filteredGroups.map((group) => (
             <Card key={group.id} className=" bg-[var(--bgLevel2)]">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
@@ -151,9 +183,6 @@ export default function GroupsPage() {
                   </span>
                 </div>
 
-                {/* Last Message */}
-
-
                 {/* Actions */}
                 <div className="flex gap-2">
                   <Link href={`/groups/${group.id}`} className="flex-1">
@@ -162,7 +191,6 @@ export default function GroupsPage() {
                       Gérer le groupe
                     </Button>
                   </Link>
-
                 </div>
               </CardContent>
             </Card>

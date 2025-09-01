@@ -6,7 +6,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const userId = request.headers.get('x-user-id');
-  
+
   if (!userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
@@ -15,16 +15,16 @@ export async function GET(
     const { id: groupId } = await params;
 
     // Check if user is a member of this group
-    const isMember = await db.conversationMember.findFirst({
-      where: {
-        conversationId: groupId,
-        userId: userId
-      }
-    });
+    // const isMember = await db.conversationMember.findFirst({
+    //   where: {
+    //     conversationId: groupId,
+    //     userId: userId
+    //   }
+    // });
 
-    if (!isMember) {
-      return NextResponse.json({ error: 'Not a member of this group' }, { status: 403 });
-    }
+    // if (!isMember) {
+    //   return NextResponse.json({ error: 'Not a member of this group' }, { status: 403 });
+    // }
 
     // Get group details
     const group = await db.conversation.findUnique({
@@ -83,7 +83,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const userId = request.headers.get('x-user-id');
-  
+
   if (!userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
@@ -150,7 +150,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const userId = request.headers.get('x-user-id');
-  
+
   if (!userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }

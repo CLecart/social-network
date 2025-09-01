@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { respondError } from '@/lib/server/api/response';
+import { redirect } from 'next/navigation';
 
 export async function GET(request: NextRequest) {
   // Get the authenticated user ID from the middleware
   const userId = request.headers.get('x-user-id');
-  
+
   if (!userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
@@ -61,26 +63,37 @@ export async function GET(request: NextRequest) {
 
       return NextResponse.json({ messages: formattedMessages });
     } else if (type === 'group' && conversationId) {
-      // Get group messages
+
+      const membership = await db.conversationMember.findUnique({
+        where: { userId_conversationId: { userId, conversationId } },
+        select: { id: true },
+      });
+
+      if (!membership) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+
       const messages = await db.groupMessage.findMany({
         where: {
-          conversationId: conversationId,
-        },
-        include: {
-          sender: {
-            select: {
-              id: true,
-              username: true,
-              avatar: true,
+          conversationId,
+          conversation: {
+            members: {
+              some: {
+                userId: userId,
+              },
             },
           },
         },
-        orderBy: {
-          sentAt: 'desc',
+        include: {
+          sender: {
+            select: { id: true, username: true, avatar: true },
+          },
         },
+        orderBy: { sentAt: "desc" },
         take: limit,
         skip: offset,
       });
+
 
       // Transform messages to include timestamp and status in the expected format
       const formattedGroupMessages = messages.reverse().map(msg => ({
@@ -93,6 +106,7 @@ export async function GET(request: NextRequest) {
         deliveredAt: msg.deliveredAt?.toISOString(),
         readAt: msg.readAt?.toISOString(),
       }));
+
 
       return NextResponse.json({ messages: formattedGroupMessages });
     } else {
