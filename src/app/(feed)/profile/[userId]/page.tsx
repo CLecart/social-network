@@ -503,7 +503,7 @@ export default function ProfilePage() {
 
   return (
     <PostProvider>
-      <div className="flex h-screen bg-[var(--bgLevel1)]">
+      <div className="flex h-screen bg-[var(--bgLevel2)]">
         <NavigationBar />
 
         <div className="flex-1 flex flex-col overflow-auto">
@@ -822,7 +822,7 @@ export default function ProfilePage() {
             </div>
 
             {/* TabBar pour filtrer les posts */}
-            <div className="bg-[var(--bgLevel2)] border-t border-[var(--detailMinimal)] sticky top-[73px] z-40">
+            <div className="bg-[var(--bgLevel2)] border-t border-[var(--detailMinimal)] sticky top-[73px] z-40 min-h-fit">
               <div className="flex">
                 <TabButton
                   type="all"

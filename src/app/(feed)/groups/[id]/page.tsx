@@ -225,6 +225,24 @@ export default function GroupDetailPage() {
     }
   };
 
+  const handleInvitationRequest = async () => {
+    try {
+      const response = await fetch(`/api/private/groups/${groupId}/join-request`, {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        alert('Demande d\'adhésion envoyée');
+      } else {
+        const data = await response.json();
+        alert(data.error || 'Erreur lors de l\'envoi de la demande d\'adhésion');
+      }
+    } catch (error) {
+      console.error('Error sending invitation request:', error);
+      alert('Erreur lors de l\'envoi de la demande d\'adhésion');
+    }
+  };
+
   const getUserDisplayName = (user: Group['members'][0]) => {
     return user.firstName && user.lastName
       ? `${user.firstName} ${user.lastName}`
@@ -272,7 +290,11 @@ export default function GroupDetailPage() {
               Chat
             </Button>
           </Link> :
-            <Button className='bg-neutral-100 cursor-pointer'>
+            <Button className='cursor-pointer'
+            onClick={() => {
+              alert('Demande d\'adhésion envoyée');
+              handleInvitationRequest();
+            }}>
               Ask to join
             </Button>
           }

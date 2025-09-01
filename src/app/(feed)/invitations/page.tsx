@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Users, Check, X, Mail, Clock, ArrowLeft, UserPlus } from 'lucide-react';
+import { Users, Check, X, Mail, Clock, ArrowLeft, UserPlus, UserCheck } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import { SuccessModal } from '@/components/ui/success-modal';
@@ -41,12 +41,31 @@ interface FriendRequest {
   createdAt: string;
 }
 
+interface JoinRequest {
+  id: string;
+  groupId: string;
+  group: {
+    id: string;
+    title: string;
+  };
+  seeker: {
+    id: string;
+    username: string;
+    firstName?: string;
+    lastName?: string;
+    avatar?: string;
+  };
+  status: 'PENDING' | 'ACCEPTED' | 'DECLINED';
+  createdAt: string;
+}
+
 export default function InvitationsPage() {
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([]);
+  const [joinRequests, setJoinRequests] = useState<JoinRequest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [respondingTo, setRespondingTo] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'groups' | 'friends'>('friends');
+  const [activeTab, setActiveTab] = useState<'groups' | 'friends' | 'join-requests'>('friends');
   const { refreshCounts } = useNotifications();
   const [successModal, setSuccessModal] = useState<{
     isOpen: boolean;
@@ -62,6 +81,7 @@ export default function InvitationsPage() {
   useEffect(() => {
     loadInvitations();
     loadFriendRequests();
+    loadJoinRequests();
   }, []);
 
   const loadInvitations = async () => {
@@ -90,6 +110,19 @@ export default function InvitationsPage() {
       }
     } catch (error) {
       console.error('Error loading friend requests:', error);
+    }
+  };
+
+  const loadJoinRequests = async () => {
+    try {
+      const response = await fetch('/api/private/join-requests');
+      const data = await response.json();
+
+      if (data.joinRequests) {
+        setJoinRequests(data.joinRequests);
+      }
+    } catch (error) {
+      console.error('Error loading join requests:', error);
     }
   };
 
@@ -180,6 +213,52 @@ export default function InvitationsPage() {
     }
   };
 
+  const handleRespondToJoinRequest = async (requestId: string, action: 'ACCEPT' | 'REJECT', groupId: string) => {
+    setRespondingTo(requestId);
+    try {
+      const response = await fetch(`/api/private/join-requests/${requestId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ action, groupId }),
+      });
+
+      if (response.ok) {
+        // Find the join request to get details
+        const joinRequest = joinRequests.find(req => req.id === requestId);
+
+        // Remove the join request from the list since it's no longer pending
+        setJoinRequests(prev => prev.filter(req => req.id !== requestId));
+
+        // Refresh notification counts
+        refreshCounts();
+
+        if (action === 'ACCEPT') {
+          // Show success modal for accepted join requests
+          const seekerName = joinRequest?.seeker.firstName && joinRequest?.seeker.lastName
+            ? `${joinRequest.seeker.firstName} ${joinRequest.seeker.lastName}`
+            : joinRequest?.seeker.username;
+
+          setSuccessModal({
+            isOpen: true,
+            title: 'Demande acceptée !',
+            message: `${seekerName} a été ajouté(e) au groupe "${joinRequest?.group.title}" !`,
+            groupTitle: joinRequest?.group.title
+          });
+        }
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Erreur lors de la réponse à la demande');
+      }
+    } catch (error) {
+      console.error('Error responding to join request:', error);
+      alert('Erreur lors de la réponse à la demande');
+    } finally {
+      setRespondingTo(null);
+    }
+  };
+
   const getDisplayName = (user: { firstName?: string; lastName?: string; username: string }) => {
     return user.firstName && user.lastName
       ? `${user.firstName} ${user.lastName}`
@@ -248,6 +327,22 @@ export default function InvitationsPage() {
             {invitations.length > 0 && (
               <Badge variant="secondary" className="ml-1 bg-red-500 text-white">
                 {invitations.length}
+              </Badge>
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab('join-requests')}
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md transition-colors ${
+              activeTab === 'join-requests'
+                ? 'bg-[var(--blue)] text-white'
+                : 'text-[var(--textMinimal)] hover:bg-[var(--greyHighlighted)]'
+            }`}
+          >
+            <UserCheck className="w-4 h-4" />
+            Demandes groupes
+            {joinRequests.length > 0 && (
+              <Badge variant="secondary" className="ml-1 bg-red-500 text-white">
+                {joinRequests.length}
               </Badge>
             )}
           </button>
@@ -429,6 +524,100 @@ export default function InvitationsPage() {
           ))}
         </div>
       )}
+        </>
+      )}
+
+      {/* Join Requests */}
+      {activeTab === 'join-requests' && (
+        <>
+          {joinRequests.length === 0 ? (
+            <Card className="text-center py-12 bg-[var(--bgLevel2)]">
+              <CardContent>
+                <UserCheck className="w-16 h-16 text-[var(--textNeutral)] mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">Aucune demande de groupe</h3>
+                <p className="text-[var(--black70)]">
+                  Vous n'avez pas de demandes pour rejoindre vos groupes pour le moment.
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-4">
+              {joinRequests.map((request) => (
+                <Card key={request.id} className="transition-shadow hover:shadow-md">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      {/* Seeker Avatar */}
+                      <Avatar className="w-12 h-12">
+                        <AvatarImage src={request.seeker.avatar || "/placeholder.svg"} />
+                        <AvatarFallback>
+                          {request.seeker.firstName ? request.seeker.firstName.charAt(0) : request.seeker.username.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+
+                      {/* Request Details */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-semibold">
+                              Demande de rejoindre le groupe
+                            </h4>
+                            <p className="text-gray-600 mt-1">
+                              <strong>{getDisplayName(request.seeker)}</strong> souhaite rejoindre votre groupe
+                            </p>
+                            <div className="flex items-center gap-2 mt-2 text-sm text-[var(--textNeutral)]">
+                              <Clock className="w-4 h-4" />
+                              {formatDistanceToNow(new Date(request.createdAt), { addSuffix: true })}
+                            </div>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex gap-2 flex-shrink-0">
+                            <Button
+                              size="sm"
+                              onClick={() => handleRespondToJoinRequest(request.id, 'ACCEPT', request.groupId)}
+                              disabled={respondingTo === request.id}
+                              className="bg-green-500 hover:bg-green-600 text-white"
+                            >
+                              <Check className="w-4 h-4 mr-1" />
+                              Accepter
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleRespondToJoinRequest(request.id, 'REJECT', request.groupId)}
+                              disabled={respondingTo === request.id}
+                              className="text-red-600 border-red-600 hover:bg-red-50"
+                            >
+                              <X className="w-4 h-4 mr-1" />
+                              Refuser
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Group Info */}
+                        <div className="mt-4 p-3 bg-[var(--bgLevel2)] rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <Users className="w-4 h-4" />
+                            <span className="text-sm font-medium">
+                              Groupe: {request.group.title}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {respondingTo === request.id && (
+                      <div className="mt-4 text-center">
+                        <div className="text-sm text-gray-500">
+                          Traitement en cours...
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </>
       )}
 

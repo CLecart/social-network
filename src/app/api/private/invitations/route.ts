@@ -30,12 +30,15 @@ export async function GET(request: NextRequest) {
             lastName: true,
             avatar: true
           }
-        }
+        }, 
+      
       },
       orderBy: {
         createdAt: 'desc'
       }
     });
+
+    console.log(invitations)
 
     return NextResponse.json({
       invitations: invitations.map(invitation => ({

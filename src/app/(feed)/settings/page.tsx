@@ -61,14 +61,6 @@ type SettingsView =
   | "blocked"
   | "close-friends"
 
-const settingsData = {
-  user: {
-    username: "alice_photo",
-    displayName: "Alice Martin",
-    avatar: "/placeholder.svg?height=60&width=60",
-  },
-}
-
 export default function SettingsPage() {
   const [currentView, setCurrentView] = useState<SettingsView>("main")
   const router = useRouter();
@@ -78,6 +70,14 @@ export default function SettingsPage() {
   }
 
   const { user } = useUserContext();
+
+  const settingsData = {
+  user: {
+    username: user?.username || "unknown_user",
+    displayName: user?.firstName + " " + user?.lastName || "Unknown User",
+    avatar: user?.avatar || "/placeholder.svg?height=60&width=60",
+  },
+}
 
   // Render sub-pages
   if (currentView === "privacy") {

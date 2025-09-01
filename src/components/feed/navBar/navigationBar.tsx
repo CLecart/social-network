@@ -154,7 +154,7 @@ export default function NavigationBar() {
             </Link>
             <CreatePost />
             <div className="p-2 hover:bg-gray-100 transition-colors duration-200 rounded-xl cursor-pointer">
-              <Link href="/profile">
+              <Link href={`/profile/${user?.id}`}>
                 <Avatar className="w-5 h-5">
                   <AvatarImage src={`${user?.avatar}`} alt="Profile" />
                   <AvatarFallback className="bg-[var(--pink20)]"></AvatarFallback>
