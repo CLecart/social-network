@@ -19,7 +19,7 @@ export async function GET(
 
         return NextResponse.json(
             respondSuccess(
-                following.map(f => f.follow),
+                following.map(f => f.friend),
                 "Following retrieved successfully"
             ),
             { status: 200 }

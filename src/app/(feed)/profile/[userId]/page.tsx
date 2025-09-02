@@ -647,31 +647,31 @@ export default function ProfilePage() {
                         <DialogTrigger asChild>
                           <button
                             className="flex flex-col items-center"
-                            onClick={fetchFollowers} // fetch juste avant d’ouvrir
+                            onClick={fetchFollowing}
                           >
                             {followingCount} abonnements
                           </button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
                           <DialogHeader>
-                            <DialogTitle>Abonnés</DialogTitle>
+                            <DialogTitle>Abonnements</DialogTitle>
                           </DialogHeader>
 
                           <div className="max-h-[400px] overflow-y-auto">
-                            {followers.length === 0 ? (
-                              <p className="text-sm text-[var(--textMinimal)]">Aucun abonné</p>
+                            {following.length === 0 ||following == null? (
+                              <p className="text-sm text-[var(--textMinimal)]">Aucun abonnement</p>
                             ) : (
-                              followers.map((f) => (
+                              following.map((f) => (
                                 <div
-                                  key={f.id}
+                                  key={ Math.random().toString(36).substring(2, 15)}
                                   className="flex items-center gap-2 p-2 border-b border-[var(--detailMinimal)]"
                                 >
                                   <Avatar className="w-8 h-8">
-                                    <AvatarImage src={f.avatar || "/placeholder.svg"} alt={f.username} />
-                                    <AvatarFallback>{f.username[0]?.toUpperCase()}</AvatarFallback>
+                                    <AvatarImage src={f?.avatar || "/placeholder.svg"} alt={f?.username} />
+                                    <AvatarFallback>{f?.username[0]?.toUpperCase() || "?"}</AvatarFallback>
                                   </Avatar>
                                   <span className="text-[var(--textNeutral)] font-medium">
-                                    {f.username}
+                                    {f?.username || "?"}
                                   </span>
                                 </div>
                               ))
