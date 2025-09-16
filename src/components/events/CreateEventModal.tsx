@@ -1,7 +1,12 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,24 +51,24 @@ export function CreateEventModal({
   onClose,
   onEventCreated,
   groupId,
-  groupTitle
+  groupTitle,
 }: CreateEventModalProps) {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleCreateEvent = async () => {
     if (!title.trim() || !description.trim() || !date || !time) {
-      setError('Tous les champs sont requis');
+      setError("Tous les champs sont requis");
       return;
     }
 
     const datetime = new Date(`${date}T${time}`);
     if (datetime <= new Date()) {
-      setError('La date et l\'heure doivent être dans le futur');
+      setError("La date et l'heure doivent être dans le futur");
       return;
     }
 
@@ -71,10 +76,10 @@ export function CreateEventModal({
     setError(null);
 
     try {
-      const response = await fetch('/api/private/events', {
-        method: 'POST',
+      const response = await fetch("/api/private/events", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           title: title.trim(),
@@ -86,32 +91,36 @@ export function CreateEventModal({
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create event');
+        throw new Error(errorData.error || "Failed to create event");
       }
 
       const data = await response.json();
       onEventCreated(data.event);
       handleClose();
     } catch (error) {
-      console.error('Error creating event:', error);
-      setError(error instanceof Error ? error.message : 'Erreur lors de la création de l\'événement');
+      console.error("Error creating event:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Erreur lors de la création de l'événement"
+      );
     } finally {
       setIsCreating(false);
     }
   };
 
   const handleClose = () => {
-    setTitle('');
-    setDescription('');
-    setDate('');
-    setTime('');
+    setTitle("");
+    setDescription("");
+    setDate("");
+    setTime("");
     setError(null);
     setIsCreating(false);
     onClose();
   };
 
   // Get minimum date (today)
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
 
   // Get minimum time (current time if date is today)
   const now = new Date();
@@ -147,7 +156,7 @@ export function CreateEventModal({
           <div className="space-y-2">
             <Label htmlFor="title">Titre de l'événement *</Label>
             <Input
-              className='bg-[var(--bgLevel2)] '
+              className="bg-[var(--bgLevel2)] "
               id="title"
               placeholder="Ex: Soirée pizza, Sortie au cinéma..."
               value={title}
@@ -183,6 +192,7 @@ export function CreateEventModal({
                 onChange={(e) => setDate(e.target.value)}
                 disabled={isCreating}
                 min={today}
+                className="max-w-[150px]"
               />
             </div>
             <div className="space-y-2">
@@ -197,6 +207,7 @@ export function CreateEventModal({
                 onChange={(e) => setTime(e.target.value)}
                 disabled={isCreating}
                 min={minTime}
+                className="max-w-[150px]"
               />
             </div>
           </div>
@@ -212,10 +223,16 @@ export function CreateEventModal({
             </Button>
             <Button
               onClick={handleCreateEvent}
-              disabled={isCreating || !title.trim() || !description.trim() || !date || !time}
+              disabled={
+                isCreating ||
+                !title.trim() ||
+                !description.trim() ||
+                !date ||
+                !time
+              }
               className="bg-blue-500 hover:bg-blue-600 text-white"
             >
-              {isCreating ? 'Création...' : 'Créer l\'événement'}
+              {isCreating ? "Création..." : "Créer l'événement"}
             </Button>
           </div>
         </div>

@@ -1,6 +1,12 @@
-'use client';
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+"use client";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -20,7 +26,7 @@ interface NewChatModalProps {
 
 export function NewChatModal({ onStartChat }: NewChatModalProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
@@ -32,11 +38,13 @@ export function NewChatModal({ onStartChat }: NewChatModalProps) {
 
     setIsSearching(true);
     try {
-      const response = await fetch(`/api/private/chat/search-users?q=${encodeURIComponent(query)}`);
+      const response = await fetch(
+        `/api/private/chat/search-users?q=${encodeURIComponent(query)}`
+      );
       const data = await response.json();
       setSearchResults(data.users || []);
     } catch (error) {
-      console.error('Error searching users:', error);
+      console.error("Error searching users:", error);
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -52,7 +60,7 @@ export function NewChatModal({ onStartChat }: NewChatModalProps) {
   const handleStartChat = (userId: string) => {
     onStartChat(userId);
     setIsOpen(false);
-    setSearchQuery('');
+    setSearchQuery("");
     setSearchResults([]);
   };
 
@@ -91,11 +99,14 @@ export function NewChatModal({ onStartChat }: NewChatModalProps) {
                 {searchResults.map((user) => (
                   <div
                     key={user.id}
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer"
+                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--bgLevel2)] cursor-pointer"
                     onClick={() => handleStartChat(user.id)}
                   >
                     <Avatar className="w-10 h-10">
-                      <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.username} />
+                      <AvatarImage
+                        src={user.avatar || "/placeholder.svg"}
+                        alt={user.username}
+                      />
                       <AvatarFallback>
                         {user.firstName?.[0] || user.username?.[0] || "U"}
                       </AvatarFallback>
@@ -106,7 +117,9 @@ export function NewChatModal({ onStartChat }: NewChatModalProps) {
                           ? `${user.firstName} ${user.lastName}`
                           : user.username}
                       </div>
-                      <div className="text-sm text-gray-500">@{user.username}</div>
+                      <div className="text-sm text-gray-500">
+                        @{user.username}
+                      </div>
                     </div>
                     <MessageCircle className="w-4 h-4 text-gray-400" />
                   </div>
