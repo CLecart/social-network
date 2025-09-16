@@ -4,15 +4,13 @@ import React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  ArrowLeft,
-  Info,
-} from "lucide-react";
+import { ArrowLeft, Info, Phone, Video as VideoIcon } from "lucide-react";
 import { ModeToggle } from "@/components/toggle-theme";
 import Link from "next/link";
 import { ChatWindow } from "@/components/chat/ChatWindow";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useUser } from "@/hooks/use-user-data";
+import { useWebRTCCall } from "@/hooks/use-webrtc-call";
 
 interface ChatPageProps {
   chatId: string;
@@ -96,6 +94,8 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {/* Audio/Video call buttons */}
+          <ChatCallControls peerId={receiverId} />
           <ModeToggle />
           <Link href={`/profile/${chatUser?.id || receiverId}`}>
             <Button variant="ghost" size="icon">
@@ -115,3 +115,89 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
   );
 }
 
+function ChatCallControls({ peerId }: { peerId: string }) {
+  const {
+    localStream,
+    remoteStream,
+    incomingCall,
+    isCalling,
+    isInCall,
+    callType,
+    error,
+    mediaBump,
+    startCall,
+    acceptCall,
+    rejectCall,
+    endCall,
+  } = useWebRTCCall({ peerId });
+
+  const localVideoRef = useRef<HTMLVideoElement | null>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    if (localVideoRef.current && localStream.current) {
+      (localVideoRef.current as any).srcObject = localStream.current;
+    }
+  }, [mediaBump, isInCall, isCalling, callType]);
+
+  useEffect(() => {
+    if (remoteVideoRef.current && remoteStream.current) {
+      (remoteVideoRef.current as any).srcObject = remoteStream.current;
+    }
+  }, [mediaBump, isInCall, isCalling, callType]);
+
+  return (
+    <>
+      <Button
+        variant="ghost"
+        size="icon"
+        disabled={isCalling || isInCall}
+        onClick={() => startCall("audio")}
+        title="Appel audio"
+      >
+        <Phone className="w-5 h-5" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        disabled={isCalling || isInCall}
+        onClick={() => startCall("video")}
+        title="Appel vidéo"
+      >
+        <VideoIcon className="w-5 h-5" />
+      </Button>
+
+      {/* Incoming call banner */}
+      {incomingCall && !isInCall && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-[var(--bgLevel1)] border border-[var(--detailMinimal)] shadow-lg rounded-lg p-3 flex items-center gap-3 z-50">
+          <div className="text-sm">
+            Appel entrant {incomingCall.media === 'video' ? 'vidéo' : 'audio'}
+          </div>
+          <Button size="sm" onClick={acceptCall} className="bg-green-600 hover:bg-green-700">Accepter</Button>
+          <Button size="sm" variant="destructive" onClick={rejectCall}>Refuser</Button>
+        </div>
+      )}
+
+      {/* Active call overlay */}
+      {(isCalling || isInCall) && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center z-50 p-4">
+          <div className="text-white mb-3 text-sm">
+            {isCalling && !isInCall ? 'Appel en cours…' : 'En appel'}
+          </div>
+          {callType === 'video' ? (
+            <div className="relative w-full max-w-3xl aspect-video bg-black rounded-lg overflow-hidden border border-white/10">
+              <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-full object-cover" />
+              <video ref={localVideoRef} autoPlay muted playsInline className="absolute bottom-3 right-3 w-40 rounded-md border border-white/20 shadow-lg" />
+            </div>
+          ) : (
+            <div className="text-white/80 text-center mb-4">Appel audio</div>
+          )}
+          <div className="mt-4 flex gap-3">
+            <Button variant="destructive" onClick={endCall}>Raccrocher</Button>
+          </div>
+          {error && <div className="text-red-400 text-xs mt-2">{error}</div>}
+        </div>
+      )}
+    </>
+  );
+}
