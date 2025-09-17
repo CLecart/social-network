@@ -1,3 +1,4 @@
+import { InvitationStatus } from "@prisma/client";
 import { db } from "../..";
 import { buildPostVisibilityFilter } from "./visibilityFilters";
 
@@ -35,8 +36,6 @@ export async function getPaginatedPosts(
     currentUserId,
     showPrivatePosts: false,
   });
-
-  console.log('🔍 visibilityFilter:', JSON.stringify(visibilityFilter, null, 2));
 
   return await db.post.findMany({
     skip,
@@ -81,6 +80,26 @@ export async function getUserPosts(
     where: { id: userId },
     select: { visibility: true },
   });
+
+  // Si le compte est privé et que l'utilisateur courant n'est pas l'auteur,
+  // ne retourner des posts que si l'amitié est acceptée. Si non authentifié, aucun post.
+  if (targetUser?.visibility === 'PRIVATE' && currentUserId !== userId) {
+    if (!currentUserId) {
+      return [] as any[];
+    }
+    const isFriend = await db.friendship.findFirst({
+      where: {
+        OR: [
+          { userId: currentUserId, friendId: userId, status: InvitationStatus.ACCEPTED },
+          { userId: userId, friendId: currentUserId, status: InvitationStatus.PENDING },
+        ],
+      },
+      select: { id: true },
+    });
+    if (!isFriend) {
+      return [] as any[];
+    }
+  }
 
   const visibilityFilter = buildPostVisibilityFilter({
     currentUserId,
