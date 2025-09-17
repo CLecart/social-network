@@ -11,8 +11,9 @@ import {
 import { ModeToggle } from "@/components/toggle-theme";
 import Link from "next/link";
 import { ChatWindow } from "@/components/chat/ChatWindow";
-import { useState, useEffect } from "react";
-import { useUser } from "@/hooks/use-user-data";
+import { useMemo, useState, useEffect } from "react";
+import { useUser, useUserPublic } from "@/hooks/use-user-data";
+import { useConversations } from "@/hooks/use-conversations";
 
 interface ChatPageProps {
   chatId: string;
@@ -21,27 +22,24 @@ interface ChatPageProps {
 }
 
 export default function ChatPage({ params }: { params: Promise<{ id: string }> }) {
-  const [receiverId, setReceiverId] = useState<string | null>(null);
-  const [chatUser, setChatUser] = useState<any>(null);
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const { user } = useUser()
   const currentUserId = user?.id;
   useEffect(() => {
-    params.then(p => setReceiverId(p.id));
+    params.then(p => setConversationId(p.id));
   }, [params]);
 
-  // Fetch user information for the chat header
-  useEffect(() => {
-    if (receiverId) {
-      fetch(`/api/private/user/${receiverId}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success && data.user) {
-            setChatUser(data.user);
-          }
-        })
-        .catch(err => console.error('Error fetching user:', err));
-    }
-  }, [receiverId]);
+  // Conversations cache to resolve the other participant and presence
+  const { conversations } = useConversations();
+  const directConv = useMemo(
+    () => conversations.find((c) => c.type === 'direct' && c.id === conversationId),
+    [conversations, conversationId]
+  );
+  const receiverId = directConv?.user?.id || null;
+  const isOnline = !!directConv?.user?.isOnline;
+
+  // Fetch full public profile for header
+  const { user: chatUser } = useUserPublic(receiverId || undefined);
 
   function onBack() {
     window.history.back();
@@ -74,24 +72,25 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
           <div className="relative">
             <Avatar className="w-10 h-10 border-1 border-[var(--detailMinimal)]">
               <AvatarImage
-                src={chatUser?.avatar || "/placeholder.svg"}
-                alt={chatUser?.username || "User"}
+                src={chatUser?.avatar || directConv?.user?.avatar || "/placeholder.svg"}
+                alt={chatUser?.username || directConv?.user?.username || "User"}
               />
               <AvatarFallback>
-                {chatUser?.firstName?.[0]?.toUpperCase() || chatUser?.username?.[0]?.toUpperCase() || "U"}
+                {chatUser?.firstName?.[0]?.toUpperCase() || chatUser?.username?.[0]?.toUpperCase() || directConv?.user?.username?.[0]?.toUpperCase() || "U"}
               </AvatarFallback>
             </Avatar>
-            {/* TODO: Add online status */}
+            {typeof isOnline === 'boolean' && (
+              <span className={`absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-[var(--bgLevel1)] ${isOnline ? 'bg-green-500' : 'bg-gray-400'}`} />
+            )}
           </div>
           <div>
             <div className="font-medium text-sm">
               {chatUser?.firstName && chatUser?.lastName
                 ? `${chatUser.firstName} ${chatUser.lastName}`
-                : chatUser?.username || "Utilisateur"}
+                : chatUser?.username || directConv?.user?.displayName || directConv?.user?.username || "Utilisateur"}
             </div>
             <div className="text-xs text-[var(--textMinimal)]">
-              {/* TODO: Add online status */}
-              En ligne
+              {typeof isOnline === 'boolean' ? (isOnline ? 'En ligne' : 'Hors ligne') : ''}
             </div>
           </div>
         </div>
@@ -114,4 +113,3 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
     </div>
   );
 }
-
