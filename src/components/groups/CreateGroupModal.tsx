@@ -8,14 +8,12 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search, Plus, X, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useUserSearch } from '@/hooks/use-user-search';
+import type { UserSearch } from '@/lib/schemas/user/search';
+import { apiFetch } from '@/lib/client/api/fetcher';
+import { User } from '@/lib/schemas/user';
 
-interface User {
-  id: string;
-  username: string;
-  firstName?: string;
-  lastName?: string;
-  avatar?: string;
-}
+// Searching users uses the shared UserSearch type
 
 interface Group {
   id: string;
@@ -35,42 +33,20 @@ export function CreateGroupModal({ isOpen, onClose, onGroupCreated }: CreateGrou
   const [step, setStep] = useState<'name' | 'members'>('name');
   const [groupName, setGroupName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<User[]>([]);
-  const [selectedMembers, setSelectedMembers] = useState<User[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
+  const { users: searchResults, isLoading: isSearching } = useUserSearch(searchQuery, 300);
+  const [selectedMembers, setSelectedMembers] = useState<UserSearch[]>([]);
   const [isCreating, setIsCreating] = useState(false);
-
-  const searchUsers = async (query: string) => {
-    if (!query.trim()) {
-      setSearchResults([]);
-      return;
-    }
-
-    setIsSearching(true);
-    try {
-      const response = await fetch(`/api/private/chat/search-users?q=${encodeURIComponent(query)}`);
-      const data = await response.json();
-      setSearchResults(data.users || []);
-    } catch (error) {
-      console.error('Error searching users:', error);
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
-    }
-  };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
-    searchUsers(query);
   };
 
-  const addMember = (user: User) => {
+  const addMember = (user: UserSearch) => {
     if (!selectedMembers.find(m => m.id === user.id)) {
       setSelectedMembers(prev => [...prev, user]);
     }
     setSearchQuery('');
-    setSearchResults([]);
   };
 
   const removeMember = (userId: string) => {
@@ -94,23 +70,14 @@ export function CreateGroupModal({ isOpen, onClose, onGroupCreated }: CreateGrou
 
     setIsCreating(true);
     try {
-      const response = await fetch('/api/private/groups', {
+      const res = await apiFetch<any>('/api/private/groups', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+        body: {
           title: groupName.trim(),
           memberIds: selectedMembers.map(m => m.id),
-        }),
+        },
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to create group');
-      }
-
-      const data = await response.json();
-      onGroupCreated(data.group);
+      onGroupCreated(res.data);
       handleClose();
     } catch (error) {
       console.error('Error creating group:', error);
@@ -123,13 +90,12 @@ export function CreateGroupModal({ isOpen, onClose, onGroupCreated }: CreateGrou
     setStep('name');
     setGroupName('');
     setSearchQuery('');
-    setSearchResults([]);
     setSelectedMembers([]);
     setIsCreating(false);
     onClose();
   };
 
-  const getUserDisplayName = (user: User) => {
+  const getUserDisplayName = (user: UserSearch) => {
     return user.firstName && user.lastName
       ? `${user.firstName} ${user.lastName}`
       : user.username;

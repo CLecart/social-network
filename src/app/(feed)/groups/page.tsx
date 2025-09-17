@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -8,52 +8,19 @@ import { Badge } from '@/components/ui/badge';
 import { Users, MessageCircle, Plus, Settings, ArrowLeft } from 'lucide-react';
 import { CreateGroupModal } from '@/components/groups/CreateGroupModal';
 import Link from 'next/link';
-
-interface Group {
-  id: string;
-  title: string;
-  memberCount: number;
-  members: {
-    id: string;
-    username: string;
-    firstName?: string;
-    lastName?: string;
-    avatar?: string;
-  }[];
-  lastMessage?: {
-    message: string;
-    sender: string;
-    timestamp: string;
-  };
-  createdAt: string;
-}
+import { useGroups } from '@/hooks/use-groups';
+import type { GroupListItem } from '@/lib/schemas/group/list';
 
 export default function GroupsPage() {
-  const [groups, setGroups] = useState<Group[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [groups, setGroups] = useState<GroupListItem[]>([]);
+  const { data, isLoading, refresh } = useGroups();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   useEffect(() => {
-    loadGroups();
-  }, []);
+    if (data?.groups) setGroups(data.groups);
+  }, [data]);
 
-  const loadGroups = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch('/api/private/groups');
-      const data = await response.json();
-
-      if (data.groups) {
-        setGroups(data.groups);
-      }
-    } catch (error) {
-      console.error('Error loading groups:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleGroupCreated = (newGroup: Group) => {
+  const handleGroupCreated = (newGroup: GroupListItem) => {
     setGroups(prev => [newGroup, ...prev]);
     setIsCreateModalOpen(false);
   };
