@@ -12,38 +12,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar, Clock, MapPin } from "lucide-react";
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  datetime: string;
-  owner: {
-    id: string;
-    username: string;
-    firstName?: string;
-    lastName?: string;
-    avatar?: string;
-  };
-  group: {
-    id: string;
-    title: string;
-  };
-  rsvpCounts: {
-    yes: number;
-    no: number;
-    maybe: number;
-  };
-  userRsvp: string | null;
-  createdAt: string;
-}
+import { apiFetch } from "@/lib/client/api/fetcher";
+import type { GroupEvent } from "@/lib/schemas/group/event";
+import { toast } from "sonner";
 
 interface CreateEventModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onEventCreated: (event: Event) => void;
+  onEventCreated: (event: GroupEvent) => void;
   groupId: string;
-  groupTitle: string;
+  groupTitle: string | null | undefined;
 }
 
 export function CreateEventModal({
@@ -62,13 +40,17 @@ export function CreateEventModal({
 
   const handleCreateEvent = async () => {
     if (!title.trim() || !description.trim() || !date || !time) {
-      setError("Tous les champs sont requis");
+      const msg = "Tous les champs sont requis";
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
     const datetime = new Date(`${date}T${time}`);
     if (datetime <= new Date()) {
-      setError("La date et l'heure doivent être dans le futur");
+      const msg = "La date et l'heure doivent être dans le futur";
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
@@ -76,34 +58,29 @@ export function CreateEventModal({
     setError(null);
 
     try {
-      const response = await fetch("/api/private/events", {
+      const res = await apiFetch<GroupEvent>("/api/private/events", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+        body: {
           title: title.trim(),
           description: description.trim(),
           datetime: datetime.toISOString(),
           groupId,
-        }),
+        },
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to create event");
+      if (!res || !res.success || !res.data) {
+        throw new Error("Failed to create event");
       }
-
-      const data = await response.json();
-      onEventCreated(data.event);
+      onEventCreated(res.data);
+      toast.success("Événement créé avec succès");
       handleClose();
     } catch (error) {
       console.error("Error creating event:", error);
-      setError(
+      const msg =
         error instanceof Error
           ? error.message
-          : "Erreur lors de la création de l'événement"
-      );
+          : "Erreur lors de la création de l'événement";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setIsCreating(false);
     }
