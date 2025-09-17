@@ -19,7 +19,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = req.cookies.get("token")?.value;
+  const token = req.cookies.get("authToken")?.value;
   if (!token) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
@@ -32,9 +32,9 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  const res = NextResponse.next();
-  res.headers.set("x-user-id", payload.userId);
-  return res;
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-user-id", payload.userId);
+  return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
 export const config = {

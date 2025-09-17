@@ -87,7 +87,6 @@ export const UserFormProvider = ({ children }: { children: React.ReactNode }) =>
     try {
       setErrors({});
       const response = await register(userInfo);
-      console.log('response sucess', response)
       if (response.success) router.push('/')
     } catch (err) {
       if (err && typeof err === "object" && !Array.isArray(err)) {

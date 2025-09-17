@@ -1,4 +1,4 @@
-import { fetcher } from "@/lib/server/api/fetcher";
+import { apiFetch } from "@/lib/client/api/fetcher";
 
 export async function updateUserClient(user: Record<string, any>) {
     const formData = new FormData();
@@ -10,7 +10,7 @@ export async function updateUserClient(user: Record<string, any>) {
     }
 
     try {
-        const response = await fetcher<void>("/api/private/me", {
+        const response = await apiFetch<void>("/api/private/me", {
             method: "PUT",
             body: formData,
         });

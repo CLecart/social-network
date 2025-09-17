@@ -1,6 +1,6 @@
 import type { RegisterUserFormData } from "@/lib/schemas/user/auth";
 
-
+// TODO : Moyen de refacto la fonction. 
 export async function register(data: RegisterUserFormData) {
     const formData = new FormData();
 
@@ -20,8 +20,6 @@ export async function register(data: RegisterUserFormData) {
     if (data.biography) {
         formData.append("biography", data.biography);
     }
-
-    console.log("FormDate", formData)
 
     const res = await fetch("/api/public/auth/register", {
         method: "POST",

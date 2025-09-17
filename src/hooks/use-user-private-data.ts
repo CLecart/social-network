@@ -1,17 +1,17 @@
-import { swrFetcher } from "@/lib/server/api/swrFetcher";
 import { UserPrivateSchema } from "@/lib/schemas/user/private";
-import useSWR from "swr";
+import { useApi } from "@/hooks/use-api";
 
 export function useUserPrivate() {
-    const { data, error, isLoading, mutate } = useSWR(
-        "/api/private/me",
-        (url) => swrFetcher(url, UserPrivateSchema)
-    );
+  const { data, error, isLoading, refresh } = useApi({
+    url: "/api/private/me",
+    schema: UserPrivateSchema,
+    envelope: true,
+  });
 
-    return {
-        user: data,
-        loading: isLoading,
-        error,
-        refetch: mutate,
-    };
+  return {
+    user: data,
+    loading: isLoading,
+    error,
+    refetch: refresh,
+  };
 }
