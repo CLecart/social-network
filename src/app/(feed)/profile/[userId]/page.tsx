@@ -11,22 +11,24 @@ import {
   Grid3X3,
   Video,
   Settings,
-  Share,
   Lock,
-  LockOpen
+
 } from "lucide-react";
 import Image from "next/image";
 import { ModeToggle } from "@/components/toggle-theme";
 import NavigationBar from "@/components/feed/navBar/navigationBar";
-import { useUserProfile } from "@/hooks/use-user-data";
+import { useProfileSummary } from "@/hooks/use-profile-summary";
 import { formatDate } from "@/app/utils/dateFormat";
 import { useUserPosts } from "@/hooks/use-posts-by-user";
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef } from "react";
 import { PostProvider } from "@/app/context/post-context";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { LoadingState, ErrorState, MediaSection, CommentsSection, PostHeader, PostFooter } from "@/components/feed/post/postDetails";
 import { useParams, useRouter } from "next/navigation";
-import { set } from "date-fns";
+import { useFollowers, useFollowing } from "@/hooks/use-followers";
+import { usePostDetails } from "@/hooks/use-post-details";
+import { toggleFollow } from "@/lib/client/follow/toggleFollow";
+import { toggleFriendshipRequest } from "@/lib/client/friendship/toggleFriendship";
 
 type FilterType = 'all' | 'photos' | 'videos' | 'text';
 
@@ -40,298 +42,77 @@ export default function ProfilePage() {
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<any>(null);
-  const [selectedPostDetails, setSelectedPostDetails] = useState<any>(null);
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [isPending, setIsPending] = useState(false);
-  const [followStatus, setFollowStatus] = useState<string | null>(null); // followed, pending, accepted
-  const [friendshipStatus, setFriendshipStatus] = useState<string | null>(null); // pending, accepted pour les amis
-  const [isFriendRequestPending, setIsFriendRequestPending] = useState(false);
-  const [followersCount, setFollowersCount] = useState(0);
-  const [followingCount, setFollowingCount] = useState(0);
-  const [postDetailsLoading, setPostDetailsLoading] = useState(false);
-  const [postDetailsError, setPostDetailsError] = useState<string | null>(null);
-
-  const [followers, setFollowers] = useState<any[]>([]);
-  const [following, setFollowing] = useState<any[]>([]);
+  const [followPending, setFollowPending] = useState(false);
+  const [friendPending, setFriendPending] = useState(false);
 
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const {
-    user: profileUser,
-    loading,
-    error,
-    isOwnProfile,
-    refetch
-  } = useUserProfile(userId)
+  const { data: summary, isLoading: loading, error, refresh: refetch } = useProfileSummary(userId);
+  const profileUser = summary?.user;
+  const isOwnProfile = !!summary?.isOwnProfile;
 
 
-  const { posts, hasMore, loadMore } = useUserPosts({
+  const { posts } = useUserPosts({
     userId: profileUser?.id,
     limit: 12
   });
-  // Initialiser les états de suivi
+  // API hooks
+  const stats = summary?.stats;
+  const isFollowing = summary?.relationship.followStatus === "ACCEPTED";
+  const followStatus = summary?.relationship.followStatus ?? null;
+  const friendshipStatus = summary?.relationship.friendshipStatus ?? null;
+  // Actions déclenchées côté client (follow / friend request)
+  const { data: followers = [], refresh: refreshFollowers } = useFollowers(profileUser?.id);
+  const { data: following = [], refresh: refreshFollowing } = useFollowing(profileUser?.id);
+  const { data: selectedPostDetails, isLoading: postDetailsLoading, error: postDetailsError, refresh: refreshPostDetails } = usePostDetails(selectedPost?.id);
 
 
-  // Vérifier si l'utilisateur actuel suit le profil
-  const checkFollowingStatus = async () => {
-    if (!profileUser) return;
-
-    console.log("---------1------------", profileUser.id)
-    try {
-      const response = await fetch(`/api/private/follow/${profileUser.id}`, {
-        method: "GET",
-        credentials: "include",
-      });
-      console.log("followStatus", followStatus)
-
-
-      if (!response.ok) {
-        setIsFollowing(false);
-        setFollowStatus(null);
-        return;
-      }
-
-      const data = await response.json();
-      console.log("data follow", data)
-      if (data.success && data.data) {
-        setIsFollowing(true);
-        setFollowStatus(data.data.status || "accepted");
-      } else {
-        setIsFollowing(false);
-        setFollowStatus(null);
-      }
-    } catch (err) {
-      console.error("Erreur lors de la vérification du suivi:", err);
-      setIsFollowing(false);
-      setFollowStatus(null);
-    }
-  };
-
-  // Vérifier le statut d'amitié séparément
-  const checkFriendshipStatus = async () => {
-    if (!profileUser) return;
-
-    try {
-      const response = await fetch(`/api/private/friend-requests/status/${profileUser.id}`, {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.data) {
-          setFriendshipStatus(data.data.status);
-        } else {
-          setFriendshipStatus(null);
-        }
-      } else {
-        setFriendshipStatus(null);
-      }
-    } catch (err) {
-      console.error("Erreur lors de la vérification de l'amitié:", err);
-      setFriendshipStatus(null);
-    }
-  };
-
-  useEffect(() => {
-    if (!profileUser) return;
-
-    // Mettre à jour le nombre de followers
-    const updateSatsCount = async () => {
-      try {
-        const response = await fetch(`/api/private/follow/stats/${profileUser.id}`, {
-          method: "GET",
-          credentials: "include",
-        });
-
-        if (!response.ok) {
-          setFollowersCount(0);
-          return;
-        }
-
-        const data = await response.json();
-        console.log(data.data)
-        setFollowersCount(data.data.follower || 0);
-        setFollowingCount(data.data.following || 0);
-      } catch (err) {
-        console.error("Erreur lors de la récupération des followers:", err);
-      }
-    }
-
-    checkFollowingStatus();
-    checkFriendshipStatus();
-    updateSatsCount();
-  }, [profileUser]);
+  // Statuts de follow/amitié et compteurs gérés par hooks ci-dessus
 
 
 
-  // Fonction pour suivre/ne plus suivre un utilisateur
+  // Suivre / ne plus suivre via apiFetch helper
   const handleFollowToggle = async () => {
     if (!profileUser?.id || isOwnProfile) return;
-
     try {
-      setIsPending(true);
-
-      const response = await fetch(`/api/private/follow/${profileUser?.id}/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ userId: profileUser.id }),
-      });
-
-      const data = await response.json();
-
-      if (!data.success) {
-        console.error("Erreur API:", data.message);
-        return;
-      }
-
-      if (data.data) {
-        setIsFollowing(true);
-        setFollowStatus(data.data.status || "accepted");
-
-        // Augmenter le count des followers seulement pour les follows et amis acceptés
-        // Pas pour les demandes en attente
-        if (data.data.status === "followed" || data.data.status === "accepted") {
-          setFollowersCount((prev) => prev + 1);
-        }
-      } else {
-        // Unfollow/Remove friend
-        setIsFollowing(false);
-        setFollowStatus(null);
-        setFollowersCount((prev) => prev - 1);
-      }
+      setFollowPending(true);
+      await toggleFollow(profileUser.id);
+      await refetch();
     } catch (err) {
       console.error("Erreur lors du suivi:", err);
     } finally {
-      setIsPending(false);
+      setFollowPending(false);
     }
   };
 
-  // Fonction pour envoyer/annuler une demande d'amitié
+  // Envoyer/annuler une demande d'amitié
   const handleFriendRequest = async () => {
     if (!profileUser?.id || isOwnProfile) return;
-
     try {
-      setIsFriendRequestPending(true);
-
-      const response = await fetch(`/api/private/friend-requests`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ friendId: profileUser.id }),
-      });
-
-      const data = await response.json();
-
-      if (!data.success) {
-        console.error("Erreur API:", data.message);
-        return;
-      }
-
-      if (data.data) {
-        // Demande d'ami envoyée
-        setFriendshipStatus("pending");
-      } else {
-        // Demande annulée ou amitié supprimée
-        setFriendshipStatus(null);
-        // Après avoir supprimé l'amitié, on doit rafraîchir le statut de follow
-        // car les deux boutons redeviennent disponibles
-        checkFollowingStatus();
-      }
+      setFriendPending(true);
+      await toggleFriendshipRequest(profileUser.id);
+      await refetch();
     } catch (err) {
       console.error("Erreur lors de la demande d'amitié:", err);
     } finally {
-      setIsFriendRequestPending(false);
+      setFriendPending(false);
     }
   };
 
   // ------------------------
-
-
-  const fetchFollowers = async () => {
-    if (!profileUser?.id) return;
-    try {
-      const response = await fetch(`/api/private/follow/${profileUser.id}/followers`, {
-        method: "GET",
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (data.success) {
-        setFollowers(data.data || []);
-      }
-    } catch (err) {
-      console.error("Erreur lors du fetch des followers:", err);
-    }
-  };
-
-  const fetchFollowing = async () => {
-    if (!profileUser?.id) return;
-    try {
-      const response = await fetch(`/api/private/follow/${profileUser.id}/following`, {
-        method: "GET",
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (data.success) {
-        setFollowing(data.data || []);
-      }
-    } catch (err) {
-      console.error("Erreur lors du fetch des following:", err);
-    }
-  };
-
-
-  // ------------------------
-
-  const fetchPostDetails = async (targetPostId: string) => {
-    if (!targetPostId) return;
-
-    try {
-      setPostDetailsLoading(true);
-      setPostDetailsError(null);
-
-      const response = await fetch(`/api/private/post/${targetPostId}`, {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch post details");
-      }
-
-      const data = await response.json();
-
-
-      setSelectedPostDetails(data.data);
-      console.log(selectedPostDetails)
-    } catch (err) {
-      setPostDetailsError(err instanceof Error ? err.message : "Unknown error");
-    } finally {
-      setPostDetailsLoading(false);
-    }
-  };
   const handleGoToSettings = () => {
     router.push("/settings/profile")
   }
 
   const handlePostClick = (post: any) => {
     setSelectedPost(post);
-    setSelectedPostDetails(post);
     setIsOpen(true);
-    fetchPostDetails(post.id);
   };
 
   const handleCloseDialog = () => {
     setIsOpen(false);
     setSelectedPost(null);
-    setSelectedPostDetails(null);
-    setPostDetailsError(null);
+
   };
 
   const getMediaType = (mediaUrl: string | null) => {
@@ -543,7 +324,7 @@ export default function ProfilePage() {
               {/* Bannière */}
               <div className="relative h-32 md:h-48 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 overflow-hidden">
                 {profileUser.banner ? (
-                  <div className="relative w-full h-64">
+                  < div className="relative w-full h-64">
                     <Image
                       src={profileUser.banner}
                       alt="Bannière de profil"
@@ -554,7 +335,7 @@ export default function ProfilePage() {
                 ) : (
                   <div className="w-full h-full bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500" />
                 )}
-
+                {/* TODO: Faire en sorte de pouvoir modifier la bannière */}
                 {isOwnProfile && (
                   <div className="absolute top-4 right-4">
                     <Button
@@ -610,9 +391,9 @@ export default function ProfilePage() {
                         <DialogTrigger asChild>
                           <button
                             className="flex flex-col items-center"
-                            onClick={fetchFollowers} // fetch juste avant d’ouvrir
+                            onClick={refreshFollowers} // rafraîchir juste avant d’ouvrir
                           >
-                            {followersCount} abonnés
+                            {(stats?.follower ?? 0)} abonnés
                           </button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
@@ -631,7 +412,7 @@ export default function ProfilePage() {
                                 >
                                   <Avatar className="w-8 h-8">
                                     <AvatarImage src={f.avatar || "/placeholder.svg"} alt={f.username} />
-                                    <AvatarFallback>{f.username[0]?.toUpperCase()}</AvatarFallback>
+                                    <AvatarFallback>{f.username?.toUpperCase()}</AvatarFallback>
                                   </Avatar>
                                   <span className="text-[var(--textNeutral)] font-medium">
                                     {f.username}
@@ -647,28 +428,28 @@ export default function ProfilePage() {
                         <DialogTrigger asChild>
                           <button
                             className="flex flex-col items-center"
-                            onClick={fetchFollowers} // fetch juste avant d’ouvrir
+                            onClick={refreshFollowing} // rafraîchir juste avant d’ouvrir
                           >
-                            {followingCount} abonnements
+                            {(stats?.following ?? 0)} abonnements
                           </button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
                           <DialogHeader>
-                            <DialogTitle>Abonnés</DialogTitle>
+                            <DialogTitle>Abonnements</DialogTitle>
                           </DialogHeader>
 
                           <div className="max-h-[400px] overflow-y-auto">
-                            {followers.length === 0 ? (
+                            {following.length === 0 ? (
                               <p className="text-sm text-[var(--textMinimal)]">Aucun abonné</p>
                             ) : (
-                              followers.map((f) => (
+                              following.map((f) => (
                                 <div
                                   key={f.id}
                                   className="flex items-center gap-2 p-2 border-b border-[var(--detailMinimal)]"
                                 >
                                   <Avatar className="w-8 h-8">
                                     <AvatarImage src={f.avatar || "/placeholder.svg"} alt={f.username} />
-                                    <AvatarFallback>{f.username[0]?.toUpperCase()}</AvatarFallback>
+                                    <AvatarFallback>{f.username?.toUpperCase()}</AvatarFallback>
                                   </Avatar>
                                   <span className="text-[var(--textNeutral)] font-medium">
                                     {f.username}
@@ -738,69 +519,69 @@ export default function ProfilePage() {
                         // Profil privé : seulement demande d'ami
                         <Button
                           onClick={handleFriendRequest}
-                          className={`flex-1 transition-opacity ${isFriendRequestPending
+                          className={`flex-1 transition-opacity ${friendPending
                             ? "bg-gray-400 text-white cursor-not-allowed opacity-60"
-                            : friendshipStatus === "pending"
+                            : friendshipStatus === "PENDING"
                               ? "bg-orange-500 text-white hover:bg-orange-600"
-                              : friendshipStatus === "accepted"
+                              : friendshipStatus === "ACCEPTED"
                                 ? "bg-[var(--green60)] text-[var(--textNeutral)] hover:bg-[var(--greyHighlighted)]"
                                 : "bg-[var(--blue)] hover:bg-[var(--blue80)] text-white"
                             }`}
-                          disabled={isFriendRequestPending}
+                          disabled={friendPending}
                         >
-                          {isFriendRequestPending
+                          {friendPending
                             ? "En cours..."
-                            : friendshipStatus === "pending"
+                            : friendshipStatus === "PENDING"
                               ? "Demande envoyée"
-                              : friendshipStatus === "accepted"
+                              : friendshipStatus === "ACCEPTED"
                                 ? "Ami(e)"
                                 : "Demander en ami"}
                         </Button>
                       ) : (
                         // Profil public : logique conditionnelle
                         <>
-                          {friendshipStatus === "accepted" ? (
+                          {friendshipStatus === "ACCEPTED" ? (
                             // Si on est ami, ne montrer que le bouton Ami(e)
                             <Button
                               onClick={handleFriendRequest}
                               className="flex-1 transition-opacity bg-[var(--green60)] text-[var(--textNeutral)] hover:bg-[var(--greyHighlighted)]"
-                              disabled={isFriendRequestPending}
+                              disabled={friendPending}
                             >
-                              {isFriendRequestPending ? "En cours..." : "Ami(e)"}
+                              {friendPending ? "En cours..." : "Ami(e)"}
                             </Button>
                           ) : (
                             // Si on n'est pas ami, montrer Follow + Add Friend
                             <>
                               <Button
                                 onClick={handleFollowToggle}
-                                className={`flex-1 transition-opacity mr-1 ${isPending
+                                className={`flex-1 transition-opacity mr-1 ${followPending
                                   ? "bg-gray-400 text-white cursor-not-allowed opacity-60"
-                                  : isFollowing && followStatus === "followed"
+                                  : isFollowing && followStatus === "ACCEPTED"
                                     ? "bg-[var(--green60)] text-[var(--textNeutral)] hover:bg-[var(--greyHighlighted)]"
                                     : "bg-[var(--blue)] hover:bg-[var(--blue80)] text-white"
                                   }`}
-                                disabled={isPending}
+                                disabled={followPending}
                               >
-                                {isPending
+                                {followPending
                                   ? "En cours..."
-                                  : isFollowing && followStatus === "followed"
+                                  : isFollowing && followStatus === "ACCEPTED"
                                     ? "Suivi(e)"
                                     : "Suivre"}
                               </Button>
 
                               <Button
                                 onClick={handleFriendRequest}
-                                className={`flex-1 ml-1 transition-opacity ${isFriendRequestPending
+                                className={`flex-1 ml-1 transition-opacity ${friendPending
                                   ? "bg-gray-400 text-white cursor-not-allowed opacity-60"
-                                  : friendshipStatus === "pending"
+                                  : friendshipStatus === "PENDING"
                                     ? "bg-orange-500 text-white hover:bg-orange-600"
                                     : "bg-[var(--lavender)] hover:bg-[var(--lavender80)] text-white"
                                   }`}
-                                disabled={isFriendRequestPending}
+                                disabled={friendPending}
                               >
-                                {isFriendRequestPending
+                                {friendPending
                                   ? "En cours..."
-                                  : friendshipStatus === "pending"
+                                  : friendshipStatus === "PENDING"
                                     ? "Demande envoyée"
                                     : "Ajouter en ami"}
                               </Button>
@@ -849,8 +630,8 @@ export default function ProfilePage() {
             <div className="bg-[var(--bgLevel2)]">
               <div className="p-4">
                 {(() => {
-                  // Si le compte est privé et qu'on n'est pas ami accepté
-                  if (profileUser?.visibility === 'PRIVATE' && !isOwnProfile && followStatus == 'accepted') {
+                  // Si le compte est privé, afficher en fonction des permissions du résumé
+                  if (profileUser?.visibility === 'PRIVATE' && !isOwnProfile && summary?.permissions.canViewPosts) {
                     return (
                       <div className="grid grid-cols-3 gap-2">
                         {filteredPosts.map((post) => (
@@ -860,7 +641,7 @@ export default function ProfilePage() {
                     );
                   }
 
-                  if (profileUser?.visibility === 'PRIVATE' && !isOwnProfile && followStatus !== 'accepted') {
+                  if (profileUser?.visibility === 'PRIVATE' && !isOwnProfile && !summary?.permissions.canViewPosts) {
                     return (
                       <div className="text-center py-8">
                         <div className="text-6xl mb-4">🔒</div>
@@ -919,7 +700,7 @@ export default function ProfilePage() {
                   {postDetailsLoading ? (
                     <LoadingState />
                   ) : postDetailsError ? (
-                    <ErrorState error={postDetailsError} onRetry={() => selectedPost && fetchPostDetails(selectedPost.id)} />
+                    <ErrorState error={postDetailsError instanceof Error ? postDetailsError.message : String(postDetailsError)} onRetry={() => selectedPost && refreshPostDetails()} />
                   ) : selectedPostDetails ? (
                     <div className="flex w-full h-full">
                       <MediaSection post={selectedPostDetails} />
@@ -933,7 +714,7 @@ export default function ProfilePage() {
                         </div>
                         <PostFooter
                           postId={selectedPostDetails.id}
-                          onCommentAdded={() => fetchPostDetails(selectedPostDetails.id)}
+                          onCommentAdded={() => refreshPostDetails()}
                         />
                       </div>
                     </div>
@@ -944,6 +725,6 @@ export default function ProfilePage() {
           </DialogContent>
         </Dialog>
       </div>
-    </PostProvider>
+    </PostProvider >
   );
 }
