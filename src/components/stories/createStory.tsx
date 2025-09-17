@@ -22,14 +22,17 @@ type MediaFile = {
   type: "image" | "video";
 };
 
+import type { StoryWithDetails } from "@/lib/schemas/stories/story";
+
 interface CreateStoryProps {
-  onStoryCreated?: () => void;
+  onStoryCreated?: (story: StoryWithDetails) => void;
 }
 
 const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated }) => {
   const [mediaFile, setMediaFile] = useState<MediaFile | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const submittingRef = useRef(false);
   const [visibility, setVisibility] = useState<Visibility>(Visibility.PUBLIC);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -99,6 +102,7 @@ const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated }) => {
 
   // Soumission de la story
   async function handleStorySubmit() {
+    if (submittingRef.current) return;
     if (!mediaFile) {
       toast.error("Média requis", {
         description:
@@ -125,17 +129,18 @@ const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated }) => {
       return;
     }
 
+    submittingRef.current = true;
     setIsUploading(true);
     try {
       const response = await createStoryClient(result.data);
-      if (!response.success) {
+      if (!response.success || !response.data) {
         toast.error('Error please try again later')
         return
       }
 
-      onStoryCreated?.();
+      toast.success('Story publiée');
+      onStoryCreated?.(response.data as any);
 
-      // Nettoyage
       removeMedia();
       setIsDialogOpen(false);
 
@@ -150,6 +155,7 @@ const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated }) => {
       console.error("Erreur lors de la publication de la story :", error);
     } finally {
       setIsUploading(false);
+      submittingRef.current = false;
     }
   }
 
@@ -173,6 +179,7 @@ const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated }) => {
   };
 
   return (
+    // TODO : Ajouter un Dialog title
     <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
       <DialogTrigger asChild>
         <button className="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white hover:bg-blue-600 transition-colors">
@@ -266,12 +273,12 @@ const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated }) => {
               <label className="block text-sm font-medium text-[var(--textNeutral)] mb-2">
                 Qui peut voir cette story ?
               </label>
-              <VisibilitySelect 
-                value={visibility} 
+              <VisibilitySelect
+                value={visibility}
                 onChange={setVisibility}
               />
             </div>
-            
+
             {/* Boutons d'action */}
             <div className="flex gap-3">
               <Button

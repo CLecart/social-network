@@ -1,5 +1,6 @@
 import { CreateStory } from "@/lib/schemas/stories/";
-import { fetcher } from "@/lib/server/api/fetcher";
+import { apiFetch } from "@/lib/client/api/fetcher";
+import type { StoryWithDetails } from "@/lib/schemas/stories/story";
 
 export async function createStoryClient(story: CreateStory) {
     const formData = new FormData();
@@ -7,12 +8,14 @@ export async function createStoryClient(story: CreateStory) {
     if (story.media) {
         formData.append("media", story.media);
     }
-    
+
     formData.append("visibility", story.visibility);
     try {
-        const response = await fetcher<void>("/api/private/stories", {
+        const response = await apiFetch<StoryWithDetails>("/api/private/stories", {
             method: "POST",
             body: formData,
+            retry: 1, // avoid duplicate creations on transient errors
+            timeout: 120000, // allow large uploads (up to 2 minutes)
         });
 
         return response;

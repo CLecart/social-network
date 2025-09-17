@@ -7,6 +7,7 @@ import CreateStory from "./createStory";
 import AppLoader from "../ui/app-loader";
 import { useUserStories } from "@/hooks/use-user-stories";
 import type { UserStoriesGroup } from "@/lib/schemas/stories/group";
+import type { StoryWithDetails } from "@/lib/schemas/stories/story";
 import { useUser } from "@/hooks/use-user-data";
 import { useReactionContext } from "@/app/context/reaction-context";
 
@@ -17,14 +18,14 @@ interface AdaptedStory {
   timeAgo: string;
   isLiked?: boolean;
   userReaction?:
-    | "LIKE"
-    | "DISLIKE"
-    | "LOVE"
-    | "LAUGH"
-    | "SAD"
-    | "ANGRY"
-    | "WOW"
-    | null;
+  | "LIKE"
+  | "DISLIKE"
+  | "LOVE"
+  | "LAUGH"
+  | "SAD"
+  | "ANGRY"
+  | "WOW"
+  | null;
   likesCount?: number;
 }
 
@@ -42,6 +43,12 @@ export function Stories() {
     publicOnly: false, // Changer à false pour voir toutes les stories selon les règles de visibilité
     includeExpired: false,
   });
+
+  const [localGroups, setLocalGroups] = useState<UserStoriesGroup[] | null>(null);
+
+  useEffect(() => {
+    if (storiesGroups) setLocalGroups(storiesGroups);
+  }, [storiesGroups]);
 
   const [viewingStory, setViewingStory] = useState<number | null>(null);
   const [currentUserIndex, setCurrentUserIndex] = useState(0);
@@ -103,6 +110,7 @@ export function Stories() {
   };
 
   // Ajouter la story "Votre story" au début
+  const sourceGroups = localGroups ?? [];
   const adaptedStories: AdaptedUser[] = [
     {
       id: 0,
@@ -111,7 +119,7 @@ export function Stories() {
       isOwn: true,
       stories: [],
     },
-    ...adaptStoryData(storiesGroups ?? []),
+    ...adaptStoryData(sourceGroups),
   ];
 
   const viewableStories = adaptedStories.filter((story) => !story.isOwn);
@@ -126,14 +134,6 @@ export function Stories() {
     currentViewingUser &&
     currentStoryIndex >= 0 &&
     currentStoryIndex < currentViewingUser.stories.length;
-    
-  // Debug logs pour comprendre pourquoi le StoryViewer pourrait disparaître
-  console.log('🔍 Render conditions:');
-  console.log('  - viewingStory:', viewingStory);
-  console.log('  - isValidUserIndex:', isValidUserIndex);
-  console.log('  - isValidStoryIndex:', isValidStoryIndex);
-  console.log('  - currentStoryIndex:', currentStoryIndex);
-  console.log('  - currentViewingUser stories length:', currentViewingUser?.stories?.length);
 
   const handleStoryClick = (storyIndex: number) => {
     if (adaptedStories[storyIndex].isOwn) return;
@@ -151,18 +151,13 @@ export function Stories() {
   };
 
   const handleNext = () => {
-    console.log('🔍 handleNext called - currentUserIndex:', currentUserIndex, 'currentStoryIndex:', currentStoryIndex);
-    console.log('🔍 isValidUserIndex:', isValidUserIndex);
-    console.log('🔍 viewableStories.length:', viewableStories.length);
-    
+
     if (!isValidUserIndex) {
-      console.log('🔍 Invalid user index, closing viewer');
       setViewingStory(null);
       return;
     }
 
     const currentViewingUser = viewableStories[currentUserIndex];
-    console.log('🔍 currentViewingUser:', currentViewingUser);
 
     // Vérifier que l'utilisateur a des stories
     if (
@@ -170,22 +165,16 @@ export function Stories() {
       !currentViewingUser.stories ||
       currentViewingUser.stories.length === 0
     ) {
-      console.log('🔍 No stories for current user, closing viewer');
       setViewingStory(null);
       return;
     }
 
-    console.log('🔍 Navigation logic - currentStoryIndex:', currentStoryIndex, 'stories.length:', currentViewingUser.stories.length);
-    
     if (currentStoryIndex < currentViewingUser.stories.length - 1) {
-      console.log('🔍 Moving to next story in same user');
       setCurrentStoryIndex((prevIndex) => prevIndex + 1);
     } else if (currentUserIndex < viewableStories.length - 1) {
-      console.log('🔍 Moving to next user');
       setCurrentUserIndex((prevIndex) => prevIndex + 1);
       setCurrentStoryIndex(0);
     } else {
-      console.log('🔍 End of all stories, closing viewer');
       setViewingStory(null);
     }
   };
@@ -249,13 +238,12 @@ export function Stories() {
           >
             <div className="relative">
               <button
-                className={`p-0.5 rounded-full ${
-                  story.isOwn
-                    ? "bg-gray-300"
-                    : story.stories.length > 0
+                className={`p-0.5 rounded-full ${story.isOwn
+                  ? "bg-gray-300"
+                  : story.stories.length > 0
                     ? "bg-gradient-to-tr from-[var(--pink)] to-[var(--purple)]"
                     : "bg-gray-300"
-                }`}
+                  }`}
               >
                 <Avatar className="w-14 h-14">
                   <AvatarImage
@@ -267,9 +255,51 @@ export function Stories() {
                   </AvatarFallback>
                 </Avatar>
               </button>
-              {story.isOwn && (
+              {story.isOwn && currentUser && (
                 <div className="absolute -bottom-0 -right-0  flex items-center justify-center border-2 border-white">
-                  <CreateStory onStoryCreated={refetch} />
+                  <CreateStory
+                    onStoryCreated={(story: StoryWithDetails) => {
+                      // initialize reaction count to 0
+                      if (story.id) initializeReactionCount(story.id, story._count?.reactions ?? 0);
+                      setLocalGroups((prev) => {
+                        const curr = prev ? [...prev] : [];
+                        const meId = currentUser?.id;
+                        if (!meId) return curr;
+                        const idx = curr.findIndex((g) => g.user.id === meId);
+                        const storyWithUser: StoryWithDetails = {
+                          ...story,
+                          user: story.user || {
+                            id: currentUser.id,
+                            username: currentUser.username || null,
+                            firstName: currentUser.firstName || null,
+                            lastName: currentUser.lastName || null,
+                            avatar: currentUser.avatar || null,
+                          },
+                          reactions: story.reactions || [],
+                          _count: { reactions: story._count?.reactions ?? 0 },
+                        } as any;
+                        if (idx >= 0) {
+                          const group = { ...curr[idx] };
+                          group.stories = [storyWithUser, ...group.stories];
+                          curr[idx] = group;
+                          return curr;
+                        }
+                        // Create group for current user
+                        const newGroup: UserStoriesGroup = {
+                          user: {
+                            id: currentUser.id,
+                            username: currentUser?.username || "",
+                            firstName: currentUser?.firstName || "",
+                            lastName: currentUser?.lastName || "",
+                            avatar: currentUser?.avatar || "",
+                          },
+                          stories: [storyWithUser],
+                          hasUnviewed: true,
+                        };
+                        return [newGroup, ...curr];
+                      });
+                    }}
+                  />
                 </div>
               )}
             </div>
