@@ -21,8 +21,6 @@ const PostCard = ({ isLiked, likesCount }: PostContent) => {
   const { allposts } = usePostContext();
   const { reactionCounts } = useReactionContext();
 
-  console.log("PostCard:", allposts[0]?.reactions);
-
   // Etat pour gérer quel post a ses détails ouverts
   const [openPostId, setOpenPostId] = useState<string | null>(null);
 

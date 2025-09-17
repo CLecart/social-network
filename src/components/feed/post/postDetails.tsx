@@ -46,7 +46,6 @@ function PostDetails({ postId, trigger, onClose }: PostDetailsProps) {
 
   useEffect(() => {
     setUpdatedPost(post);
-    console.log("post: ", post);
   }, [post]);
 
   const handleScroll = () => {

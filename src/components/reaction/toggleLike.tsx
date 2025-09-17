@@ -95,7 +95,6 @@ export function ReactionComponent({ content }: ReactionComponentParams) {
             return;
           }
         } else {
-          console.log(selectedReaction, "selectedReaction");
           const response = await UpdatedReaction({
             type: selectedReaction,
             mediaId: content.contentId,
@@ -107,7 +106,7 @@ export function ReactionComponent({ content }: ReactionComponentParams) {
             return;
           }
         }
-        
+
         // ✅ Appeler handleReactionChange seulement si la requête a réussi
         handleReactionChange(content.contentId, selectedReaction, content.type);
       } catch (error) {

@@ -267,8 +267,6 @@ export function ChatMessage({ message, currentUserId }: ChatMessageProps) {
         {isFromCurrentUser && message.status && (
           <>
             <MessageStatusIcons status={message.status} />
-            {/* Debug: show status in console */}
-            {console.log(`Message ${message.id} status: ${message.status}`)}
           </>
         )}
       </div>

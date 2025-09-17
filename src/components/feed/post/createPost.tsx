@@ -125,8 +125,6 @@ const CreatePost: React.FC = () => {
       visibility: visibility,
     };
 
-    console.log("type", media instanceof File);
-
     const result = PostSchemas.create.safeParse(data);
 
     if (!result.success) {

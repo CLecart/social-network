@@ -38,10 +38,8 @@ export function LanguagePage({ onBack }: LanguagePageProps) {
     setSelectedLanguage(languageCode)
   }
 
+  // TODO : Review handleSave
   const handleSave = () => {
-    // Logique de sauvegarde ici
-    console.log('Langue sélectionnée:', selectedLanguage)
-    console.log('Détection automatique:', autoDetect)
     onBack?.()
   }
 
@@ -88,11 +86,10 @@ export function LanguagePage({ onBack }: LanguagePageProps) {
             {AVAILABLE_LANGUAGES.map((language) => (
               <div
                 key={language.code}
-                className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
-                  selectedLanguage === language.code && !autoDetect
+                className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${selectedLanguage === language.code && !autoDetect
                     ? 'bg-[var(--bgLevel2)] border-1 border-[var(--detailMinimal)]'
                     : 'hover:bg-[var(--bgLevel2)]'
-                }`}
+                  }`}
                 onClick={() => {
                   if (!autoDetect) {
                     handleLanguageChange(language.code)
@@ -102,11 +99,10 @@ export function LanguagePage({ onBack }: LanguagePageProps) {
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{language.flag}</span>
                   <div>
-                    <div className={`font-medium ${
-                      selectedLanguage === language.code && !autoDetect 
-                        ? 'text-blue-600' 
+                    <div className={`font-medium ${selectedLanguage === language.code && !autoDetect
+                        ? 'text-blue-600'
                         : 'text-[var(--textMinimal)]'
-                    }`}>
+                      }`}>
                       {language.nativeName}
                     </div>
                     <div className="text-sm text-[var(--textNeutral)]">{language.name}</div>
