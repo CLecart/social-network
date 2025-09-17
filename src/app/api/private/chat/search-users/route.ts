@@ -1,18 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { canSendMessageTo } from '@/lib/db/queries/messages/visibilityFilters';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get('q');
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!query || query.length < 2) {
-    return NextResponse.json({ users: [] });
+    return NextResponse.json(respondSuccess({ users: [] }));
   }
 
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -72,9 +74,9 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    return NextResponse.json({ users: filteredUsers });
+    return NextResponse.json(respondSuccess({ users: filteredUsers }));
   } catch (error) {
     console.error('Error searching users:', error);
-    return NextResponse.json({ error: 'Failed to search users' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to search users'), { status: 500 });
   }
 }

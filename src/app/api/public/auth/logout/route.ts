@@ -4,7 +4,7 @@ export async function POST() {
     try {
         const res = NextResponse.json({ success: true });
 
-        res.cookies.set('token', '', {
+        res.cookies.set('authToken', '', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',

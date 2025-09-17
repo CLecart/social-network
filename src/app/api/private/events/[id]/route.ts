@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -52,7 +54,7 @@ export async function GET(
     });
 
     if (!event) {
-      return NextResponse.json({ error: 'Event not found' }, { status: 404 });
+      return NextResponse.json(respondError('Event not found'), { status: 404 });
     }
 
     // Check if user is a member of the group
@@ -64,7 +66,7 @@ export async function GET(
     });
 
     if (!isMember) {
-      return NextResponse.json({ error: 'Not a member of this group' }, { status: 403 });
+      return NextResponse.json(respondError('Not a member of this group'), { status: 403 });
     }
 
     const formattedEvent = {
@@ -88,10 +90,10 @@ export async function GET(
       createdAt: event.createdAt.toISOString()
     };
 
-    return NextResponse.json({ event: formattedEvent });
+    return NextResponse.json(respondSuccess({ event: formattedEvent }));
   } catch (error) {
     console.error('Error fetching event:', error);
-    return NextResponse.json({ error: 'Failed to fetch event' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to fetch event'), { status: 500 });
   }
 }
 
@@ -99,10 +101,10 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -118,26 +120,26 @@ export async function PUT(
     });
 
     if (!event) {
-      return NextResponse.json({ error: 'Event not found' }, { status: 404 });
+      return NextResponse.json(respondError('Event not found'), { status: 404 });
     }
 
     if (event.ownerId !== userId) {
-      return NextResponse.json({ error: 'Only the event owner can update this event' }, { status: 403 });
+      return NextResponse.json(respondError('Only the event owner can update this event'), { status: 403 });
     }
 
     // Validation
     if (title !== undefined && !title?.trim()) {
-      return NextResponse.json({ error: 'Title cannot be empty' }, { status: 400 });
+      return NextResponse.json(respondError('Title cannot be empty'), { status: 400 });
     }
 
     if (description !== undefined && !description?.trim()) {
-      return NextResponse.json({ error: 'Description cannot be empty' }, { status: 400 });
+      return NextResponse.json(respondError('Description cannot be empty'), { status: 400 });
     }
 
     if (datetime !== undefined) {
       const eventDate = new Date(datetime);
       if (eventDate <= new Date()) {
-        return NextResponse.json({ error: 'Event date must be in the future' }, { status: 400 });
+        return NextResponse.json(respondError('Event date must be in the future'), { status: 400 });
       }
     }
 
@@ -181,26 +183,24 @@ export async function PUT(
       }
     });
 
-    return NextResponse.json({
-      event: {
-        id: updatedEvent.id,
-        title: updatedEvent.title,
-        description: updatedEvent.description,
-        datetime: updatedEvent.datetime.toISOString(),
-        owner: updatedEvent.owner,
-        group: updatedEvent.group,
-        rsvpCounts: {
-          yes: updatedEvent.rsvps.filter(rsvp => rsvp.status === 'YES').length,
-          no: updatedEvent.rsvps.filter(rsvp => rsvp.status === 'NO').length,
-          maybe: updatedEvent.rsvps.filter(rsvp => rsvp.status === 'MAYBE').length,
-        },
-        userRsvp: updatedEvent.rsvps.find(rsvp => rsvp.userId === userId)?.status || null,
-        createdAt: updatedEvent.createdAt.toISOString()
-      }
-    });
+    return NextResponse.json(respondSuccess({
+      id: updatedEvent.id,
+      title: updatedEvent.title,
+      description: updatedEvent.description,
+      datetime: updatedEvent.datetime.toISOString(),
+      owner: updatedEvent.owner,
+      group: updatedEvent.group,
+      rsvpCounts: {
+        yes: updatedEvent.rsvps.filter(rsvp => rsvp.status === 'YES').length,
+        no: updatedEvent.rsvps.filter(rsvp => rsvp.status === 'NO').length,
+        maybe: updatedEvent.rsvps.filter(rsvp => rsvp.status === 'MAYBE').length,
+      },
+      userRsvp: updatedEvent.rsvps.find(rsvp => rsvp.userId === userId)?.status || null,
+      createdAt: updatedEvent.createdAt.toISOString()
+    }));
   } catch (error) {
     console.error('Error updating event:', error);
-    return NextResponse.json({ error: 'Failed to update event' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to update event'), { status: 500 });
   }
 }
 
@@ -208,10 +208,10 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -223,11 +223,11 @@ export async function DELETE(
     });
 
     if (!event) {
-      return NextResponse.json({ error: 'Event not found' }, { status: 404 });
+      return NextResponse.json(respondError('Event not found'), { status: 404 });
     }
 
     if (event.ownerId !== userId) {
-      return NextResponse.json({ error: 'Only the event owner can delete this event' }, { status: 403 });
+      return NextResponse.json(respondError('Only the event owner can delete this event'), { status: 403 });
     }
 
     // Delete RSVPs first, then the event
@@ -240,9 +240,9 @@ export async function DELETE(
       where: { id: eventId }
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json(respondSuccess(null));
   } catch (error) {
     console.error('Error deleting event:', error);
-    return NextResponse.json({ error: 'Failed to delete event' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to delete event'), { status: 500 });
   }
 }

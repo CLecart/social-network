@@ -1,9 +1,10 @@
 import { NextRequest } from 'next/server';
 import { redisdb } from '@/lib/server/websocket/redis';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
 export async function GET(request: NextRequest) {
   // Get the authenticated user ID from the middleware
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
 
   if (!userId) {
     return new Response('Unauthorized', { status: 401 });

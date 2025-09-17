@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
 
         const response = NextResponse.redirect(result.location);
 
-        response.cookies.set('token', result.token, {
+        response.cookies.set('authToken', result.token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',

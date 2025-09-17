@@ -1,7 +1,8 @@
-import { verifyJwt } from "@/lib/jwt/verifyJwt";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { z } from "zod";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 const CreateFriendRequestSchema = z.object({
   friendId: z.string(),
@@ -9,26 +10,14 @@ const CreateFriendRequestSchema = z.object({
 
 // GET: Récupérer les demandes d'amis reçues
 export async function GET(req: NextRequest) {
-  const token = req.cookies.get("token")?.value;
-
-  if (!token) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
-
-  let payload;
-  try {
-    payload = await verifyJwt(token);
-  } catch {
-    return NextResponse.json({ message: "Invalid token" }, { status: 401 });
-  }
-
-  const userId = payload.userId;
+  const userId = await getUserIdFromRequest(req);
+  if (!userId) return NextResponse.json(respondError("Unauthorized"), { status: 401 });
 
   try {
     const friendRequests = await db.friendship.findMany({
       where: {
         friendId: userId,
-        status: "pending",
+        status: "PENDING",
       },
       include: {
         user: {
@@ -46,39 +35,22 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      friendRequests: friendRequests.map((request) => ({
-        id: request.id,
-        user: request.user,
-        createdAt: request.createdAt,
-      })),
-    }, { status: 200 });
+    return NextResponse.json(respondSuccess(friendRequests.map((request) => ({
+      id: request.id,
+      user: request.user,
+      createdAt: request.createdAt,
+    }))));
 
   } catch (error) {
     console.error("Error fetching friend requests:", error);
-    return NextResponse.json({ 
-      message: "Internal server error" 
-    }, { status: 500 });
+    return NextResponse.json(respondError("Internal server error"), { status: 500 });
   }
 }
 
 // POST: Créer/Annuler une demande d'ami
 export async function POST(req: NextRequest) {
-  const token = req.cookies.get("token")?.value;
-
-  if (!token) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
-
-  let payload;
-  try {
-    payload = await verifyJwt(token);
-  } catch {
-    return NextResponse.json({ message: "Invalid token" }, { status: 401 });
-  }
-
-  const userId = payload.userId;
+  const userId = await getUserIdFromRequest(req);
+  if (!userId) return NextResponse.json(respondError("Unauthorized"), { status: 401 });
 
   try {
     const body = await req.json();
@@ -86,9 +58,7 @@ export async function POST(req: NextRequest) {
 
     // Vérifier que l'utilisateur ne s'ajoute pas lui-même
     if (friendId === userId) {
-      return NextResponse.json({ 
-        message: "Cannot send friend request to yourself" 
-      }, { status: 400 });
+      return NextResponse.json(respondError("Cannot send friend request to yourself"), { status: 400 });
     }
 
     // Vérifier si l'utilisateur cible existe
@@ -98,9 +68,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (!targetUser) {
-      return NextResponse.json({ 
-        message: "User not found" 
-      }, { status: 404 });
+      return NextResponse.json(respondError("User not found"), { status: 404 });
     }
 
     // Vérifier si une relation d'amitié existe déjà (dans les deux sens)
@@ -122,7 +90,7 @@ export async function POST(req: NextRequest) {
         });
 
         // Si c'était une amitié acceptée, supprimer aussi la relation inverse
-        if (existingFriendship.status === "accepted") {
+        if (existingFriendship.status === "ACCEPTED") {
           const reverseFriendship = await tx.friendship.findFirst({
             where: {
               userId: existingFriendship.userId === userId ? friendId : userId,
@@ -138,40 +106,27 @@ export async function POST(req: NextRequest) {
         }
       });
 
-      return NextResponse.json({
-        success: true,
-        data: null,
-        message: existingFriendship.status === "accepted" ? "Friendship removed" : "Friend request canceled",
-      }, { status: 200 });
+      return NextResponse.json(respondSuccess(null, existingFriendship.status === "ACCEPTED" ? "Friendship removed" : "Friend request canceled"), { status: 200 });
     } else {
       // Créer une nouvelle demande d'ami
       const newFriendship = await db.friendship.create({
         data: {
           userId: userId,
           friendId: friendId,
-          status: "pending",
+          status: "PENDING",
         },
       });
 
-      return NextResponse.json({
-        success: true,
-        data: { status: newFriendship.status },
-        message: "Friend request sent",
-      }, { status: 201 });
+      return NextResponse.json(respondSuccess({ status: newFriendship.status }, "Friend request sent"), { status: 201 });
     }
 
   } catch (error) {
     console.error("Error creating friend request:", error);
-    
+
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ 
-        message: "Invalid request data",
-        errors: error.errors 
-      }, { status: 400 });
+      return NextResponse.json(respondError("Invalid request data"), { status: 400 });
     }
 
-    return NextResponse.json({ 
-      message: "Internal server error" 
-    }, { status: 500 });
+    return NextResponse.json(respondError("Internal server error"), { status: 500 });
   }
 }

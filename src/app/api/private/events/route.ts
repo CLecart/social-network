@@ -2,12 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { redisdb } from '@/lib/server/websocket/redis';
 import { generateEventMessage } from '@/lib/event-message-utils';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function GET(request: NextRequest) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
 
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -27,7 +29,7 @@ export async function GET(request: NextRequest) {
       });
 
       if (!isMember) {
-        return NextResponse.json({ error: 'Not a member of this group' }, { status: 403 });
+        return NextResponse.json(respondError('Not a member of this group'), { status: 403 });
       }
 
       whereClause = { groupId };
@@ -97,37 +99,37 @@ export async function GET(request: NextRequest) {
       createdAt: event.createdAt.toISOString()
     }));
 
-    return NextResponse.json({ events: formattedEvents });
+    return NextResponse.json(respondSuccess({ events: formattedEvents }));
   } catch (error) {
     console.error('Error fetching events:', error);
-    return NextResponse.json({ error: 'Failed to fetch events' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to fetch events'), { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
 
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
     const { title, description, datetime, groupId } = await request.json();
 
     if (!title?.trim()) {
-      return NextResponse.json({ error: 'Title is required' }, { status: 400 });
+      return NextResponse.json(respondError('Title is required'), { status: 400 });
     }
 
     if (!description?.trim()) {
-      return NextResponse.json({ error: 'Description is required' }, { status: 400 });
+      return NextResponse.json(respondError('Description is required'), { status: 400 });
     }
 
     if (!datetime) {
-      return NextResponse.json({ error: 'Date and time are required' }, { status: 400 });
+      return NextResponse.json(respondError('Date and time are required'), { status: 400 });
     }
 
     if (!groupId) {
-      return NextResponse.json({ error: 'Group ID is required' }, { status: 400 });
+      return NextResponse.json(respondError('Group ID is required'), { status: 400 });
     }
 
     // Verify user is a member of the group
@@ -139,13 +141,13 @@ export async function POST(request: NextRequest) {
     });
 
     if (!isMember) {
-      return NextResponse.json({ error: 'Not a member of this group' }, { status: 403 });
+      return NextResponse.json(respondError('Not a member of this group'), { status: 403 });
     }
 
     // Verify the datetime is in the future
     const eventDate = new Date(datetime);
     if (eventDate <= new Date()) {
-      return NextResponse.json({ error: 'Event date must be in the future' }, { status: 400 });
+      return NextResponse.json(respondError('Event date must be in the future'), { status: 400 });
     }
 
     // Create the event
@@ -229,25 +231,23 @@ export async function POST(request: NextRequest) {
       { ex: 60 }
     );
 
-    return NextResponse.json({
-      event: {
-        id: event.id,
-        title: event.title,
-        description: event.description,
-        datetime: event.datetime.toISOString(),
-        owner: event.owner,
-        group: event.group,
-        rsvpCounts: {
-          yes: 0,
-          no: 0,
-          maybe: 0,
-        },
-        userRsvp: null,
-        createdAt: event.createdAt.toISOString()
-      }
-    });
+    return NextResponse.json(respondSuccess({
+      id: event.id,
+      title: event.title,
+      description: event.description,
+      datetime: event.datetime.toISOString(),
+      owner: event.owner,
+      group: event.group,
+      rsvpCounts: {
+        yes: 0,
+        no: 0,
+        maybe: 0,
+      },
+      userRsvp: null,
+      createdAt: event.createdAt.toISOString()
+    }));
   } catch (error) {
     console.error('Error creating event:', error);
-    return NextResponse.json({ error: 'Failed to create event' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to create event'), { status: 500 });
   }
 }

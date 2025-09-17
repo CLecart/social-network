@@ -4,13 +4,14 @@ import { parseCreateComment } from "@/lib/parsers/formParsers";
 import { PostSchemas } from "@/lib/schemas/post";
 import { parseOrThrow, ValidationError } from "@/lib/utils/validation";
 import { respondError, respondSuccess } from "@/lib/server/api/response";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
 export async function POST(
     req: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const userId = req.headers.get("x-user-id");
+        const userId = await getUserIdFromRequest(req);
         const { id: postId } = await params;
 
         if (!userId) {
@@ -24,7 +25,7 @@ export async function POST(
         const formData = await req.formData();
         const rawComment = parseCreateComment(formData);
 
-        const comment = parseOrThrow(PostSchemas.create, rawComment);
+        const comment = parseOrThrow(PostSchemas.create, rawComment, { label: 'CreateCommentBody' });
 
         // Ensure visibility is always defined
         const commentWithVisibility = {

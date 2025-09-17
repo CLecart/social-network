@@ -1,10 +1,11 @@
 import { respondError, respondSuccess } from '@/lib/server/api/response';
 import { NextRequest, NextResponse } from 'next/server';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
 export async function GET(req: NextRequest) {
     try {
         // Accéder à l'en-tête x-user-id
-        const userId = req.headers.get('x-user-id');
+        const userId = await getUserIdFromRequest(req);
 
         // Effectuer des vérifications de santé ici
         // Par exemple, vérifier la connexion à la base de données, etc.

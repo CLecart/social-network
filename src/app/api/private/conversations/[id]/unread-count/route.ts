@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -23,7 +25,7 @@ export async function GET(
     });
 
     if (!member) {
-      return NextResponse.json({ count: 0 });
+      return NextResponse.json(respondSuccess({ count: 0 }));
     }
 
     let unreadCount = 0;
@@ -53,9 +55,9 @@ export async function GET(
       });
     }
 
-    return NextResponse.json({ count: unreadCount });
+    return NextResponse.json(respondSuccess({ count: unreadCount }));
   } catch (error) {
     console.error('Error counting unread messages:', error);
-    return NextResponse.json({ error: 'Failed to count unread messages' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to count unread messages'), { status: 500 });
   }
 }

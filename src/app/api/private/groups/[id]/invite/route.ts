@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { respondError, respondSuccess } from "@/lib/server/api/response";
 import { createGroupInvitation } from "@/lib/db/queries/groups/createGroupInvitation";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const inviterId = req.headers.get("x-user-id");
+    const inviterId = await getUserIdFromRequest(req);
     const { id: groupId } = await params;
     const { invitedId } = await req.json();
 

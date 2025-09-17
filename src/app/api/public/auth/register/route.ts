@@ -19,7 +19,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const token = await signJwt({ userId: user.id })
 
         const res = NextResponse.json({ success: true }, { status: 200 })
-        res.cookies.set('token', token, {
+        res.cookies.set('authToken', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',

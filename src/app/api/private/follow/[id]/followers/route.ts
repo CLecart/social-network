@@ -7,13 +7,13 @@ export async function GET(
     { params }: { params: { id: string } }
 ) {
     try {
-        const { id: userId } = params;
+        const { id: userId } = await params;
         if (!userId) {
             return NextResponse.json(respondError("User ID is required"), { status: 400 });
         }
 
         const followers = await db.friendship.findMany({
-            where: { friendId: userId, status: "accepted" },
+            where: { friendId: userId, status: "ACCEPTED" },
             include: { user: true } // info sur le follower
         });
 

@@ -3,6 +3,7 @@ import { deleteFriendshipInDb } from "@/lib/db/friendship/deleteFriendship";
 import { getUser } from "@/lib/db/user/getUser";
 import { respondSuccess, respondError } from "@/lib/server/api/response";
 import { NextRequest, NextResponse } from "next/server";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
 export async function DELETE(
     _req: NextRequest,
@@ -25,7 +26,7 @@ export async function DELETE(
             });
         }
 
-        const userId = _req.headers.get("x-user-id");
+        const userId = await getUserIdFromRequest(_req);
         // Validate userId from request headers
         if (!userId) {
             return NextResponse.json(respondError("Not authenticated"), {

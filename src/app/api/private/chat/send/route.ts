@@ -2,14 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { redisdb } from '@/lib/server/websocket/redis';
 import { db } from '@/lib/db';
 import { canSendMessageTo } from '@/lib/db/queries/messages/visibilityFilters';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function POST(request: NextRequest) {
   try {
     // Get the authenticated user ID from the middleware
-    const userId = request.headers.get('x-user-id');
+    const userId = await getUserIdFromRequest(request);
 
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(respondError('Unauthorized'), { status: 401 });
     }
 
     const { receiverId, conversationId, message, type } = await request.json();
@@ -19,9 +21,7 @@ export async function POST(request: NextRequest) {
     if (type === 'direct' && receiverId) {
       const canSend = await canSendMessageTo(userId, receiverId);
       if (!canSend) {
-        return NextResponse.json({
-          error: 'Cannot send message to this user. They have a private account and you are not friends.'
-        }, { status: 403 });
+        return NextResponse.json(respondError('Cannot send message to this user. They have a private account and you are not friends.'), { status: 403 });
       }
     }
     // Group messages are not affected by individual user privacy settings
@@ -99,9 +99,9 @@ export async function POST(request: NextRequest) {
       await redisdb.set(`latest:chat:group:${conversationId}`, messageData, { ex: 60 });
     }
 
-    return NextResponse.json({ success: true, message: messageData });
+    return NextResponse.json(respondSuccess({ message: messageData }));
   } catch (error) {
     console.error('Error sending message:', error);
-    return NextResponse.json({ error: 'Failed to send message' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to send message'), { status: 500 });
   }
 }

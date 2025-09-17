@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { respondError, respondSuccess } from "@/lib/server/api/response";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -16,7 +18,7 @@ export async function PUT(
     const { action } = await request.json();
 
     if (!action || !['accept', 'decline'].includes(action)) {
-      return NextResponse.json({ error: 'Invalid action. Must be "accept" or "decline"' }, { status: 400 });
+      return NextResponse.json(respondError('Invalid action. Must be "accept" or "decline"'), { status: 400 });
     }
 
     // Find the invitation
@@ -28,17 +30,17 @@ export async function PUT(
     });
 
     if (!invitation) {
-      return NextResponse.json({ error: 'Invitation not found' }, { status: 404 });
+      return NextResponse.json(respondError('Invitation not found'), { status: 404 });
     }
 
     // Check if the invitation is for the current user
     if (invitation.invitedId !== userId) {
-      return NextResponse.json({ error: 'Not authorized to respond to this invitation' }, { status: 403 });
+      return NextResponse.json(respondError('Not authorized to respond to this invitation'), { status: 403 });
     }
 
     // Check if invitation is still pending
     if (invitation.status !== 'PENDING') {
-      return NextResponse.json({ error: 'Invitation has already been responded to' }, { status: 400 });
+      return NextResponse.json(respondError('Invitation has already been responded to'), { status: 400 });
     }
 
     const newStatus = action === 'accept' ? 'ACCEPTED' : 'DECLINED';
@@ -76,19 +78,17 @@ export async function PUT(
       });
     }
 
-    return NextResponse.json({
-      invitation: {
-        id: updatedInvitation.id,
-        groupId: updatedInvitation.groupId,
-        group: updatedInvitation.Conversation,
-        inviter: updatedInvitation.User_GroupInvitation_inviterIdToUser,
-        status: updatedInvitation.status,
-        createdAt: updatedInvitation.createdAt.toISOString()
-      }
-    });
+    return NextResponse.json(respondSuccess({
+      id: updatedInvitation.id,
+      groupId: updatedInvitation.groupId,
+      group: updatedInvitation.Conversation,
+      inviter: updatedInvitation.User_GroupInvitation_inviterIdToUser,
+      status: updatedInvitation.status,
+      createdAt: updatedInvitation.createdAt.toISOString()
+    }, action === 'accept' ? 'Invitation accepted' : 'Invitation declined'));
   } catch (error) {
     console.error('Error responding to invitation:', error);
-    return NextResponse.json({ error: 'Failed to respond to invitation' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to respond to invitation'), { status: 500 });
   }
 }
 
@@ -96,10 +96,10 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -111,12 +111,12 @@ export async function DELETE(
     });
 
     if (!invitation) {
-      return NextResponse.json({ error: 'Invitation not found' }, { status: 404 });
+      return NextResponse.json(respondError('Invitation not found'), { status: 404 });
     }
 
     // Check if user can delete this invitation (either inviter or invited)
     if (invitation.inviterId !== userId && invitation.invitedId !== userId) {
-      return NextResponse.json({ error: 'Not authorized to delete this invitation' }, { status: 403 });
+      return NextResponse.json(respondError('Not authorized to delete this invitation'), { status: 403 });
     }
 
     // Delete the invitation
@@ -124,9 +124,9 @@ export async function DELETE(
       where: { id: invitationId }
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json(respondSuccess(null, 'Invitation deleted'));
   } catch (error) {
     console.error('Error deleting invitation:', error);
-    return NextResponse.json({ error: 'Failed to delete invitation' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to delete invitation'), { status: 500 });
   }
 }

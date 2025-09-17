@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createGroupInDb } from "@/lib/db/queries/groups/createGroup";
 import { respondError, respondSuccess } from "@/lib/server/api/response";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
 export async function POST(req: NextRequest) {
   try {
-    const ownerId = req.headers.get("x-user-id");
+    const ownerId = await getUserIdFromRequest(req);
     const body = await req.json();
     const { userIds, title } = body;
 

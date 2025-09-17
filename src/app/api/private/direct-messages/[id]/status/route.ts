@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { redisdb } from '@/lib/server/websocket/redis';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
-  
+  const userId = await getUserIdFromRequest(request);
+
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -17,7 +19,7 @@ export async function PUT(
     const { status } = await request.json();
 
     if (!status || !['DELIVERED', 'READ'].includes(status)) {
-      return NextResponse.json({ error: 'Invalid status. Must be DELIVERED or READ' }, { status: 400 });
+      return NextResponse.json(respondError('Invalid status. Must be DELIVERED or READ'), { status: 400 });
     }
 
     // Get the message to check permissions
@@ -26,12 +28,12 @@ export async function PUT(
     });
 
     if (!message) {
-      return NextResponse.json({ error: 'Message not found' }, { status: 404 });
+      return NextResponse.json(respondError('Message not found'), { status: 404 });
     }
 
     // Check if user is the receiver and not the sender
     if (message.receiverId !== userId) {
-      return NextResponse.json({ error: 'Cannot update status for this message' }, { status: 403 });
+      return NextResponse.json(respondError('Cannot update status for this message'), { status: 403 });
     }
 
     // Update message status
@@ -77,19 +79,15 @@ export async function PUT(
     // Send status update to the message sender with unique key
     const statusKey = `status_update:${message.senderId}:${messageId}:${Date.now()}`;
     await redisdb.set(statusKey, statusUpdate, { ex: 300 }); // 5 minutes TTL
-    
-    console.log(`Direct message status update sent to Redis for user ${message.senderId}:`, statusUpdate);
 
-    return NextResponse.json({
-      message: {
-        id: updatedMessage.id,
-        status: updatedMessage.status,
-        deliveredAt: updatedMessage.deliveredAt?.toISOString(),
-        readAt: updatedMessage.readAt?.toISOString()
-      }
-    });
+    return NextResponse.json(respondSuccess({
+      id: updatedMessage.id,
+      status: updatedMessage.status,
+      deliveredAt: updatedMessage.deliveredAt?.toISOString(),
+      readAt: updatedMessage.readAt?.toISOString()
+    }));
   } catch (error) {
     console.error('Error updating direct message status:', error);
-    return NextResponse.json({ error: 'Failed to update message status' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to update message status'), { status: 500 });
   }
 }

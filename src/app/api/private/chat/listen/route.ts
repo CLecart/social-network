@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { redisdb } from '@/lib/server/websocket/redis';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
 interface MessageData {
   id: string;
@@ -8,7 +9,7 @@ interface MessageData {
 
 export async function GET(request: NextRequest) {
   // Get the authenticated user ID from the middleware
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
 
   if (!userId) {
     return new Response('Unauthorized', { status: 401 });
@@ -63,8 +64,6 @@ export async function GET(request: NextRequest) {
             for (const key of statusUpdateKeys) {
               const statusUpdate = await redisdb.get(key);
               if (statusUpdate && typeof statusUpdate === 'object') {
-                console.log(`Sending status update to user ${userId}:`, statusUpdate);
-
                 // Send status update to client
                 controller.enqueue(
                   encoder.encode(`data: ${JSON.stringify(statusUpdate)}\n\n`)

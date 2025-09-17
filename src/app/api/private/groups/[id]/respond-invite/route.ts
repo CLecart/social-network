@@ -1,6 +1,7 @@
 import { respondInvite } from "@/lib/db/queries/groups/respondInvite";
 import { respondError, respondSuccess } from "@/lib/server/api/response";
 import { NextRequest, NextResponse } from "next/server";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
 function isValidAction(action: string) {
   return ["ACCEPT", "REJECT"].includes(action);
@@ -8,16 +9,16 @@ function isValidAction(action: string) {
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const userId = req.headers.get("x-user-id");
+    const userId = await getUserIdFromRequest(req);
     const { id: groupId } = await params;
     const { requestId, action } = await req.json();
 
     if (!userId) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+      return NextResponse.json(respondError("Not authenticated"), { status: 401 });
     }
 
     if (!isValidAction(action)) {
-      return NextResponse.json({ error: "Invalid action" }, { status: 400 });
+      return NextResponse.json(respondError("Invalid action"), { status: 400 });
     }
 
     const response = await respondInvite({ userId, requestId, action, groupId });

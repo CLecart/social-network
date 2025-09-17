@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -23,7 +25,7 @@ export async function GET(
     });
 
     if (!isMember) {
-      return NextResponse.json({ error: 'Not a member of this group' }, { status: 403 });
+      return NextResponse.json(respondError('Not a member of this group'), { status: 403 });
     }
 
     // Get group details
@@ -59,22 +61,20 @@ export async function GET(
     });
 
     if (!group) {
-      return NextResponse.json({ error: 'Group not found' }, { status: 404 });
+      return NextResponse.json(respondError('Group not found'), { status: 404 });
     }
 
-    return NextResponse.json({
-      group: {
-        id: group.id,
-        title: group.title,
-        owner: group.User,
-        memberCount: group.members.length,
-        members: group.members.map(member => member.user),
-        createdAt: group.createdAt.toISOString()
-      }
-    });
+    return NextResponse.json(respondSuccess({
+      id: group.id,
+      title: group.title,
+      owner: group.User,
+      memberCount: group.members.length,
+      members: group.members.map(member => member.user),
+      createdAt: group.createdAt.toISOString()
+    }));
   } catch (error) {
     console.error('Error fetching group:', error);
-    return NextResponse.json({ error: 'Failed to fetch group' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to fetch group'), { status: 500 });
   }
 }
 
@@ -82,10 +82,10 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -102,11 +102,11 @@ export async function PUT(
     });
 
     if (!group) {
-      return NextResponse.json({ error: 'Group not found or unauthorized' }, { status: 404 });
+      return NextResponse.json(respondError('Group not found or unauthorized'), { status: 404 });
     }
 
     if (!title?.trim()) {
-      return NextResponse.json({ error: 'Title is required' }, { status: 400 });
+      return NextResponse.json(respondError('Title is required'), { status: 400 });
     }
 
     // Update group
@@ -130,18 +130,16 @@ export async function PUT(
       }
     });
 
-    return NextResponse.json({
-      group: {
-        id: updatedGroup.id,
-        title: updatedGroup.title,
-        memberCount: updatedGroup.members.length,
-        members: updatedGroup.members.map(member => member.user),
-        createdAt: updatedGroup.createdAt.toISOString()
-      }
-    });
+    return NextResponse.json(respondSuccess({
+      id: updatedGroup.id,
+      title: updatedGroup.title,
+      memberCount: updatedGroup.members.length,
+      members: updatedGroup.members.map(member => member.user),
+      createdAt: updatedGroup.createdAt.toISOString()
+    }));
   } catch (error) {
     console.error('Error updating group:', error);
-    return NextResponse.json({ error: 'Failed to update group' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to update group'), { status: 500 });
   }
 }
 
@@ -149,10 +147,10 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -168,7 +166,7 @@ export async function DELETE(
     });
 
     if (!group) {
-      return NextResponse.json({ error: 'Group not found or unauthorized' }, { status: 404 });
+      return NextResponse.json(respondError('Group not found or unauthorized'), { status: 404 });
     }
 
     // Delete all related data in transaction
@@ -232,9 +230,9 @@ export async function DELETE(
       });
     });
 
-    return NextResponse.json({ success: true, message: 'Group deleted successfully' });
+    return NextResponse.json(respondSuccess(null, 'Group deleted successfully'));
   } catch (error) {
     console.error('Error deleting group:', error);
-    return NextResponse.json({ error: 'Failed to delete group' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to delete group'), { status: 500 });
   }
 }

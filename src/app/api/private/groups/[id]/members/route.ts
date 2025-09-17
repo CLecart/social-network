@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -16,7 +18,7 @@ export async function POST(
     const { memberIds } = await request.json();
 
     if (!Array.isArray(memberIds) || memberIds.length === 0) {
-      return NextResponse.json({ error: 'Member IDs are required' }, { status: 400 });
+      return NextResponse.json(respondError('Member IDs are required'), { status: 400 });
     }
 
     // Check if user is the owner or a member of this group
@@ -31,14 +33,14 @@ export async function POST(
     });
 
     if (!group) {
-      return NextResponse.json({ error: 'Group not found' }, { status: 404 });
+      return NextResponse.json(respondError('Group not found'), { status: 404 });
     }
 
     const isMember = group.members.some(member => member.userId === userId);
     const isOwner = group.ownerId === userId;
 
     if (!isMember && !isOwner) {
-      return NextResponse.json({ error: 'Not authorized to add members' }, { status: 403 });
+      return NextResponse.json(respondError('Not authorized to add members'), { status: 403 });
     }
 
     // Filter out users who are already members and remove duplicates
@@ -47,7 +49,7 @@ export async function POST(
     const newMemberIds = uniqueMemberIds.filter((id: string) => !existingMemberIds.includes(id));
 
     if (newMemberIds.length === 0) {
-      return NextResponse.json({ error: 'All users are already members' }, { status: 400 });
+      return NextResponse.json(respondError('All users are already members'), { status: 400 });
     }
 
     // Add new members
@@ -78,18 +80,16 @@ export async function POST(
       }
     });
 
-    return NextResponse.json({
-      group: {
-        id: updatedGroup!.id,
-        title: updatedGroup!.title,
-        memberCount: updatedGroup!.members.length,
-        members: updatedGroup!.members.map(member => member.user),
-        createdAt: updatedGroup!.createdAt.toISOString()
-      }
-    });
+    return NextResponse.json(respondSuccess({
+      id: updatedGroup!.id,
+      title: updatedGroup!.title,
+      memberCount: updatedGroup!.members.length,
+      members: updatedGroup!.members.map(member => member.user),
+      createdAt: updatedGroup!.createdAt.toISOString()
+    }));
   } catch (error) {
     console.error('Error adding members:', error);
-    return NextResponse.json({ error: 'Failed to add members' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to add members'), { status: 500 });
   }
 }
 
@@ -97,10 +97,10 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -109,7 +109,7 @@ export async function DELETE(
     const memberIdToRemove = searchParams.get('userId');
 
     if (!memberIdToRemove) {
-      return NextResponse.json({ error: 'Member ID is required' }, { status: 400 });
+      return NextResponse.json(respondError('Member ID is required'), { status: 400 });
     }
 
     // Check if user is the owner of this group or removing themselves
@@ -121,14 +121,14 @@ export async function DELETE(
     });
 
     if (!group) {
-      return NextResponse.json({ error: 'Group not found' }, { status: 404 });
+      return NextResponse.json(respondError('Group not found'), { status: 404 });
     }
 
     const isOwner = group.ownerId === userId;
     const isRemovingSelf = memberIdToRemove === userId;
 
     if (!isOwner && !isRemovingSelf) {
-      return NextResponse.json({ error: 'Not authorized to remove this member' }, { status: 403 });
+      return NextResponse.json(respondError('Not authorized to remove this member'), { status: 403 });
     }
 
     // Remove member
@@ -141,9 +141,9 @@ export async function DELETE(
       }
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json(respondSuccess(null));
   } catch (error) {
     console.error('Error removing member:', error);
-    return NextResponse.json({ error: 'Failed to remove member' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to remove member'), { status: 500 });
   }
 }

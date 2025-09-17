@@ -5,11 +5,12 @@ import { updateUserServer } from "@/lib/server/user/updateServerUser";
 import { NextRequest, NextResponse } from "next/server";
 import { respondSuccess, respondError } from "@/lib/server/api/response";
 import { ValidationError } from "@/lib/utils/validation";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
 
 export async function GET(req: NextRequest) {
     try {
-        const userId = req.headers.get("x-user-id");
+        const userId = await getUserIdFromRequest(req);
 
 
         if (!userId) {
@@ -36,7 +37,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-    const userId = req.headers.get("x-user-id");
+    const userId = await getUserIdFromRequest(req);
     if (!userId) {
         return NextResponse.json(respondError("Invalid user ID"), { status: 401 });
     }

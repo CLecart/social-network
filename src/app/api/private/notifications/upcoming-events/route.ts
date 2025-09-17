@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function GET(request: NextRequest) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -22,7 +24,7 @@ export async function GET(request: NextRequest) {
     const groupIds = userGroups.map(group => group.conversationId);
 
     if (groupIds.length === 0) {
-      return NextResponse.json({ count: 0 });
+      return NextResponse.json(respondSuccess({ count: 0 }));
     }
 
     // Count upcoming events in the next 7 days
@@ -42,9 +44,9 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    return NextResponse.json({ count: upcomingEventsCount });
+    return NextResponse.json(respondSuccess({ count: upcomingEventsCount }));
   } catch (error) {
     console.error('Error counting upcoming events:', error);
-    return NextResponse.json({ error: 'Failed to count upcoming events' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to count upcoming events'), { status: 500 });
   }
 }

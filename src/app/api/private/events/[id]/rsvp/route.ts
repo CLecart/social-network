@@ -2,15 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { updateEventMessage } from '@/lib/event-message-utils';
 import { redisdb } from '@/lib/server/websocket/redis';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -18,7 +20,7 @@ export async function POST(
     const { status } = await request.json();
 
     if (!status || !['YES', 'NO', 'MAYBE'].includes(status)) {
-      return NextResponse.json({ error: 'Invalid RSVP status. Must be YES, NO, or MAYBE' }, { status: 400 });
+      return NextResponse.json(respondError('Invalid RSVP status. Must be YES, NO, or MAYBE'), { status: 400 });
     }
 
     // Check if event exists
@@ -27,7 +29,7 @@ export async function POST(
     });
 
     if (!event) {
-      return NextResponse.json({ error: 'Event not found' }, { status: 404 });
+      return NextResponse.json(respondError('Event not found'), { status: 404 });
     }
 
     // Check if user is a member of the group
@@ -39,7 +41,7 @@ export async function POST(
     });
 
     if (!isMember) {
-      return NextResponse.json({ error: 'Not a member of this group' }, { status: 403 });
+      return NextResponse.json(respondError('Not a member of this group'), { status: 403 });
     }
 
     // Upsert RSVP (create or update)
@@ -170,17 +172,15 @@ export async function POST(
       // Don't fail the RSVP if message update fails
     }
 
-    return NextResponse.json({
-      rsvp: {
-        id: rsvp.id,
-        status: rsvp.status,
-        user: rsvp.user,
-        createdAt: rsvp.createdAt.toISOString()
-      }
-    });
+    return NextResponse.json(respondSuccess({
+      id: rsvp.id,
+      status: rsvp.status,
+      user: rsvp.user,
+      createdAt: rsvp.createdAt.toISOString()
+    }));
   } catch (error) {
     console.error('Error updating RSVP:', error);
-    return NextResponse.json({ error: 'Failed to update RSVP' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to update RSVP'), { status: 500 });
   }
 }
 
@@ -188,10 +188,10 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -203,7 +203,7 @@ export async function DELETE(
     });
 
     if (!event) {
-      return NextResponse.json({ error: 'Event not found' }, { status: 404 });
+      return NextResponse.json(respondError('Event not found'), { status: 404 });
     }
 
     // Check if user is a member of the group
@@ -215,7 +215,7 @@ export async function DELETE(
     });
 
     if (!isMember) {
-      return NextResponse.json({ error: 'Not a member of this group' }, { status: 403 });
+      return NextResponse.json(respondError('Not a member of this group'), { status: 403 });
     }
 
     // Delete RSVP if it exists
@@ -226,9 +226,9 @@ export async function DELETE(
       }
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json(respondSuccess(null));
   } catch (error) {
     console.error('Error deleting RSVP:', error);
-    return NextResponse.json({ error: 'Failed to delete RSVP' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to delete RSVP'), { status: 500 });
   }
 }

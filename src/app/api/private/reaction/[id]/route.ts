@@ -1,5 +1,6 @@
 import { deleteReaction } from "@/lib/db/queries/reaction/deleteReaction";
 import { respondError, respondSuccess } from "@/lib/server/api/response";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 import { ValidationError } from "@/lib/utils/validation";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -8,7 +9,7 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const userId = req.headers.get("x-user-id");
+        const userId = await getUserIdFromRequest(req);
         const { id } = await params;
 
         if (!userId) {

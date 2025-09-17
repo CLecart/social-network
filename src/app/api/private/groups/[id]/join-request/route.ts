@@ -1,6 +1,7 @@
 import { sendRequestToJoinGroup } from "@/lib/db/queries/groups/createRequestToJoinGroup";
 import { respondError } from "@/lib/server/api/response";
 import { NextRequest, NextResponse } from "next/server";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
 export async function POST(
   req: NextRequest,
@@ -8,7 +9,7 @@ export async function POST(
 ) {
   try {
     const { id: groupId } = await params;
-    const seeker = req.headers.get("x-user-id");
+    const seeker = await getUserIdFromRequest(req);
 
     if (!groupId || !seeker) {
       return NextResponse.json(respondError("Missing groupId or seeker"), {

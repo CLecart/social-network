@@ -2,15 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { redisdb } from '@/lib/server/websocket/redis';
 import { getUserByIdServer } from '@/lib/server/user/getUser';
 import { UserSchemas } from '@/lib/schemas/user';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function POST(request: NextRequest) {
   try {
     // Get the authenticated user ID from the middleware
-    const userId = request.headers.get('x-user-id');
+    const userId = await getUserIdFromRequest(request);
     
     if (!userId) {
       return NextResponse.json(
-        { error: 'Non autorisé' },
+        respondError('Non autorisé'),
         { status: 401 }
       );
     }
@@ -19,7 +21,7 @@ export async function POST(request: NextRequest) {
     const user = await getUserByIdServer(userId, UserSchemas.Public);
     if (!user) {
       return NextResponse.json(
-        { error: 'Utilisateur introuvable' },
+        respondError('Utilisateur introuvable'),
         { status: 404 }
       );
     }
@@ -28,14 +30,14 @@ export async function POST(request: NextRequest) {
     
     if (type === 'direct' && !receiverId) {
       return NextResponse.json(
-        { error: 'receiverId requis pour les conversations directes' },
+        respondError('receiverId requis pour les conversations directes'),
         { status: 400 }
       );
     }
     
     if (type === 'group' && !conversationId) {
       return NextResponse.json(
-        { error: 'conversationId requis pour les conversations de groupe' },
+        respondError('conversationId requis pour les conversations de groupe'),
         { status: 400 }
       );
     }
@@ -59,11 +61,11 @@ export async function POST(request: NextRequest) {
       ex: 5, // Expire après 5 secondes
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json(respondSuccess(null));
   } catch (error) {
     console.error('Error sending typing status:', error);
     return NextResponse.json(
-      { error: 'Erreur interne du serveur' },
+      respondError('Erreur interne du serveur'),
       { status: 500 }
     );
   }
