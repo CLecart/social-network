@@ -7,7 +7,7 @@ export const GoogleOAuthSchema = z.object({
     id: z.string().nullable().optional(),
     name: z.string().nullable().optional(),
     picture: z.string().url({ message: "Picture URL is invalid" }).nullable().optional(),
-});
+}).describe('GoogleOAuthSchema');
 
 export const GoogleTokenSchema = z.object({
     access_token: z.string().nullable().optional(),
@@ -16,7 +16,7 @@ export const GoogleTokenSchema = z.object({
     refresh_token: z.string().nullable().optional(),
     scope: z.string().optional(),
     token_type: z.string().nullable().optional(),
-});
+}).describe('GoogleTokenSchema');
 
 export type GoogleOAuth = z.infer<typeof GoogleOAuthSchema>;
 export type GoogleToken = z.infer<typeof GoogleTokenSchema>;

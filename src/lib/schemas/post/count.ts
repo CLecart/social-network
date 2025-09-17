@@ -13,6 +13,6 @@ export const PostWithCountsSchema = PostSchema.extend({
         comments: z.number(),
         reactions: z.number(),
     }),
-});
+}).describe('PostWithCountsSchema');
 
 export type PostWithCounts = z.infer<typeof PostWithCountsSchema>;

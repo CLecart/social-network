@@ -7,4 +7,4 @@ export const TokensSchema = z.object({
     expiry_date: z.number().optional(),
     scope: z.string().optional(),
     token_type: z.string().optional(),
-}).partial();
+}).partial().describe('TokensSchema');
