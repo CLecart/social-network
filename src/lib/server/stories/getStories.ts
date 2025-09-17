@@ -1,7 +1,7 @@
 // lib/server/stories/getStories.ts
 
 import { db } from "@/lib/db";
-import { buildStoryVisibilityFilter } from "@/lib/db/queries/stories/visibilityFilters";
+import { buildStoryVisibilityFilter, canUserSeeStory } from "@/lib/db/queries/stories/visibilityFilters";
 
 export async function getStoriesByUserId(userId: string, currentUserId?: string) {
   // Récupérer d'abord les infos de l'utilisateur cible pour connaître sa visibilité
@@ -19,9 +19,6 @@ export async function getStoriesByUserId(userId: string, currentUserId?: string)
     targetUserId: userId,
     targetUserAccountVisibility: targetUser.visibility,
   });
-
-  console.log('🔍 Stories visibilityFilter:', JSON.stringify(visibilityFilter, null, 2));
-  console.log('🔍 currentUserId:', currentUserId, 'targetUserId:', userId);
 
   return await db.story.findMany({
     where: {
@@ -67,7 +64,7 @@ export async function getAllStoriesGrouped(
   currentUserId: string,
   publicOnly: boolean = false
 ) {
-  const visibilityFilter = publicOnly 
+  const visibilityFilter = publicOnly
     ? { visibility: "PUBLIC" as const }
     : buildStoryVisibilityFilter({ currentUserId });
 
@@ -139,9 +136,8 @@ export async function getAllStoriesGrouped(
 
 export async function getStoryById(storyId: string, currentUserId?: string) {
   // D'abord vérifier si l'utilisateur peut voir cette story
-  const { canUserSeeStory } = await import("@/lib/db/queries/stories/visibilityFilters");
   const canSee = await canUserSeeStory(storyId, currentUserId);
-  
+
   if (!canSee) {
     return null;
   }

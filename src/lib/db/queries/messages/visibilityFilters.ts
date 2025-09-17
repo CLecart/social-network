@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { InvitationStatus } from "@prisma/client";
 
 /**
  * Check if a user can send messages to another user based on their account privacy settings
@@ -30,7 +31,7 @@ export async function canSendMessageTo(senderId: string, receiverId: string): Pr
         { userId: senderId, friendId: receiverId },
         { userId: receiverId, friendId: senderId }
       ],
-      status: "accepted"
+      status: InvitationStatus.ACCEPTED
     }
   });
 
@@ -58,7 +59,7 @@ export async function canSendMessageTo(senderId: string, receiverId: string): Pr
  * Direct conversations are filtered based on sender's privacy rules
  */
 export async function filterConversationsByVisibility(
-  conversations: any[], 
+  conversations: any[],
   currentUserId: string
 ): Promise<any[]> {
   const filteredConversations = [];
@@ -91,7 +92,7 @@ export async function areInSameGroup(userId1: string, userId2: string): Promise<
         {
           conversationId: {
             in: await db.conversationMember.findMany({
-              where: { 
+              where: {
                 userId: userId1,
                 conversation: { isGroup: true }
               },
@@ -99,7 +100,7 @@ export async function areInSameGroup(userId1: string, userId2: string): Promise<
             }).then(members => members.map(m => m.conversationId))
           }
         },
-        { 
+        {
           userId: userId2,
           conversation: { isGroup: true }
         }

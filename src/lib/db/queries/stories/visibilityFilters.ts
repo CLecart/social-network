@@ -1,280 +1,134 @@
-import { Visibility, Prisma } from "@prisma/client";
+import { Prisma, Visibility, ProfileVisibility, InvitationStatus } from "@prisma/client";
 
 interface StoryVisibilityFilterOptions {
   currentUserId?: string;
-  targetUserId?: string; // Pour filtrer les stories d'un utilisateur spécifique
-  showPrivateStories?: boolean; // Si on veut voir ses propres stories privées  
-  targetUserAccountVisibility?: "PUBLIC" | "PRIVATE"; // Visibilité du compte cible
+  targetUserId?: string;                 // Stories d'un utilisateur spécifique
+  showPrivateStories?: boolean;          // Inclure ses propres stories PRIVATE
+  targetUserAccountVisibility?: ProfileVisibility; // Visibilité du compte cible
 }
 
-/**
- * Construit les filtres Prisma pour la visibilité des stories
- */
+// Helper commun
+const isFriendOf = (currentUserId: string): Prisma.UserWhereInput => ({
+  OR: [
+    { friendships: { some: { friendId: currentUserId, status: InvitationStatus.ACCEPTED } } },
+    { friendsWithMe: { some: { userId: currentUserId, status: InvitationStatus.ACCEPTED } } },
+  ],
+});
+
 export function buildStoryVisibilityFilter({
   currentUserId,
   targetUserId,
   showPrivateStories = false,
   targetUserAccountVisibility,
 }: StoryVisibilityFilterOptions): Prisma.StoryWhereInput {
-  // Si pas d'utilisateur connecté, ne montrer que les stories publiques
+
+  // 1) Non connecté → uniquement PUBLIC
   if (!currentUserId) {
-    return {
-      visibility: Visibility.PUBLIC,
-    };
+    return { visibility: Visibility.PUBLIC };
   }
 
-  // Si on regarde les stories d'un utilisateur spécifique
+  // 2) Stories d'un utilisateur précis
   if (targetUserId) {
-    // Si c'est l'utilisateur lui-même, il peut voir toutes ses stories
+    // a) Moi-même → tout voir
     if (currentUserId === targetUserId) {
       return {};
     }
 
-    // Si l'utilisateur cible a un compte PRIVATE, il faut une amitié ACCEPTED
-    // ET seules les stories PUBLIC et FRIENDS sont visibles
-    if (targetUserAccountVisibility === "PRIVATE") {
+    // b) Compte privé → il faut être ami + (PUBLIC ou FRIENDS)
+    if (targetUserAccountVisibility === ProfileVisibility.PRIVATE) {
       return {
         AND: [
-          // D'abord vérifier l'amitié
-          {
-            user: {
-              OR: [
-                {
-                  friendships: {
-                    some: {
-                      friendId: currentUserId,
-                      status: "accepted" as const,
-                    },
-                  },
-                },
-                {
-                  friendsWithMe: {
-                    some: {
-                      userId: currentUserId,
-                      status: "accepted" as const,
-                    },
-                  },
-                },
-              ],
-            },
-          },
-          // Puis filtrer selon la visibilité des stories (PUBLIC ou FRIENDS seulement)
-          {
-            OR: [
-              { visibility: Visibility.PUBLIC },
-              { visibility: Visibility.FRIENDS },
-            ],
-          },
+          { user: { is: isFriendOf(currentUserId) } },
+          { OR: [{ visibility: Visibility.PUBLIC }, { visibility: Visibility.FRIENDS }] },
         ],
       };
     }
-    
-    // Si compte PUBLIC, appliquer les règles normales de visibilité des stories
+
+    // c) Compte public
     return {
       OR: [
         { visibility: Visibility.PUBLIC },
         {
           AND: [
             { visibility: Visibility.FRIENDS },
-            {
-              user: {
-                OR: [
-                  {
-                    friendships: {
-                      some: {
-                        friendId: currentUserId,
-                        status: "accepted" as const,
-                      },
-                    },
-                  },
-                  {
-                    friendsWithMe: {
-                      some: {
-                        userId: currentUserId,
-                        status: "accepted" as const,
-                      },
-                    },
-                  },
-                ],
-              },
-            },
+            { user: { is: isFriendOf(currentUserId) } },
           ],
         },
       ],
     };
   }
 
-  // Pour les stories dans le feed avec stories privées personnelles
+  // 3) Feed avec ses stories privées incluses
   if (showPrivateStories) {
     return {
       OR: [
-        // Stories de comptes publics avec visibilité PUBLIC
+        // Comptes publics + PUBLIC
         {
           AND: [
             { visibility: Visibility.PUBLIC },
-            { user: { visibility: "PUBLIC" } },
+            { user: { is: { visibility: ProfileVisibility.PUBLIC } } },
           ],
         },
-        // Stories de comptes publics avec visibilité FRIENDS (pour les amis)
+        // Comptes publics + FRIENDS si ami
         {
           AND: [
             { visibility: Visibility.FRIENDS },
-            { user: { visibility: "PUBLIC" } },
-            {
-              user: {
-                OR: [
-                  {
-                    friendships: {
-                      some: {
-                        friendId: currentUserId,
-                        status: "accepted" as const,
-                      },
-                    },
-                  },
-                  {
-                    friendsWithMe: {
-                      some: {
-                        userId: currentUserId,
-                        status: "accepted" as const,
-                      },
-                    },
-                  },
-                ],
-              },
-            },
+            { user: { is: { visibility: ProfileVisibility.PUBLIC } } },
+            { user: { is: isFriendOf(currentUserId) } },
           ],
         },
-        // Stories de comptes privés (seulement pour les amis acceptés)
+        // Comptes privés (PUBLIC ou FRIENDS) si ami
         {
           AND: [
-            { user: { visibility: "PRIVATE" } },
-            {
-              OR: [
-                { visibility: Visibility.PUBLIC },
-                { visibility: Visibility.FRIENDS },
-              ],
-            },
-            {
-              user: {
-                OR: [
-                  {
-                    friendships: {
-                      some: {
-                        friendId: currentUserId,
-                        status: "accepted" as const,
-                      },
-                    },
-                  },
-                  {
-                    friendsWithMe: {
-                      some: {
-                        userId: currentUserId,
-                        status: "accepted" as const,
-                      },
-                    },
-                  },
-                ],
-              },
-            },
+            { user: { is: { visibility: ProfileVisibility.PRIVATE } } },
+            { OR: [{ visibility: Visibility.PUBLIC }, { visibility: Visibility.FRIENDS }] },
+            { user: { is: isFriendOf(currentUserId) } },
           ],
         },
-        // Toutes ses propres stories (y compris PRIVATE)
-        {
-          userId: currentUserId,
-        },
+        // Mes propres stories (inclut PRIVATE)
+        { userId: currentUserId },
       ],
     };
   }
 
-  // Stories feed normal : selon la visibilité du compte ET de la story
+  // 4) Feed normal
   return {
     OR: [
-      // Stories PUBLIC de comptes publics - visibles par TOUS (même sans relation, followers et amis)
+      // Comptes publics + PUBLIC
       {
         AND: [
           { visibility: Visibility.PUBLIC },
-          { user: { visibility: "PUBLIC" } },
+          { user: { is: { visibility: ProfileVisibility.PUBLIC } } },
         ],
       },
-      // Stories FRIENDS de comptes publics - seulement pour les AMIS (status: "accepted")
+      // Comptes publics + FRIENDS si ami
       {
         AND: [
           { visibility: Visibility.FRIENDS },
-          { user: { visibility: "PUBLIC" } },
-          {
-            user: {
-              OR: [
-                {
-                  friendships: {
-                    some: {
-                      friendId: currentUserId,
-                      status: "accepted", // Seulement les AMIS peuvent voir les stories FRIENDS
-                    },
-                  },
-                },
-                {
-                  friendsWithMe: {
-                    some: {
-                      userId: currentUserId,
-                      status: "accepted", // Seulement les AMIS peuvent voir les stories FRIENDS
-                    },
-                  },
-                },
-              ],
-            },
-          },
+          { user: { is: { visibility: ProfileVisibility.PUBLIC } } },
+          { user: { is: isFriendOf(currentUserId) } },
         ],
       },
-      // Stories de comptes privés - seulement pour les AMIS acceptés
+      // Comptes privés (PUBLIC ou FRIENDS) si ami
       {
         AND: [
-          { user: { visibility: "PRIVATE" } },
-          {
-            OR: [
-              { visibility: Visibility.PUBLIC },
-              { visibility: Visibility.FRIENDS },
-            ],
-          },
-          {
-            user: {
-              OR: [
-                {
-                  friendships: {
-                    some: {
-                      friendId: currentUserId,
-                      status: "accepted", // Seulement les AMIS peuvent voir les stories de comptes privés
-                    },
-                  },
-                },
-                {
-                  friendsWithMe: {
-                    some: {
-                      userId: currentUserId,
-                      status: "accepted", // Seulement les AMIS peuvent voir les stories de comptes privés
-                    },
-                  },
-                },
-              ],
-            },
-          },
+          { user: { is: { visibility: ProfileVisibility.PRIVATE } } },
+          { OR: [{ visibility: Visibility.PUBLIC }, { visibility: Visibility.FRIENDS }] },
+          { user: { is: isFriendOf(currentUserId) } },
         ],
       },
-      // Ses propres stories (toujours visibles)
-      {
-        userId: currentUserId,
-      },
+      // Mes propres stories
+      { userId: currentUserId },
     ],
   };
 }
 
-/**
- * Vérifie si un utilisateur peut voir une story spécifique
- */
 export async function canUserSeeStory(
   storyId: string,
   currentUserId?: string
 ): Promise<boolean> {
   const { db } = await import("../..");
+
   const story = await db.story.findUnique({
     where: { id: storyId },
     include: {
@@ -283,16 +137,10 @@ export async function canUserSeeStory(
           id: true,
           visibility: true,
           friendships: {
-            where: {
-              friendId: currentUserId,
-              status: "accepted",
-            },
+            where: { friendId: currentUserId, status: InvitationStatus.ACCEPTED },
           },
           friendsWithMe: {
-            where: {
-              userId: currentUserId,
-              status: "accepted",
-            },
+            where: { userId: currentUserId, status: InvitationStatus.ACCEPTED },
           },
         },
       },
@@ -304,33 +152,15 @@ export async function canUserSeeStory(
   // L'auteur peut toujours voir ses propres stories
   if (story.userId === currentUserId) return true;
 
-  // Si l'utilisateur qui a posté a un compte PRIVATE
-  if (story.user.visibility === "PRIVATE") {
-    // Il faut être ami accepté pour voir ses stories (même PUBLIC)
-    const isFriend = 
-      story.user.friendships.length > 0 || story.user.friendsWithMe.length > 0;
-    
+  const isFriend = story.user.friendships.length > 0 || story.user.friendsWithMe.length > 0;
+
+  if (story.user.visibility === ProfileVisibility.PRIVATE) {
     if (!isFriend) return false;
-    
-    // Si on est ami, on peut voir ses stories PUBLIC et FRIENDS
     return story.visibility === Visibility.PUBLIC || story.visibility === Visibility.FRIENDS;
   }
 
-  // Si l'utilisateur qui a posté a un compte PUBLIC
-  if (story.user.visibility === "PUBLIC") {
-    // Stories publiques visibles par tous
-    if (story.visibility === Visibility.PUBLIC) return true;
-
-    // Stories privées seulement visibles par l'auteur
-    if (story.visibility === Visibility.PRIVATE) return false;
-
-    // Stories pour amis seulement visibles par les amis
-    if (story.visibility === Visibility.FRIENDS) {
-      const isFriend =
-        story.user.friendships.length > 0 || story.user.friendsWithMe.length > 0;
-      return isFriend;
-    }
-  }
-
-  return false;
+  // Compte public
+  if (story.visibility === Visibility.PUBLIC) return true;
+  if (story.visibility === Visibility.FRIENDS) return isFriend;
+  return false; // PRIVATE d’un autre utilisateur
 }

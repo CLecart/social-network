@@ -37,7 +37,7 @@ export async function createPostServer(post: CreatePost, userId: string) {
 
         const newPost = await createPostInDb(postData)
 
-        return parseOrThrow(PostWithCountsSchema, serializeDates(newPost));
+        return parseOrThrow(PostWithCountsSchema, serializeDates(newPost), { label: 'CreatePostReturn' });
     } catch (error) {
         console.error("❌ Error in createPostServer:", error);
         throw new Error("Failed to create post");
