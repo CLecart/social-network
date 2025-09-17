@@ -129,13 +129,13 @@ model Message {
 }
 
 model Friendship {
-  id        String   @id @default(cuid())
+  id        String           @id @default(cuid())
   userId    String
   friendId  String
-  status    String
-  createdAt DateTime @default(now())
-  friend    User     @relation("FriendOf", fields: [friendId], references: [id])
-  user      User     @relation("UserFriendships", fields: [userId], references: [id])
+  status    InvitationStatus
+  createdAt DateTime         @default(now())
+  friend    User             @relation("FriendOf", fields: [friendId], references: [id])
+  user      User             @relation("UserFriendships", fields: [userId], references: [id])
 
   @@unique([userId, friendId])
 }
@@ -299,7 +299,6 @@ enum ProfileVisibility {
 enum InvitationStatus {
   PENDING
   ACCEPTED
-  DECLINED
 }
 
 enum MessageStatus {
