@@ -1,5 +1,4 @@
-import useSWRInfinite from "swr/infinite";
-import { swrFetcher } from "@/lib/server/api/swrFetcher";
+import { useInfiniteApi } from "@/hooks/use-infinite-api";
 import { z } from "zod";
 import { PostSchemas } from "@/lib/schemas/post";
 import { useMemo } from "react";
@@ -16,10 +15,11 @@ export function useInfinitePosts() {
     }&take=${PAGE_SIZE}`;
   };
 
-  const { data, error, size, setSize, isValidating } = useSWRInfinite(
-    getKey,
-    (url) => swrFetcher(url, PostsArraySchema)
-  );
+  const { data, error, size, setSize, isValidating } = useInfiniteApi({
+    getKey: getKey as any,
+    schema: PostsArraySchema,
+    envelope: true,
+  });
 
   const posts = useMemo(() => (data ? data.flat() : []), [data]);
   const isLoadingInitialData = !data && !error;

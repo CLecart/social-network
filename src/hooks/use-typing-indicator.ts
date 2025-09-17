@@ -1,5 +1,6 @@
 'use client';
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { apiFetch } from '@/lib/client/api/fetcher';
 
 interface TypingIndicatorProps {
   receiverId?: string;
@@ -20,17 +21,14 @@ export function useTypingIndicator({
   // Fonction pour envoyer le statut de frappe
   const sendTypingStatus = useCallback(async (typing: boolean) => {
     try {
-      await fetch('/api/private/chat/typing', {
+      await apiFetch('/api/private/chat/typing', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+        body: {
           receiverId: type === 'direct' ? receiverId : undefined,
           conversationId: type === 'group' ? conversationId : undefined,
           type,
           isTyping: typing,
-        }),
+        },
       });
     } catch (error) {
       console.error('Error sending typing status:', error);
