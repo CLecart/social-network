@@ -1,7 +1,6 @@
-version: '3.8'
-
 services:
   app:
+    profiles: ["prod"]          # ✅ ne démarre qu'avec --profile prod
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,13 +9,13 @@ services:
       - .env
     environment:
       DATABASE_URL: ${DATABASE_URL}
-      DIRECT_URL: ${DIRECT_URL}
       NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: "1"
     ports:
       - "3000:3000"
 
   app-dev:
+    profiles: ["dev"]           # ✅ ne démarre qu'avec --profile dev
     image: oven/bun:1
     working_dir: /app
     restart: unless-stopped
@@ -24,12 +23,17 @@ services:
       - .env
     environment:
       DATABASE_URL: ${DATABASE_URL}
-      DIRECT_URL: ${DIRECT_URL}
       NODE_ENV: development
       NEXT_TELEMETRY_DISABLED: "1"
       WATCHPACK_POLLING: "true"
       CHOKIDAR_USEPOLLING: "true"
-    command: sh -c "bun install && bunx prisma generate && bunx prisma migrate deploy && bun run dev"
+    command: >
+      sh -c "
+        bun install &&
+        bunx prisma generate &&
+        bunx prisma migrate deploy &&
+        bun run dev
+      "
     ports:
       - "3000:3000"
     volumes:
@@ -38,7 +42,6 @@ services:
       - app-next-cache:/app/.next
     stdin_open: true
     tty: true
-    profiles: ["dev"]
 
 volumes:
   app-node-modules:
