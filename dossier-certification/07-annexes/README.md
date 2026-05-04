@@ -1,81 +1,125 @@
 # 07 - Annexes
 
-## 📚 Documentation Technique
+## Objectif
 
-### Code Source Complet
+Rassembler les éléments de référence qui soutiennent le dossier: configuration, tests, diagrammes et ressources.
 
-- GitHub: https://github.com/arocchet/social-network
-- Branch: `feat/docker` (développement)
-- Branch: `main` (production)
+---
 
-### Configuration
+## 📚 Références Projet
 
-#### .env.example
+### Code Source
+
+- Repository: https://github.com/arocchet/social-network
+- Branche de travail: `docs/dossier-certification`
+- Branche de référence: `main`
+
+### Fichiers utiles
+
+- [README racine](../README.md)
+- [Section conception](../03-conception/README.md)
+- [Section développement](../04-developpement/README.md)
+- [API specification](../04-developpement/api-spec.md)
+- [Section déploiement](../05-deploiement/README.md)
+- [Section bilan](../06-bilan/README.md)
+
+---
+
+## ⚙️ Configuration d'Environnement
+
+### .env.example
 
 ```bash
 # Database
 DATABASE_URL=postgresql://user:password@localhost:5432/social-network
-DIRECT_URL=postgresql://... # Prisma specific
+DIRECT_URL=postgresql://user:password@localhost:5432/social-network
 
 # Redis
 REDIS_URL=redis://localhost:6379
 
 # Auth
-JWT_SECRET=your-secret-key-here
-NEXTAUTH_SECRET=your-nextauth-secret
+JWT_SECRET=change-me
+NEXTAUTH_SECRET=change-me-too
 NEXTAUTH_URL=http://localhost:3000
 
-# External APIs
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 NEXT_PUBLIC_API_URL=http://localhost:3000/api
+
+# Media
+CLOUDINARY_CLOUD_NAME=demo
+CLOUDINARY_API_KEY=demo
+CLOUDINARY_API_SECRET=demo
 ```
 
-#### docker-compose.yml
+### Docker
 
-```yaml
-# Voir fichier à la racine du projet
-```
-
-#### Dockerfile
-
-```dockerfile
-# Voir fichier à la racine du projet
-```
+- `Dockerfile`: build multi-stage pour Next.js.
+- `docker-compose.yml`: app, PostgreSQL, Redis.
 
 ---
 
 ## 🧪 Tests
 
-### Jest Configuration
+### Tests disponibles
 
-```javascript
-// jest.config.js
-```
+- `__tests__/integrations/authentification.test.ts` pour la logique d'authentification.
+- Tests d'intégration sur les routes API avec Jest.
+- Tests UI à prévoir si la couverture front doit être renforcée.
 
-### Test Examples
+### Exemple de test
 
 ```typescript
-// Exemples de tests unitaires
-// À ajouter: __tests__/ directory screenshots
+import { POST } from "@/app/api/auth/login/route";
+
+describe("POST /api/auth/login", () => {
+  it("returns 200 for valid credentials", async () => {
+    const request = new Request("http://localhost/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({
+        email: "user@example.com",
+        password: "password123",
+      }),
+    });
+
+    const response = await POST(request as any);
+    expect(response.status).toBe(200);
+  });
+});
 ```
 
 ---
 
-## 📊 Diagrammes
+## 📊 Diagrammes Synthétiques
 
 ### Architecture Générale
 
-```
-[Client] <--HTTP/WebSocket--> [Next.js App] <--SQL--> [PostgreSQL]
-                                    |
-                                    +---> [Redis]
-                                    |
-                                    +---> [External APIs]
+```mermaid
+flowchart LR
+    Client[Browser] --> Next[Next.js App]
+    Next --> API[API Routes]
+    API --> DB[(PostgreSQL)]
+    API --> Redis[(Redis)]
+    API --> Cloudinary[(Cloudinary)]
+    Client <--> Socket[Socket.io]
+    Socket <--> Redis
 ```
 
-### Data Flow
+### Flux de Données
 
-```
-User Input --> Validation --> API Route --> Database --> Response
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant A as API Route
+    participant V as Validation
+    participant D as Database
+
+    U->>A: Submit form
+    A->>V: Zod validation
+    V-->>A: Valid data
+    A->>D: Prisma query
+    D-->>A: Persisted entity
+    A-->>U: JSON response
 ```
 
 ---
@@ -89,55 +133,36 @@ User Input --> Validation --> API Route --> Database --> Response
 - [TypeScript Handbook](https://www.typescriptlang.org/docs)
 - [PostgreSQL Docs](https://www.postgresql.org/docs)
 - [Docker Docs](https://docs.docker.com)
+- [Vercel Docs](https://vercel.com/docs)
 
-### Libraries/Packages
+### Bibliothèques Principales
 
-- `next` - React framework
-- `prisma` - Database ORM
-- `typescript` - Type safety
-- `tailwindcss` - Styling
-- `redis` - Caching
-- `socket.io` - Real-time communication
-- `bcryptjs` - Password hashing
-- `jsonwebtoken` - Auth tokens
-- `dotenv` - Environment variables
-- `sentry` - Error tracking
-
-### Tools
-
-- GitHub - Version control
-- Vercel - Hosting/Deployment
-- Neon - Serverless Database
-- Docker - Containerization
-- ESLint/Prettier - Code quality
-- Jest - Testing
-- Postman - API testing
+- Next.js
+- Prisma
+- TypeScript
+- Tailwind CSS
+- Redis
+- Socket.io
+- Cloudinary
+- Jest
+- Zod
+- bcryptjs
 
 ---
 
 ## 📋 Checklist de Remise
 
-- [ ] Code poussé sur GitHub
-- [ ] README.md complet
-- [ ] Tous les tests passent
-- [ ] Dossier de certification complété
-- [ ] Screenshots des différentes pages
-- [ ] Documentation architecture
-- [ ] Guide de déploiement
-- [ ] Configuration d'environnement documentée
-- [ ] Performance audité (Lighthouse)
-- [ ] Security scan complété
+- [x] Structure du dossier complète.
+- [x] Conception documentée.
+- [x] Développement documenté.
+- [x] Déploiement documenté.
+- [x] Bilan documenté.
+- [x] Annexes structurées.
+- [ ] Captures d'écran finales à ajouter si demandées par le jury.
+- [ ] Export PDF final à générer si nécessaire.
 
 ---
 
-## 📞 Support & Contact
+## Conclusion
 
-**Repository:** https://github.com/arocchet/social-network  
-**Branche développement:** feat/docker  
-**Issues:** https://github.com/arocchet/social-network/issues
-
----
-
-## 📄 Licence
-
-[À spécifier: MIT, Apache 2.0, etc.]
+Les annexes servent de preuve de cohérence: elles relient les sections du dossier aux fichiers techniques du dépôt et donnent au jury des points d'appui concrets pour vérifier l'implémentation.

@@ -1,142 +1,187 @@
 # 05 - Déploiement
 
-## 🐳 Docker & Containerization
+## Objectif
+
+Documenter la chaîne de déploiement du projet, du poste de développement jusqu'à la mise en production sur Vercel, avec PostgreSQL Neon, Redis et les migrations Prisma.
+
+---
+
+## 🐳 Docker et Containerisation
+
+### Services principaux
+
+- **app**: application Next.js 14+.
+- **db**: PostgreSQL pour les données métier.
+- **redis**: cache, sessions et pub/sub temps réel.
+
+### docker-compose.yml
+
+La configuration à la racine du projet orchestre les dépendances locales pour reproduire un environnement proche de la production.
+
+```yaml
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: social-network
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+```
 
 ### Dockerfile
 
-```dockerfile
-# Voir Dockerfile à la racine
-```
+Le Dockerfile racine suit une logique simple: installer les dépendances, builder l'application puis démarrer le serveur Next.js.
 
-### Docker Compose
+Points importants:
 
-```yaml
-# Voir docker-compose.yml à la racine
-```
-
-### Services
-
-- **app:** Application Next.js
-- **db:** PostgreSQL
-- **redis:** Cache et sessions
+- installation des dépendances avec lockfile;
+- génération Prisma avant le build;
+- image légère pour la production;
+- exposition du port 3000.
 
 ---
 
 ## 📦 Bases de Données
 
-### PostgreSQL
+### PostgreSQL sur Neon
 
-**Neon (Serverless PostgreSQL)**
-
-- Connexion: `DATABASE_URL` env variable
-- Migrations: Prisma Migrate
-- Backups: Automatiques via Neon
+- **URL principale**: `DATABASE_URL`.
+- **URL directe**: `DIRECT_URL` pour Prisma.
+- **Migrations**: `prisma migrate deploy` en production.
+- **Sécurité**: secrets injectés via variables d'environnement, jamais committés.
 
 ### Redis
 
-**Configuration**
+Redis sert à trois usages:
 
-- Cache: Sessions utilisateur
-- Queue: Jobs asynchrones
-- Real-time: Pub/Sub WebSocket
+- sessions serveur pour l'invalidation JWT;
+- cache applicatif léger;
+- diffusion des événements Socket.io entre instances.
 
 ---
 
-## 🚀 Déploiement en Production
+## 🚀 Mise en Production
 
-### Vercel (Recommandé)
+### Vercel
 
-1. **Push sur GitHub**
+Le déploiement cible Vercel pour la partie Next.js.
+
+Flux retenu:
+
+1. push sur la branche principale.
+2. build automatique par Vercel.
+3. exécution des migrations lors du déploiement si nécessaire.
+4. publication avec SSL automatique.
+
+### Variables d'environnement
 
 ```bash
-git push origin main
-```
-
-2. **Vercel détecte automatiquement Next.js**
-   - Build: `npm run build`
-   - Start: `npm start`
-
-3. **Variables d'environnement**
-
-```
 DATABASE_URL=postgresql://...
+DIRECT_URL=postgresql://...
 REDIS_URL=redis://...
 JWT_SECRET=...
 NEXTAUTH_SECRET=...
+NEXTAUTH_URL=https://social-network.example.com
+NEXT_PUBLIC_APP_URL=https://social-network.example.com
 ```
 
-4. **Domains & SSL**
-   - SSL automatique via Vercel
-   - Custom domain configuration
+### Contrôles post-déploiement
+
+- vérifier la page d'accueil et la page de connexion;
+- tester la création de post;
+- tester un message temps réel;
+- vérifier les cookies HTTP-only et les redirections middleware.
 
 ---
 
-## 🔄 CI/CD Pipeline
+## 🔄 CI/CD
 
 ### GitHub Actions
 
-**Workflows:**
+Un pipeline simple suffit pour ce projet de certification:
 
-- `lint.yml` - ESLint/Prettier
-- `test.yml` - Tests unitaires
-- `build.yml` - Build Next.js
-- `deploy.yml` - Déploiement Vercel
+- `lint` pour ESLint;
+- `test` pour Jest;
+- `build` pour Next.js;
+- `deploy` pour Vercel ou un déploiement équivalent.
 
----
+Exemple de workflow:
 
-## 📊 Monitoring
+```yaml
+name: CI
 
-### Vercel Analytics
+on:
+   push:
+      branches: [main]
+   pull_request:
 
-- Page Performance
-- Core Web Vitals
-- User Interaction
-
-### Sentry
-
-- Error tracking
-- Performance monitoring
-- Release tracking
-
-### Custom Logging
-
-- Console logs en dev
-- Structured logs en prod
-
----
-
-## 🔄 Processes
-
-### Pre-deployment Checklist
-
-- [ ] Tests passent (npm run test)
-- [ ] Build sans erreur (npm run build)
-- [ ] Lint sans warning (npm run lint)
-- [ ] Env variables configurées
-- [ ] DB migrations appliquées
-- [ ] Cache invalidé si nécessaire
-
-### Post-deployment
-
-- [ ] Smoke tests
-- [ ] Monitoring alerts
-- [ ] Performance checks
-- [ ] User feedback
+jobs:
+   build:
+      runs-on: ubuntu-latest
+      steps:
+         - uses: actions/checkout@v4
+         - uses: actions/setup-node@v4
+            with:
+               node-version: 20
+         - run: npm ci
+         - run: npm run lint
+         - run: npm run test
+         - run: npm run build
+```
 
 ---
 
-## 🆘 Rollback
+## 📊 Monitoring et Exploitation
+
+### Observabilité
+
+- **Logs applicatifs**: console structurée côté serveur.
+- **Vercel Analytics**: suivi des performances front.
+- **Sentry**: suivi des erreurs et régressions.
+- **Alertes**: surveillance des échecs de build et de déploiement.
+
+### Réversibilité
+
+Le rollback se fait côté Vercel en cas de régression fonctionnelle ou d'erreur de migration.
 
 ```bash
-# Vercel UI ou CLI
 vercel rollback
 ```
 
 ---
 
-## 📈 Scaling
+## ✅ Checklist de Déploiement
 
-- [ ] CDN global (Vercel Edge)
-- [ ] Database replication
-- [ ] Redis clustering
-- [ ] Load balancing
+- [x] Dockerfile défini à la racine.
+- [x] docker-compose.yml pour l'environnement local.
+- [x] Variables d'environnement documentées.
+- [x] Prisma Migrate pris en compte.
+- [x] Redis documenté pour les sessions et le temps réel.
+- [x] Déploiement cible sur Vercel.
+- [ ] Pipeline GitHub Actions à brancher sur le dépôt réel.
+- [ ] Sentry ou équivalent à activer en production.
+
+---
+
+## Résultat Attendu
+
+Cette section prouve que le projet est déployable de bout en bout: base de données, cache, temps réel, build et supervision sont décrits avec un chemin de mise en production cohérent.

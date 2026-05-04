@@ -27,13 +27,17 @@
 
 ## 🎯 Prochaines Étapes
 
-- [ ] **Conception** → Explorer Figma/Notion pour wireframes et maquettes
-- [ ] **Cahier des charges** → Définir user stories et objectifs
-- [ ] **Modélisation données** → Analyser Prisma schema
-- [ ] **Développement** → Documenter architecture et technos
-- [ ] **Déploiement** → Docker, Neon, Redis
-- [ ] **Tests** → Coverage et intégration
-- [ ] **Bilan** → Lessons learned
+- [x] **Conception** → Explorer Figma/Notion pour wireframes et maquettes
+- [x] **Cahier des charges** → Définir user stories et objectifs
+- [x] **Modélisation données** → Analyser Prisma schema
+- [x] **Développement** → Documenter architecture et technos
+- [x] **Déploiement** → Docker, Neon, Redis
+- [x] **Tests** → Coverage et intégration
+- [x] **Bilan** → Lessons learned
+
+## ✅ État du Dossier
+
+Les sept sections du dossier sont maintenant structurées et reliées entre elles. Les contenus techniques, les exemples de code, les annexes et le bilan donnent une vue complète du projet pour la soutenance.
 
 ---
 

@@ -1,39 +1,58 @@
 # 06 - Bilan
 
+## Objectif
+
+Présenter le retour d'expérience sur le projet, les acquis techniques, les limites constatées et les pistes d'évolution réalistes.
+
+---
+
 ## 📊 Retour d'Expérience
 
-### Défis Rencontrés
+### Défis Techniques
 
-#### Technique
+1. **Auth middleware et sécurité des routes**
+   - Gérer les cookies HTTP-only côté serveur sans exposer de jetons au client.
+   - Synchroniser middleware, sessions Redis et validations route handlers.
 
-- [ ] Challenge 1: [À documenter]
-- [ ] Challenge 2: [À documenter]
-- [ ] Challenge 3: [À documenter]
+2. **Temps réel multi-instance**
+   - Diffuser les événements Socket.io sur plusieurs serveurs.
+   - Garantir la persistance avant émission pour éviter les pertes de message.
 
-#### Organisationnel
+3. **Modélisation Prisma**
+   - Conserver une base cohérente malgré les nombreuses relations et contraintes d'unicité.
+   - Documenter proprement les cascades et les dépendances entre entités.
 
-- [ ] Challenge 1: [À documenter]
-- [ ] Challenge 2: [À documenter]
+### Défis d'Organisation
+
+- Structurer un dossier de certification lisible pour un jury non technique et technique.
+- Distinguer ce qui doit être démontré par la documentation de ce qui doit rester dans le code.
+- Répartir le travail entre conception, développement, déploiement et bilan sans perdre le fil narratif.
 
 ---
 
 ## ✅ Accomplissements
 
-### Objectifs Atteints
+### Résultats Obtenus
 
-- [ ] Core features implémentées
-- [ ] Tests couvrant 80%+ du code
-- [ ] Performance < 2s load time
-- [ ] Responsive design fonctionnel
-- [ ] Déploiement réussi
+- **18 modèles Prisma** documentés.
+- **20+ endpoints API** décrits avec payloads et réponses.
+- **12+ pages principales** couvertes dans la conception.
+- **43 user stories** organisées par rôle et priorité.
+- **Temps réel Socket.io** documenté avec Redis adapter.
+- **Architecture complète** du projet formalisée pour revue jury.
 
 ### Points Forts
 
-- [À détailler]
+- Architecture cohérente entre frontend, API, base de données et temps réel.
+- Séparation claire entre documentation de conception et documentation d'implémentation.
+- Choix techniques pragmatiques: Next.js, Prisma, PostgreSQL, Redis, Cloudinary.
+- Dossier orienté preuve: sections reliées à des fichiers réels du dépôt.
 
 ### Points à Améliorer
 
-- [À détailler]
+- Compléter les mesures de performance réelles avec des relevés Lighthouse.
+- Ajouter une couverture de tests plus large sur les routes sensibles.
+- Formaliser davantage la supervision de production et les alertes.
 
 ---
 
@@ -41,83 +60,62 @@
 
 ### Compétences Techniques
 
-- Next.js et Server Components
-- TypeScript pour type safety
-- Prisma ORM
-- PostgreSQL optimization
-- Docker containerization
-- CI/CD pipelines
+- Next.js App Router et logique server-side.
+- TypeScript pour sécuriser les contrats de données.
+- Prisma pour un modèle relationnel riche.
+- PostgreSQL et gestion des relations complexes.
+- Redis pour sessions, cache et pub/sub.
+- Socket.io pour les usages temps réel.
+- Docker et déploiement d'une stack full-stack.
 
 ### Compétences Transversales
 
-- Gestion de projet
-- Communication équipe
-- Problem solving
-- Documentation
+- Structuration d'un dossier technique long.
+- Justification de choix d'architecture.
+- Rédaction orientée jury et preuve d'exécution.
+- Capacité à documenter sans surcharger.
 
 ---
 
 ## 🚀 Améliorations Futures
 
-### Court Terme (1-2 mois)
+### Court Terme
 
-1. **Performance**
-   - [ ] Optimiser Core Web Vitals
-   - [ ] Implémenter ISR/Revalidation
-   - [ ] Ajouter Image Optimization
+- Finaliser des tests d'intégration plus représentatifs.
+- Mesurer les performances réelles de la home, du feed et du chat.
+- Ajouter une page de monitoring minimaliste pour les erreurs critiques.
 
-2. **Fonctionnalités**
-   - [ ] Feature 1
-   - [ ] Feature 2
+### Moyen Terme
 
-3. **Sécurité**
-   - [ ] Rate limiting renforcé
-   - [ ] 2FA implementation
-   - [ ] OWASP compliance
+- Ajouter des notifications push natives.
+- Renforcer la modération et les signalements.
+- Introduire des recommandations de contenu plus fines.
 
-### Moyen Terme (3-6 mois)
+### Long Terme
 
-- [ ] Mobile app (React Native)
-- [ ] Notifications push
-- [ ] Analytics dashboard
-- [ ] User recommendations
-
-### Long Terme (6+ mois)
-
-- [ ] Microservices architecture
-- [ ] ML recommendations
-- [ ] Video support
-- [ ] Integration avec services tiers
+- Séparer certains domaines en services indépendants si la charge augmente.
+- Ajouter de l'analyse d'usage et des métriques produit.
+- Préparer une version mobile dédiée si le besoin utilisateur le justifie.
 
 ---
 
-## 📈 Métriques Finales
+## 📈 Métriques de Référence
 
-| Métrique         | Cible  | Réalité       |
-| ---------------- | ------ | ------------- |
-| Lighthouse Score | 90+    | [À compléter] |
-| Test Coverage    | 80%+   | [À compléter] |
-| Load Time (LCP)  | < 2.5s | [À compléter] |
-| CLS              | < 0.1  | [À compléter] |
-| Uptime           | 99.5%+ | [À compléter] |
+| Indicateur               | Valeur                 |
+| ------------------------ | ---------------------- |
+| Modèles de données       | 18                     |
+| Endpoints API documentés | 20+                    |
+| Pages principales        | 12+                    |
+| User stories             | 43                     |
+| Événements temps réel    | 4 familles principales |
+| Variables CSS thème      | 200+                   |
+
+Ces métriques servent de base objective pour montrer que le projet est suffisamment complet pour une soutenance de certification.
 
 ---
 
 ## 🎓 Conclusion
 
-Ce projet m'a permis de:
+Ce projet m'a permis de concevoir et documenter une application full-stack réaliste, avec des choix techniques justifiés et une architecture exploitable en production.
 
-- Maîtriser Next.js et TypeScript
-- Comprendre l'architecture full-stack moderne
-- Déployer une application en production
-- Travailler avec des outils professionnels
-
-Je suis confiant pour:
-
-- [À compléter]
-- [À compléter]
-
-Les prochains défis:
-
-- [À compléter]
-- [À compléter]
+Pour le jury, l'essentiel est démontré: besoin métier compris, conception structurée, implémentation cohérente, et capacité à aller jusqu'au déploiement.
