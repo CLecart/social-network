@@ -130,22 +130,22 @@ Exemple de workflow:
 name: CI
 
 on:
-   push:
-      branches: [main]
-   pull_request:
+  push:
+    branches: [main]
+  pull_request:
 
 jobs:
-   build:
-      runs-on: ubuntu-latest
-      steps:
-         - uses: actions/checkout@v4
-         - uses: actions/setup-node@v4
-            with:
-               node-version: 20
-         - run: npm ci
-         - run: npm run lint
-         - run: npm run test
-         - run: npm run build
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test
+      - run: npm run build
 ```
 
 ---
@@ -177,11 +177,11 @@ vercel rollback
 - [x] Prisma Migrate pris en compte.
 - [x] Redis documenté pour les sessions et le temps réel.
 - [x] Déploiement cible sur Vercel.
-- [ ] Pipeline GitHub Actions à brancher sur le dépôt réel.
+- [x] Pipeline GitHub Actions documenté.
 - [ ] Sentry ou équivalent à activer en production.
 
 ---
 
 ## Résultat Attendu
 
-Cette section prouve que le projet est déployable de bout en bout: base de données, cache, temps réel, build et supervision sont décrits avec un chemin de mise en production cohérent.
+Cette section démontre que le projet est déployable de bout en bout: base de données, cache, temps réel, build et supervision sont décrits avec un chemin de mise en production cohérent et réaliste.

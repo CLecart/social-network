@@ -2,7 +2,7 @@
 
 ## Objectif
 
-Rassembler les éléments de référence qui soutiennent le dossier: configuration, tests, diagrammes et ressources.
+Rassembler les éléments de référence qui soutiennent le dossier: configuration, tests, diagrammes et ressources, avec des liens directement exploitables pour la soutenance.
 
 ---
 
@@ -160,6 +160,7 @@ sequenceDiagram
 - [x] Annexes structurées.
 - [ ] Captures d'écran finales à ajouter si demandées par le jury.
 - [ ] Export PDF final à générer si nécessaire.
+- [ ] Vérification orthographique finale recommandée avant impression.
 
 ---
 

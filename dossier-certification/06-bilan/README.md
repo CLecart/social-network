@@ -2,7 +2,7 @@
 
 ## Objectif
 
-Présenter le retour d'expérience sur le projet, les acquis techniques, les limites constatées et les pistes d'évolution réalistes.
+Présenter le retour d'expérience sur le projet, les acquis techniques, les limites constatées et les pistes d'évolution réalistes dans une logique de certification.
 
 ---
 
@@ -47,6 +47,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 - Séparation claire entre documentation de conception et documentation d'implémentation.
 - Choix techniques pragmatiques: Next.js, Prisma, PostgreSQL, Redis, Cloudinary.
 - Dossier orienté preuve: sections reliées à des fichiers réels du dépôt.
+- Rendu final lisible pour un jury, avec un niveau de détail adapté à une soutenance.
 
 ### Points à Améliorer
 
@@ -118,4 +119,4 @@ Ces métriques servent de base objective pour montrer que le projet est suffisam
 
 Ce projet m'a permis de concevoir et documenter une application full-stack réaliste, avec des choix techniques justifiés et une architecture exploitable en production.
 
-Pour le jury, l'essentiel est démontré: besoin métier compris, conception structurée, implémentation cohérente, et capacité à aller jusqu'au déploiement.
+Pour le jury, l'essentiel est démontré: besoin métier compris, conception structurée, implémentation cohérente, capacité à aller jusqu'au déploiement, et recul sur les limites du projet.
