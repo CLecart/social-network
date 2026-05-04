@@ -53,6 +53,13 @@ Cette section documente la conception complète du réseau social `social-networ
   - Phase 3 Polish (1 semaine)
 - **Acceptance Criteria:** Front/Back/DevOps
 
+### 4️⃣ [Diagrammes UML Complets](./diagrammes-uml.md)
+
+- **MCD** en DBML (import dbdiagram.io)
+- **MLD** détaillé en DBML
+- **MPD** PostgreSQL complet (DDL, contraintes, index, triggers)
+- Support de présentation technique pour la soutenance jury
+
 ---
 
 ## 🎯 Fonctionnalités Clés

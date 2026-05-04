@@ -643,3 +643,23 @@ Notification (id, userId-FK, type, message, isRead, createdAt)
 - [x] MLD relations
 - [x] Cardinalités définies
 - [ ] Tests de cohérence
+
+---
+
+## 📎 Code Complet des Diagrammes (MCD / MLD / MPD)
+
+Pour la soutenance, les versions détaillées et directement réutilisables des diagrammes sont disponibles ici:
+
+- [diagrammes-uml.md](./diagrammes-uml.md)
+
+Ce fichier contient:
+
+- le **MCD** en format DBML (import direct dans dbdiagram.io),
+- le **MLD** en format DBML détaillé,
+- le **MPD** en SQL PostgreSQL (tables, index, contraintes, triggers).
+
+Utilisation recommandée:
+
+1. Copier le bloc **MCD** ou **MLD** dans dbdiagram.io pour générer le diagramme visuel.
+2. Utiliser le bloc **MPD** pour illustrer la traduction physique du modèle dans PostgreSQL.
+3. Conserver ce fichier en annexe technique comme preuve de modélisation complète pour le jury.
