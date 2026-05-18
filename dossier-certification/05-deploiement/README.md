@@ -84,7 +84,7 @@ Redis sert à trois usages:
 
 - sessions serveur pour l'invalidation JWT;
 - cache applicatif léger;
-- diffusion des événements Socket.io entre instances.
+- diffusion des événements SSE/Redis entre instances.
 
 ---
 

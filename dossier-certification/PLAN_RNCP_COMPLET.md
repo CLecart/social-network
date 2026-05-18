@@ -73,7 +73,7 @@ _(extraits de 02-cahier-des-charges + CDA mapping)_
 
 - [x] Refonte UI responsive
 - [x] Authentification JWT
-- [x] Real-time notifications (Socket.io + Redis)
+- [x] Real-time notifications (SSE + Redis)
 - [x] Database design (Prisma + PostgreSQL)
 - [x] Upload d'images (Cloudinary)
 - [x] Internationalization (i18n)
@@ -165,7 +165,7 @@ _(partie de 04-developpement)_
 │     - Real-time (Socket.io client)      │
 │     - State mgmt (Context/zustand)      │
 └──────────────────┬──────────────────────┘
-                   │ HTTP + WebSocket
+                   │ HTTP + SSE/Polling
 ┌──────────────────▼──────────────────────┐
 │     SERVEUR (Next.js API Routes)        │
 │     - Authentification (NextAuth/JWT)   │
@@ -216,7 +216,7 @@ src/
 | Language           | TypeScript                   | Typage fort             |
 | Database           | PostgreSQL (Neon)            | Relationnel, ACID       |
 | ORM                | Prisma v5                    | Type-safe, migrations   |
-| Real-time          | Socket.io + Redis            | Notifications, chat     |
+| Real-time          | SSE + Redis                  | Notifications, chat     |
 | Images             | Cloudinary                   | CDN, transformations    |
 | Auth               | NextAuth v5 / JWT            | Sécurisé, standard      |
 | Testing            | Jest + React Testing Library | Unit + integration      |
@@ -265,7 +265,7 @@ Schéma d'architecture haut niveau (flows utilisateurs)
 - Error handling
 - Code extraits
 
-#### **5.4 Real-time avec Socket.io**
+#### **5.4 Real-time avec SSE / Redis**
 
 - Connexion client/serveur
 - Event handlers (messages, notifications)
@@ -404,7 +404,7 @@ _(nouvelle section - valorise l'apprentissage)_
 
 #### **8.1 Domaines Explorés**
 
-- [ ] Real-time avec Socket.io (au-delà du simple chat)
+- [ ] Real-time avec SSE / Redis (au-delà du simple chat)
 - [ ] Optimisation de performance (pagination, lazy loading)
 - [ ] Scalabilité (caching, indexing)
 - [ ] Sécurité (JWT, CORS, rate limiting)
@@ -413,7 +413,7 @@ _(nouvelle section - valorise l'apprentissage)_
 
 #### **8.2 Sources d'Apprentissage**
 
-- [ ] Documentation officielle (Next.js, Socket.io, Prisma)
+- [ ] Documentation officielle (Next.js, Prisma, Upstash Redis)
 - [ ] Articles/blogs (Dev.to, Medium)
 - [ ] Communautés (Discord, GitHub)
 - [ ] Essais/erreurs personnels
@@ -486,7 +486,7 @@ _(structurer 07-annexes)_
 #### **10.2 Extraits de Code Significatifs**
 
 - [ ] Auth implementation
-- [ ] Real-time socket handler
+- [ ] Real-time SSE / polling handler
 - [ ] Database schema
 - [ ] API endpoint example
 - [ ] React component example

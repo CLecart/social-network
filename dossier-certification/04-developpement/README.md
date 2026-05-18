@@ -427,7 +427,7 @@ src/
 - [x] Auth (JWT + HTTP-only cookies + middleware)
 - [x] API routes (20+ endpoints documentés)
 - [x] Database (Prisma + 18 models)
-- [x] Real-time (Socket.io + Redis adapter)
+- [x] Real-time (SSE + Redis)
 - [x] Error handling (validation + exceptions)
 - [x] File uploads (Cloudinary integration)
 - [x] Pagination (infinite scroll)
@@ -469,7 +469,7 @@ Backend:
 ├── Prisma (ORM)
 ├── PostgreSQL (Database)
 ├── Redis (Caching/Sessions)
-└── Socket.io (Real-time)
+└── SSE / Redis (Real-time)
 
 Infrastructure:
 ├── Docker (Containerization)
@@ -538,7 +538,7 @@ src/
 
 ## 🔄 Communication Temps Réel
 
-### WebSocket / Socket.io
+### Temps réel (SSE / Redis)
 
 - Notifications en direct
 - Live messaging

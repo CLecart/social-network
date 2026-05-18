@@ -861,11 +861,11 @@ Récupère les invitations de groupe en attente.
 
 ---
 
-## 🔄 Temps Réel (WebSocket / Socket.io)
+## 🔄 Temps Réel (SSE / Redis)
 
-### Événements Socket.io
+### Événements Temps Réel (SSE / Redis)
 
-Les événements suivants sont gérés côté client et serveur via Socket.io (Redis adapter pour scalabilité multi-instance).
+Les mises à jour temps réel sont gérées côté client et serveur via des endpoints SSE et des clés Redis. Le système repose sur des lectures périodiques côté client (polling) des données mises à jour en Redis.
 
 **Principaux événements:**
 
@@ -988,7 +988,7 @@ Statut en ligne/hors ligne.
 
 - **Stack:** Next.js API Routes + Prisma + PostgreSQL
 - **Auth:** JWT + Redis sessions
-- **Real-time:** Socket.io + Redis pub/sub
+- **Real-time:** SSE + Upstash Redis
 - **Storage:** Cloudinary
 - **Validation:** Zod schemas
 

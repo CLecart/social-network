@@ -75,7 +75,7 @@ Nous avons conçu des pages profil montrant l'ensemble des contenus d'un utilisa
 
 ## 💬 Messages / Chat
 
-Nous avons construit le système de messagerie en temps réel utilisant WebSocket pour la livraison des messages et la présence utilisateur. Les vues comprennent la liste des conversations, la fenêtre de chat et les chats de groupe.
+Nous avons construit le système de messagerie en temps réel utilisant un mécanisme SSE/Polling avec Upstash Redis pour la livraison des messages et la présence utilisateur. Les vues comprennent la liste des conversations, la fenêtre de chat et les chats de groupe.
 
 Fonctionnalités clés:
 

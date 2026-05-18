@@ -277,7 +277,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
   - [ ] Accès depuis profil/friends
   - [ ] Message ±image
   - [ ] Status: SENT → DELIVERED → READ
-  - [ ] WebSocket real-time
+  - [ ] SSE / polling real-time
   - [ ] Typing indicator
 
 #### US022: Voir liste des conversations
@@ -291,6 +291,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
   - [ ] Unread badge
   - [ ] Search conversations
   - [ ] Sort par recent
+  - [ ] SSE notifications
 
 #### US023: Archiver une conversation
 
@@ -591,7 +592,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 - ✅ Theme switcher (light/dark)
 - ✅ Loading states + error handling
 - ✅ Infinite scroll pagination
-- ✅ Real-time updates (WebSocket)
+- ✅ Real-time updates (SSE / Redis)
 - ✅ Image optimization (Cloudinary)
 - ✅ SEO optimization (meta tags)
 - ✅ Accessibility (WCAG 2.1 AA)

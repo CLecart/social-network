@@ -118,8 +118,8 @@ flowchart LR
     API --> DB[(PostgreSQL)]
     API --> Redis[(Redis)]
     API --> Cloudinary[(Cloudinary)]
-    Client <--> Socket[Socket.io]
-    Socket <--> Redis
+    Client <--> SSE[SSE Endpoints]
+    SSE <--> Redis
 ```
 
 ### Flux de Données
@@ -159,11 +159,10 @@ sequenceDiagram
 - TypeScript
 - Tailwind CSS
 - Redis
-- Socket.io
 - Cloudinary
 - Jest
 - Zod
-- bcryptjs
+- bcrypt
 
 ---
 
