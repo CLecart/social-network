@@ -5,9 +5,10 @@
 - Nom de naissance : Lecart
 - Nom d’usage : Lecart
 - Prénom : Christophe
-- Adresse : [À compléter]
-- Titre professionnel visé : Concepteur Développeur d’Applications
-- Modalité d’accès : Parcours de formation
+- Adresse : Rouen, France
+- Titre professionnel visé : Concepteur Développeur d'Applications (RNCP 37873)
+- Modalité d'accès : Parcours de formation - Zone01 Rouen Normandie
+- Période : 2024 - 2025
 
 ## Présentation du dossier
 

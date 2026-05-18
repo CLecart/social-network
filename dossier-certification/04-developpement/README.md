@@ -34,8 +34,8 @@ graph LR
 
   subgraph Backend
     NextAPI[Next.js API Routes / App Router Server Actions]
-    Socket[Socket.io Server]
-    Redis[Redis (pub/sub, cache, sessions)]
+    SSE[SSE Endpoints / Polling]
+    Redis[Upstash Redis (cache, real-time, sessions)]
     Prisma[Prisma Client]
   end
 
@@ -49,8 +49,8 @@ graph LR
   NextAPI --> Prisma
   Prisma --> Postgres
   NextAPI --> Redis
-  Socket --> Redis
-  Browser --> Socket
+  SSE --> Redis
+  Browser --> SSE
   NextAPI --> Storage
   Browser --> Storage
 
@@ -75,22 +75,27 @@ sequenceDiagram
   N-->>B: set-cookie HttpOnly JWT; 200 OK
 ```
 
-### Real-time Messaging Sequence
+### Real-time Messaging Sequence (SSE + Redis Polling)
 
 ```mermaid
 sequenceDiagram
   participant U1 as User A (Browser)
-  participant S as Socket.io Server
+  participant SSE as SSE Endpoint
+  participant API as Next.js API
   participant R as Redis
   participant DB as Postgres
 
-  U1->>S: socket.emit('message', {to, body})
-  S->>DB: INSERT message
-  DB-->>S: saved message
-  S->>R: publish message (channel:user:{to})
-  R-->>S: deliver (other servers)
-  S-->>U2: socket.emit('message', payload)
-  S-->>U1: ack (status SENT/DISPATCHED)
+  U1->>API: POST /api/private/chat/send {to, message}
+  API->>DB: INSERT message (SENT status)
+  DB-->>API: saved message
+  API->>R: SET message (60s TTL) + SET status
+  API-->>U1: ack {status: SENT}
+  U2->>SSE: GET /api/private/chat/listen (polling)
+  SSE->>R: GET message keys for U2
+  R-->>SSE: message data
+  SSE-->>U2: emit message {status: SENT}
+  U2->>API: mark as read
+  API->>DB: UPDATE deliveredAt, readAt
 ```
 
 ### Schéma ER (Simplifié)
@@ -121,15 +126,16 @@ Pattern recommandé:
 
 ---
 
-## Temps réel (Socket.io)
+## Temps réel (Upstash Redis + SSE Polling)
 
-- Socket.io côté serveur utilise Redis adapter pour scalabilité multi-instance.
-- Evénements principaux:
-  - `message:create` (DM / groupe)
-  - `message:status` (DELIVERED / READ)
-  - `notification:new`
-  - `typing` / `presence`
-- Persist messages via Prisma → PostgreSQL, puis publier via Redis pub/sub pour diffusion.
+- Architecture: Client poll les endpoints SSE toutes les 500ms au lieu de Socket.io.
+- Evénements principaux (via Redis keys):
+  - `message:{conversationId}:{messageId}` → contenu du message
+  - `message:status:{messageId}` → SENT / DELIVERED / READ
+  - `notification:user:{userId}` → nouvelles notifications
+  - `typing:{conversationId}:{userId}` → indicateur de frappe
+- Persistance: Prisma → PostgreSQL pour le stockage durable + Redis (60s TTL) pour le temps réel.
+- Avantage: Haute disponibilité (pas de connexion persistante), compatible Vercel serverless.
 
 ---
 
@@ -252,31 +258,55 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-### Real-time Socket.io
+### Real-time avec Redis + SSE Polling
 
-**`src/lib/server/websocket/socket.ts`** — Gère messages en temps réel:
+**`src/app/api/private/chat/send/route.ts`** — Envoie et stocke messages:
 
 ```typescript
-import { Server } from "socket.io";
-import { createAdapter } from "@socket.io/redis-adapter";
-import { redisdb } from "./redis";
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import { redisdb } from "@/lib/server/websocket/redis";
 
-export function initializeSocket(httpServer: any) {
-  const io = new Server(httpServer, {
-    adapter: createAdapter(redisdb, redisdb),
+export async function POST(req: NextRequest) {
+  const { senderId, receiverId, message } = await req.json();
+
+  // Persist in database
+  const msg = await db.message.create({
+    data: { senderId, receiverId, message, status: "SENT" },
   });
 
-  io.on("connection", (socket) => {
-    socket.on("message:create", async (payload) => {
-      // Save to database
-      const msg = await db.message.create({ data: payload });
-      // Publish via Redis for multi-instance
-      io.to(payload.receiverId).emit("message:create", msg);
-    });
+  // Store in Redis with 60s TTL for real-time sync
+  await redisdb.set(`message:${msg.id}`, JSON.stringify(msg), { ex: 60 });
+  await redisdb.set(`message:status:${msg.id}`, "SENT", { ex: 60 });
 
-    socket.on("typing", (data) => {
-      socket.broadcast.to(data.conversationId).emit("typing", data);
-    });
+  return NextResponse.json(msg, { status: 201 });
+}
+```
+
+**`src/app/api/private/chat/listen/route.ts`** — SSE endpoint pour polling:
+
+```typescript
+import { NextRequest } from "next/server";
+import { redisdb } from "@/lib/server/websocket/redis";
+
+export async function GET(req: NextRequest) {
+  const userId = req.headers.get("x-user-id");
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      while (true) {
+        // Check Redis for new messages every 500ms
+        const keys = await redisdb.keys(`message:*`);
+        const messages = await Promise.all(keys.map((k) => redisdb.get(k)));
+
+        controller.enqueue(`data: ${JSON.stringify(messages)}\n\n`);
+        await new Promise((r) => setTimeout(r, 500));
+      }
+    },
+  });
+
+  return new Response(stream, {
+    headers: { "Content-Type": "text/event-stream" },
   });
 }
 ```

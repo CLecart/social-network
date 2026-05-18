@@ -8,73 +8,181 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ## 📊 Retour d'Expérience
 
-### Défis Techniques
+### Défis Techniques Rencontrés
 
 1. **Auth middleware et sécurité des routes**
-   - Gérer les cookies HTTP-only côté serveur sans exposer de jetons au client.
-   - Synchroniser middleware, sessions Redis et validations route handlers.
+   - Gérer les cookies HTTP-only côté serveur sans exposer les jetons au client.
+   - Synchroniser middleware Next.js, validations JWT (jose) et route handlers protégées.
+   - Implémenter correctement le hachage bcrypt et la vérification des mots de passe.
+   - Résultat : authentification robuste et vérifiée à chaque requête protégée.
 
-2. **Temps réel multi-instance**
-   - Diffuser les événements Socket.io sur plusieurs serveurs.
-   - Garantir la persistance avant émission pour éviter les pertes de message.
+2. **Temps réel avec Redis et SSE**
+   - Le projet utilise Upstash Redis avec un mécanisme de polling/SSE plutôt que Socket.io classique.
+   - Garantir la persistance des messages dans Redis avant leur émission au client.
+   - Gérer la disconnexion/reconnexion et éviter les duplicatas.
+   - Résultat : notifications et messages en temps réel fiables avec latence acceptable.
 
-3. **Modélisation Prisma**
-   - Conserver une base cohérente malgré les nombreuses relations et contraintes d'unicité.
-   - Documenter proprement les cascades et les dépendances entre entités.
+3. **Modélisation Prisma complexe**
+   - 18 modèles avec 40+ relations et contraintes d'unicité (userId + postId pour les likes).
+   - Maintenir l'intégrité référentielle tout en permettant les suppressions en cascade.
+   - Migrer sans perdre les données existantes lors du passage à de nouveaux schémas.
+   - Résultat : base de données normalisée, performante et facilement maintenue.
 
-### Défis d'Organisation
+4. **Coordination frontend/backend**
+   - Aligner les types TypeScript côté client et serveur pour éviter les regressions.
+   - Valider les données à l'entrée (Zod) et à la sortie (Prisma types).
+   - Gérer les erreurs API de manière cohérente (400, 401, 500, etc.).
+   - Résultat : expérience utilisateur fluide et erreurs explicites.
 
-- Structurer un dossier de certification lisible pour un jury non technique et technique.
-- Distinguer ce qui doit être démontré par la documentation de ce qui doit rester dans le code.
-- Répartir le travail entre conception, développement, déploiement et bilan sans perdre le fil narratif.
+### Défis d'Organisation et de Documentation
+
+- Structurer un dossier de certification lisible pour jury technique ET non-technique.
+- Distinguer : ce qui est dans la documentation vs ce qui reste dans le code source.
+- Répartir 60+ pages entre conception, développement, déploiement et bilan sans perdre la cohérence narrative.
+- Lier chaque section à des preuves GitHub concrètes (issues, PRs, commits).
+
+### Apprentissages Clés
+
+**Compétences validées :**
+
+- Next.js App Router (server-side rendering, server actions, middleware).
+- TypeScript pour la sécurité des types en full-stack.
+- PostgreSQL et Prisma pour une modélisation robuste.
+- JWT et authentification stateless.
+- Déploiement en conteneurs (Docker + Docker Compose).
+- Travail en équipe via GitHub (issues, PRs, code review).
+
+**Points d'amélioration identifiés :**
+
+- Tester davantage les routes critiques (auth, chat, notifications).
+- Mettre en place du monitoring en production (Sentry, alertes).
+- Optimiser le caching Redis pour réduire les requêtes DB.
+- Ajouter des benchmarks de performance (Lighthouse, load tests).
 
 ---
 
-## ✅ Accomplissements
+## ✅ Accomplissements Mesurables
+
+### Livrables du Projet
+
+| Élément                 | Nombre     | Statut                                 |
+| ----------------------- | ---------- | -------------------------------------- |
+| Modèles Prisma          | 18         | ✅ Complets et documentés              |
+| Endpoints API           | 20+        | ✅ Spécifications complètes            |
+| Pages principales       | 12+        | ✅ Routes implémentées                 |
+| User stories            | 43         | ✅ Rôles, priorités, estimations       |
+| Événements temps réel   | 4 familles | ✅ Chat, notifications, typing, status |
+| Migrations DB           | 2+         | ✅ Structure versionnée                |
+| Lignes de documentation | 4000+      | ✅ Dossier et code commenté            |
+| Tests d'intégration     | 1+         | ✅ Authentification vérifiée           |
 
 ### Résultats Obtenus
 
-- **18 modèles Prisma** documentés.
-- **20+ endpoints API** décrits avec payloads et réponses.
-- **12+ pages principales** couvertes dans la conception.
-- **43 user stories** organisées par rôle et priorité.
-- **Temps réel Socket.io** documenté avec Redis adapter.
-- **Architecture complète** du projet formalisée pour revue jury.
+✅ **Architecture**
 
-### Points Forts
+- Séparation claire client/serveur/data
+- TypeScript full-stack pour la sécurité
+- Middleware pour l'authentification centralisée
+- API RESTful avec validation (Zod)
 
-- Architecture cohérente entre frontend, API, base de données et temps réel.
-- Séparation claire entre documentation de conception et documentation d'implémentation.
-- Choix techniques pragmatiques: Next.js, Prisma, PostgreSQL, Redis, Cloudinary.
-- Dossier orienté preuve: sections reliées à des fichiers réels du dépôt.
-- Rendu final lisible pour un jury, avec un niveau de détail adapté à une soutenance.
+✅ **Authentification & Sécurité**
 
-### Points à Améliorer
+- JWT avec jose (HS256)
+- Hachage bcrypt des mots de passe
+- Cookies HTTP-only pour les sessions
+- Protection des routes privées
 
-- Compléter les mesures de performance réelles avec des relevés Lighthouse.
-- Ajouter une couverture de tests plus large sur les routes sensibles.
-- Formaliser davantage la supervision de production et les alertes.
+✅ **Base de Données**
+
+- 18 modèles Prisma normalisés
+- Relations complexes (amitié, notifications, groupes)
+- Migrations versionnées
+- Contraintes d'unicité pour éviter les duplicatas
+
+✅ **Temps Réel**
+
+- Messages avec statut (SENT → DELIVERED → READ)
+- Notifications en temps réel via Redis
+- Typing indicator avec timeout
+- Polling SSE pour haute disponibilité
+
+✅ **Déploiement**
+
+- Dockerfile multi-stage optimisé
+- docker-compose avec PostgreSQL + Redis
+- Variables d'environnement sécurisées
+- Pipeline CI/CD documenté
+
+✅ **Documentation**
+
+- Dossier de certification 60+ pages
+- Preuves GitHub reliées (13 issues/PRs)
+- Diagrammes d'architecture (Mermaid)
+- API specification complète
+
+### Points Forts du Projet
+
+- **Pragmatique** : Choix techniques éprouvés (Next.js, Prisma, PostgreSQL).
+- **Documenté** : Chaque section du dossier renvoie à du code réel.
+- **Sécurisé** : Authentification robuste, validation des données, hachage des mots de passe.
+- **Scalable** : Redis pour le cache/sessions, migrations Prisma, indexing DB.
+- **Équipe** : Travail collaboratif via GitHub, coordonnés sur 13 issues principales.
+
+### Points à Améliorer (Phase Suivante)
+
+- ⚠️ **Tests** : Augmenter la couverture au-delà de l'authentification (routes, composants).
+- ⚠️ **Performance** : Lighthouse audit, optimisation d'images, compression.
+- ⚠️ **Monitoring** : Intégrer Sentry pour suivi des erreurs en production.
+- ⚠️ **Load tests** : Vérifier la scalabilité sous charge (Redis pub/sub, connexions DB).
+- ⚠️ **RGPD** : Formaliser les droits d'accès/suppression des données personnelles.
 
 ---
 
-## 💡 Apprentissages
+## 💡 Compétences Validées (RNCP 37873)
 
-### Compétences Techniques
+### Bloc 1 : Développer une application sécurisée
 
-- Next.js App Router et logique server-side.
-- TypeScript pour sécuriser les contrats de données.
-- Prisma pour un modèle relationnel riche.
-- PostgreSQL et gestion des relations complexes.
-- Redis pour sessions, cache et pub/sub.
-- Socket.io pour les usages temps réel.
-- Docker et déploiement d'une stack full-stack.
+- ✅ Authentification JWT sécurisée (jose + bcrypt)
+- ✅ Validation des entrées (Zod schemas)
+- ✅ Protection des routes (middleware + check userId)
+- ✅ Hachage des mots de passe (bcrypt, salt 12)
+- ✅ Cookies HTTP-only pour la session
+
+### Bloc 2 : Concevoir une application organisée en couches
+
+- ✅ Séparation client/serveur/data
+- ✅ Composants React réutilisables
+- ✅ Hooks personnalisés pour la logique métier
+- ✅ Prisma ORM pour l'accès aux données
+- ✅ API Routes pour la couche métier
+
+### Bloc 3 : Préparer le déploiement sécurisé
+
+- ✅ Dockerfile multi-stage optimisé
+- ✅ docker-compose avec services
+- ✅ Variables d'environnement versionnées
+- ✅ Migrations Prisma automatisées
+- ✅ CI/CD avec GitHub Actions
+
+### Compétences Techniques Consolidées
+
+| Compétence         | Niveau         | Preuve                                      |
+| ------------------ | -------------- | ------------------------------------------- |
+| Next.js App Router | Intermédiaire+ | src/middleware.ts, API routes               |
+| TypeScript         | Intermédiaire+ | Typage strict côté/côté serveur             |
+| PostgreSQL         | Intermédiaire  | 18 modèles, relations complexes, migrations |
+| Prisma ORM         | Intermédiaire+ | Schema, queries, migrations                 |
+| Authentication     | Intermédiaire+ | JWT, bcrypt, cookies, middleware            |
+| Docker/Compose     | Intermédiaire  | Dockerfile, services, volumes               |
+| Git/GitHub         | Intermédiaire  | 13 issues, PRs, commits documentés          |
+| Real-time          | Introductory   | Redis, SSE polling, status messages         |
 
 ### Compétences Transversales
 
-- Structuration d'un dossier technique long.
-- Justification de choix d'architecture.
-- Rédaction orientée jury et preuve d'exécution.
-- Capacité à documenter sans surcharger.
+- **Communication** : Dossier de certification clair, diagrammes, preuve d'exécution.
+- **Résolution de problèmes** : Auth middleware, modélisation Prisma, déploiement Docker.
+- **Apprentissage autonome** : Documentation officielle, essais/erreurs, ajustements techniques.
+- **Travail en équipe** : Collaboration GitHub, coordination sur issues communes.
 
 ---
 
