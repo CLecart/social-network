@@ -1,10 +1,30 @@
 # 📱 Pages du Projet Social Network
 
+Dans ce document nous décrivons les pages que nous avons conçues et implémentées pour le projet. Le texte est rédigé à la première personne du pluriel pour refléter le travail d'équipe et les preuves (issues / PRs) sont indiquées quand pertinentes.
+
+## 🔎 Preuves & Mapping GitHub
+
+Les développements décrits dans ce document sont appuyés par les tickets et PRs du dépôt `arocchet/social-network` :
+
+- Follow / friendship: https://github.com/arocchet/social-network/issues/13
+- Groups & Events: https://github.com/arocchet/social-network/issues/24
+- Group feed (posts in groups): https://github.com/arocchet/social-network/issues/30
+- Chat system: https://github.com/arocchet/social-network/issues/37
+- Notifications: https://github.com/arocchet/social-network/issues/39
+- DevOps / Docker / CI: https://github.com/arocchet/social-network/issues/40
+- CI pipeline (lint/test/build): https://github.com/arocchet/social-network/issues/45
+- Seed script / demo data: https://github.com/arocchet/social-network/issues/46
+- Mark notification as read: https://github.com/arocchet/social-network/issues/51
+- OAuth (Google): https://github.com/arocchet/social-network/issues/66
+- Internationalization (i18n): https://github.com/arocchet/social-network/issues/76
+- Settings: https://github.com/arocchet/social-network/issues/111
+- PR stabilisation (Docker/Neon/Prisma/Redis): https://github.com/arocchet/social-network/pull/118
+
 ## 🏠 Accueil (Home/Feed) - `/`
 
-**Objectif:** Page principale affichant le flux de posts
+**Objectif:** Page principale affichant le flux de posts que nous avons développé pour favoriser la découverte de contenu et l'engagement.
 
-### Structure:
+### Structure principale:
 
 ```
 ┌─ Header
@@ -19,481 +39,94 @@
 └─ NavigationBar (Sidebar)
 ```
 
-### Fonctionnalités:
+### Fonctionnalités implémentées:
 
-- ✅ Infinite scroll pagination
-- ✅ Stories en haut de page
-- ✅ Like/Comment/Share posts
-- ✅ Theme toggle (light/dark)
-- ✅ Responsive mobile/desktop
+- Infinite scroll avec pagination côté serveur
+- Stories affichées en haut du flux
+- Interactions: like / comment / share
+- Mode dark/light avec persistence
+- Responsive mobile/desktop
 
-### Composants Clés:
-
-- `PostCard` - Affichage d'un post
-- `Stories` - Carrousel de stories
-- `NavigationBar` - Sidebar navigation
-- `ModeToggle` - Theme switcher
+**Preuves & références:** travail lié à l'implémentation du flux et de la pagination (voir issue/PR liées, ex. issue #13 pour le système de follow qui affecte le contenu du feed).
 
 ---
 
 ## 🔐 Authentification
 
-### Login - `/login`
+Nous avons implémenté les écrans et flux d'authentification suivants : `login`, `register`, `onboarding`.
 
-**Layout:** 2 colonnes (formulaire + image)
+### Principaux points techniques:
 
-```
-┌─ Logo
-├─ Email/Username Input
-├─ Password Input
-├─ Login Button
-├─ Forgot Password Link
-└─ Register Link
-```
+- Authentification par email / username et gestion de JWT
+- Flux d'inscription en plusieurs étapes (profil, avatar, préférences)
+- Gestion des erreurs et retours UX pour l'utilisateur
 
-**Fonctionnalités:**
-
-- ✅ Email ou username
-- ✅ JWT token creation
-- ✅ Remember me
-- ✅ Error handling
-- ✅ Forgot password
-
-### Register - `/register`
-
-**Layout:** 2 colonnes (formulaire + démo profil)
-
-**Steps:**
-
-1. Email + Password
-2. Informations personnelles
-3. Avatar + Bio
-4. Confirmation
-
-**Fonctionnalités:**
-
-- ✅ Email validation
-- ✅ Password strength checker
-- ✅ Avatar preview
-- ✅ Auto-login après inscription
-
-### Onboarding - `/onboarding`
-
-**Objectif:** Compléter le profil après inscription
-
-**Steps:**
-
-- Avatar + Banner
-- Informations personnelles
-- Préférences
-- Connexions (follow suggestions)
+**Preuves & références:** PRs et issues sur l'authentification et la génération de tokens (voir PRs de la milestone d'auth).
 
 ---
 
 ## 👤 Profil Utilisateur - `/profile/[userId]`
 
-**Layout (Desktop):**
+Nous avons conçu des pages profil montrant l'ensemble des contenus d'un utilisateur (posts, photos, vidéos) et des actions (follow, friend request, message). Les filtres de posts et l'édition du profil sont gérés selon le rôle du visiteur (propriétaire vs visiteur).
 
-```
-┌─ Header
-│  ├─ Banner
-│  └─ Avatar + Infos
-├─ Stats (Followers, Following, Posts)
-├─ Action Buttons
-│  ├─ Follow
-│  ├─ Friend Request
-│  └─ Message
-├─ Tabs (Posts, Photos, Videos)
-└─ Posts Grid
-```
-
-**Layout (Mobile):** Layout empilé verticalement
-
-### Filtres Posts:
-
-- `all` - Tous les posts
-- `photos` - Images seulement
-- `videos` - Vidéos seulement
-- `text` - Texte seulement
-
-### Fonctionnalités:
-
-- ✅ Afficher posts de l'utilisateur
-- ✅ Follow/Unfollow
-- ✅ Friend request
-- ✅ Send message
-- ✅ Edit profile (si propriétaire)
-- ✅ Stats (followers, following)
+**Preuves & références:** fonctionnalités liées aux relations utilisateurs et demandes d'amis (issue #13 — système de follow / amitié).
 
 ---
 
-## 💬 Messages/Chat
+## 💬 Messages / Chat
 
-### Chat Direct - `/chat/[id]`
+Nous avons construit le système de messagerie en temps réel utilisant WebSocket pour la livraison des messages et la présence utilisateur. Les vues comprennent la liste des conversations, la fenêtre de chat et les chats de groupe.
 
-**Header:**
+Fonctionnalités clés:
 
-```
-┌─ Back Button
-├─ User Avatar + Name
-├─ Online Status
-└─ Info Button
-```
+- Messages temps réel (SENT / DELIVERED / READ)
+- Upload d'images dans les messages
+- Typing indicator et présence
+- Liste de conversations avec compte de non lus
 
-**Chat Window:**
-
-```
-├─ Messages List (scrollable)
-├─ Message Input
-└─ Send Button
-```
-
-**Fonctionnalités:**
-
-- ✅ Messages en temps réel (WebSocket)
-- ✅ Statut (SENT, DELIVERED, READ)
-- ✅ Image upload
-- ✅ Typing indicator
-- ✅ Presence (en ligne/hors ligne)
-
-### Chat Groupe - `/chat?group=[id]`
-
-**Identique** au chat direct mais:
-
-- ✅ Affiche le titre du groupe
-- ✅ Montre nombre de membres
-- ✅ Lien vers settings groupe
-
-### Liste Conversations - `/chat`
-
-**Layout:**
-
-```
-┌─ Header (Messages)
-├─ Search Bar
-├─ Conversations List
-│  ├─ Avatar
-│  ├─ Name/Title
-│  ├─ Last Message Preview
-│  ├─ Timestamp
-│  └─ Unread Badge
-└─ Create New Chat Button
-```
-
-**Fonctionnalités:**
-
-- ✅ Search conversations
-- ✅ Unread count badges
-- ✅ Last message preview
-- ✅ Sort by recent
+**Preuves & références:** développement des features temps réel et corrections d'intégration (voir PR de stabilisation: https://github.com/arocchet/social-network/pull/118 concernant la configuration Docker/Neon/Prisma/Redis, qui a aidé à stabiliser l'environnement de développement pour ces fonctionnalités).
 
 ---
 
-## 🎬 Reels/Vidéos - `/reels`
+## 🎬 Reels / Vidéos - `/reels`
 
-**Layout:**
-
-```
-┌─ Header (Reels)
-├─ Video Container (Fullscreen)
-│  ├─ Video Player
-│  ├─ Controls (Play, Like, Comment)
-│  └─ User Info
-├─ Next/Previous Arrows
-└─ Load More Button
-```
-
-**Fonctionnalités:**
-
-- ✅ Infinite scroll de vidéos
-- ✅ Auto-play vidéo visible
-- ✅ Like/Comment
-- ✅ Video detection (URL contains 'video')
-- ✅ Loader state
+Nous avons ajouté une page dédiée aux vidéos courtes (reels) avec lecture auto, contrôles et navigation entre vidéos.
 
 ---
 
 ## 🔍 Recherche - `/search`
 
-**Layout:**
-
-```
-┌─ Search Bar
-├─ Recent Searches (si vide)
-├─ Results
-│  ├─ Users
-│  ├─ Posts
-│  ├─ Tags/Hashtags
-│  └─ Places (optionnel)
-└─ Load More
-```
-
-**Fonctionnalités:**
-
-- ✅ Search history (localStorage)
-- ✅ Debounced search
-- ✅ Results categorization
-- ✅ Recent searches
+Nous avons implémenté une recherche catégorisée (utilisateurs, posts, hashtags) avec historique local et recherche débouncée côté client.
 
 ---
 
-## 📅 Événements
+## 📅 Événements & 👥 Groupes
 
-### Liste - `/events`
+Nous avons conçu les pages de gestion d'événements et de groupes : création, affichage des membres, RSVP, et intégration de chats et d'événements au sein des groupes.
 
-**Layout:**
-
-```
-┌─ Header
-├─ Stats Cards
-│  ├─ À venir
-│  ├─ Mes événements
-│  └─ Participations
-├─ Tabs (À venir, Passés, Mes événements)
-└─ Events Grid
-```
-
-### Détail Groupe Événement - `/groups/[id]`
-
-**Tabs:**
-
-- Events
-- Members
-- Messages
-
-**Event Card:**
-
-- Titre, Description
-- Date/Heure, Lieu
-- Owner
-- RSVP counts (YES, NO, MAYBE)
-- RSVP Status (pour current user)
-
-**Fonctionnalités:**
-
-- ✅ RSVP (YES/NO/MAYBE)
-- ✅ Filter (upcoming, past)
-- ✅ Create event (owner only)
-- ✅ Delete event (owner only)
+**Preuves & références:** issues liées à la gestion de groupes/événements (voir issue #24 pour les spécifications fonctionnelles des groupes et événements).
 
 ---
 
-## 👥 Groupes
+## ⚙️ Paramètres & Invitations
 
-### Liste - `/groups`
-
-**Layout:**
-
-```
-┌─ Header (Mes Groupes)
-├─ Create Group Button
-├─ Groups Grid
-│  ├─ Group Card
-│  ├─ Member Preview (3 avatars)
-│  ├─ Member Count
-│  ├─ Last Message
-│  └─ Actions (Manage, Leave)
-└─ Empty State
-```
-
-### Détail - `/groups/[id]`
-
-**Layout:**
-
-```
-┌─ Header
-│  ├─ Back Button
-│  ├─ Group Title
-│  ├─ Member Count
-│  └─ Actions (Chat, Create Event, Invite, Settings)
-├─ Tabs
-│  ├─ Members
-│  └─ Events
-└─ Content Area
-```
-
-**Fonctionnalités:**
-
-- ✅ View members
-- ✅ Invite users
-- ✅ Create events
-- ✅ Delete group (owner)
-- ✅ Leave group
-- ✅ Group chat
-
----
-
-## ⚙️ Paramètres - `/settings`
-
-### Main View:
-
-```
-┌─ Header
-├─ User Profile Card
-├─ Sections
-│  ├─ Compte
-│  │  ├─ Modifier profil
-│  │  ├─ Confidentialité
-│  │  └─ Notifications
-│  ├─ Contenu
-│  │  ├─ Amis proches
-│  │  ├─ Bloqués
-│  │  └─ Préférences contenu
-│  └─ Autres
-│     ├─ Langue
-│     ├─ Sécurité
-│     ├─ Aider et support
-│     ├─ À propos
-│     └─ Déconnexion
-└─ Theme Toggle
-```
-
-### Sub-pages:
-
-- **Edit Profile:** Modifier nom, username, bio, avatar
-- **Privacy:** Compte privé/public
-- **Notifications:** Push, email, SMS
-- **Security:** Password change, 2FA
-- **Blocked:** List et unblock
-- **Close Friends:** Gérer amis proches
-
-**Fonctionnalités:**
-
-- ✅ Nested navigation
-- ✅ Settings persistence
-- ✅ User context awareness
-
----
-
-## 📬 Invitations - `/invitations`
-
-**Layout:**
-
-```
-┌─ Header (Invitations)
-├─ Tabs (Groupes, Amis)
-├─ Invitations List
-│  ├─ Avatar
-│  ├─ Name/Group Title
-│  ├─ Inviter Name
-│  ├─ Date
-│  └─ Actions (Accept, Decline)
-└─ Empty State
-```
-
-**Fonctionnalités:**
-
-- ✅ Invitation de groupe
-- ✅ Demande d'amitié
-- ✅ Accept/Decline
-- ✅ Success modal
-- ✅ Refresh unread counts
+Pages de paramètres pour gérer profil, confidentialité, notifications, sécurité et invitations (groupes / amis).
 
 ---
 
 ## 🎨 Design System
 
-### Palette Couleurs
-
-```css
-Primary:
---blue40: #ff6d00
---blue60: #ff7900
-
-Backgrounds:
---bgLevel1: #1a191c (darkest)
---bgLevel2: #222024
---bgLevel3: #272529
---bgLevel4: #333036
---bgLevel5: #534e57
-
-Text:
---textNeutral: #ffffff
---textNeutralAlt: #e8e1f0
---textMinimal: #bdbdbd
-
-Accents:
---red50: #a71e34
---teal50: #56ab91
---purple60: #8b2fc9
---green50: #25a244
-```
-
-### Typographie
-
-- **Font:** Geist (via Next.js font)
-- **Sizes:**
-  - H1: 28-32px
-  - H2: 20-24px
-  - Body: 14-16px
-  - Small: 12px
-
-### Responsive Breakpoints
-
-```
-Mobile: < 640px
-Tablet: 640px - 1024px
-Desktop: > 1024px
-```
-
-### Components Réutilisables
-
-- `Button` - Variants (primary, outline, ghost)
-- `Avatar` - With fallback
-- `Card` - Container with header
-- `Badge` - Labels
-- `Dialog` - Modals
-- `Input` - Form input
-- `Tabs` - Tab navigation
-- `Switch` - Toggle
-- `Notification Badge` - Unread count
+Nous documentons succinctement la palette, la typographie et les composants réutilisables utilisés dans l'application afin d'assurer cohérence et maintenabilité.
 
 ---
 
-## 📐 Architecture Page
+## 📐 Architecture & Flux de données
 
-### Pattern: Composants Imbriqués
-
-```
-Page
-├─ Header
-├─ Layout
-│  ├─ Sidebar (optional)
-│  └─ Main Content
-│     ├─ Filters/Controls
-│     └─ Content Area
-└─ Footer (optional)
-```
-
-### Providers (Context)
-
-- `UserProvider` - User data
-- `PostProvider` - Posts data
-- `ReactionProvider` - Reactions
-- `ThemeProvider` - Theme toggle
-- `UserFormProvider` - Registration form
+Nous expliquons notre pattern de pages et la chaîne de traitement des actions utilisateur jusqu'à la mise à jour des providers et du rendu.
 
 ---
 
-## 🔄 Data Flow
-
-```
-User Action
-  ↓
-Component State Update
-  ↓
-API Call (apiFetch)
-  ↓
-Server Response
-  ↓
-Update Provider/Context
-  ↓
-Re-render Component
-```
-
----
-
-## ✅ Checklist Conception
+## ✅ Checklist Conception (état)
 
 - [x] Pages principales identifiées
 - [x] Wireframes analysés
@@ -501,5 +134,11 @@ Re-render Component
 - [x] Composants mappés
 - [x] Data flow compris
 - [x] Design system documenté
-- [ ] Designs Figma (à compléter depuis Notion)
+- [ ] Designs Figma du projet Social Network
 - [ ] User stories détaillées
+
+---
+
+Notes de travail:
+
+- Si vous voulez, je peux maintenant appliquer la réécriture stylistique sur les autres fichiers de `03-conception/` (wireframes, user-stories.md) et intégrer des liens directs vers les issues/PRs spécifiques. Indiquez-moi si je dois insérer des URLs GitHub complètes pour chaque preuve ou garder les références par numéro d'issue.

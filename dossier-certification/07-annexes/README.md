@@ -6,13 +6,29 @@ Rassembler les éléments de référence qui soutiennent le dossier: configurati
 
 ---
 
-## 📚 Références Projet
+## 📚 Ressources du Projet
 
 ### Code Source
 
 - Repository: https://github.com/arocchet/social-network
-- Branche de travail: `docs/dossier-certification`
-- Branche de référence: `main`
+
+### 🔎 Preuves GitHub
+
+Liens directs vers les issues et PRs utilisées comme preuves dans le dossier:
+
+- Follow / friendship: https://github.com/arocchet/social-network/issues/13
+- Groups & Events: https://github.com/arocchet/social-network/issues/24
+- Group feed: https://github.com/arocchet/social-network/issues/30
+- Chat system: https://github.com/arocchet/social-network/issues/37
+- Notifications: https://github.com/arocchet/social-network/issues/39
+- DevOps / Docker / CI: https://github.com/arocchet/social-network/issues/40
+- CI pipeline: https://github.com/arocchet/social-network/issues/45
+- Seed script: https://github.com/arocchet/social-network/issues/46
+- Mark notification as read: https://github.com/arocchet/social-network/issues/51
+- OAuth (Google): https://github.com/arocchet/social-network/issues/66
+- Internationalization: https://github.com/arocchet/social-network/issues/76
+- Settings: https://github.com/arocchet/social-network/issues/111
+- PR stabilisation (Docker/Neon/Prisma/Redis): https://github.com/arocchet/social-network/pull/118
 
 ### Fichiers utiles
 
@@ -22,6 +38,7 @@ Rassembler les éléments de référence qui soutiennent le dossier: configurati
 - [API specification](../04-developpement/api-spec.md)
 - [Section déploiement](../05-deploiement/README.md)
 - [Section bilan](../06-bilan/README.md)
+- Modèle Word du dossier professionnel: `Dossier_Professionnel_Social_Network.docx`
 
 ---
 
@@ -67,7 +84,7 @@ CLOUDINARY_API_SECRET=demo
 - Tests d'intégration sur les routes API avec Jest.
 - Tests UI à prévoir si la couverture front doit être renforcée.
 
-### Exemple de test
+### Test d'authentification du projet
 
 ```typescript
 import { POST } from "@/app/api/auth/login/route";

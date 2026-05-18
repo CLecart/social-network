@@ -4,6 +4,18 @@
 
 Documenter l'architecture applicative, les endpoints API, l'authentification, le temps réel et la stratégie de tests/CI.
 
+### 🔎 Preuves & Mapping GitHub
+
+Les éléments techniques présentés ici sont issus des tickets et PRs du dépôt `arocchet/social-network` (références utiles pour le jury et la revue):
+
+- PR stabilisation (Docker/Neon/Prisma/Redis): https://github.com/arocchet/social-network/pull/118
+- DevOps / Docker / CI: https://github.com/arocchet/social-network/issues/40
+- Socket/chat system: https://github.com/arocchet/social-network/issues/37
+- Notifications & endpoints: https://github.com/arocchet/social-network/issues/39
+- Database / Prisma migrations: https://github.com/arocchet/social-network/issues/45
+
+Le socle technique a été stabilisé sur la base de ces sujets GitHub.
+
 ---
 
 ## Diagrammes d'Architecture (Mermaid)

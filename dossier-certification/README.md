@@ -1,19 +1,34 @@
-# Dossier de Fin d'Études
+# Dossier de Certification Personnel
 
-## Titre Professionnel: Développeur Web et Mobile
+## Titre RNCP: 37873
 
 ### RNCP 37873
 
-**Projet:** Social Network  
-**Candidat:** [Ton nom]  
-**Établissement:** Zone01 Rouen Normandie  
-**Date:** [À compléter]
+**Projet:** Social Network
+**Candidat:** Christophe Lecart
+**Établissement:** Zone01 Rouen Normandie
+**Statut:** Reconversion / recherche d'alternance
+**Profil:** Développeur Full Stack
+
+### Profil Candidat
+
+Christophe Lecart, développeur full stack en reconversion, après plus de 20 ans d'expérience dans l'industrie, le service après-vente et la conformité d'équipements techniques. Cette expérience m'a appris à collaborer avec des ingénieurs, à analyser des systèmes complexes, à structurer des données et à formaliser des processus.
+
+Depuis 2024, je suis en formation à Zone01 Rouen Normandie sur le projet Social Network, avec une approche orientée pratique, autonomie et travail en équipe. Je vise une alternance afin de continuer à progresser sur des applications web modernes, sécurisées et maintenables.
+
+### Contexte du Projet
+
+- Projet réalisé en équipe.
+- Projet de formation dans le cadre du RNCP 37873.
+- Orientation full stack avec front-end, back-end, base de données, authentification, temps réel et déploiement.
+- Les contraintes principales du dossier seront les fonctionnalités réellement implémentées, les choix techniques et les preuves de réalisation.
 
 ---
 
 ## 📑 Structure du Dossier
 
 ```
+00-presentation/          → Présentation du candidat
 01-introduction/          → Présentation du projet et contexte
 02-cahier-des-charges/    → Objectifs, contraintes techniques
 03-conception/            → Wireframes, maquettes, user stories
@@ -25,6 +40,10 @@
 
 ---
 
+## 🔎 Preuves GitHub
+
+Les preuves (issues et PRs) utilisées pour documenter les choix et réalisations sont réunies dans les annexes et les sections `03-conception` / `04-developpement` (ex. issues #13, #24, PR #118). Voir [07-annexes](07-annexes/README.md) pour les liens directs.
+
 ## 🎯 Prochaines Étapes
 
 - [x] **Conception** → Wireframes, maquettes, user stories et modélisation
@@ -35,15 +54,16 @@
 
 ## ✅ État du Dossier
 
-Le dossier est structuré pour une soutenance de certification RNCP 37873: chaque section présente un périmètre clair, des éléments concrets du projet et des preuves techniques directement reliées au dépôt.
+Ce dossier présente mon projet Social Network pour mon examen de certification RNCP 37873. Chaque section décrit mon travail, mes choix techniques et les preuves liées au dépôt.
 
 ## 🧭 Lecture Recommandée
 
-1. Commencer par [01-introduction](01-introduction/README.md) pour le contexte.
-2. Enchaîner avec [02-cahier-des-charges](02-cahier-des-charges/README.md) pour le besoin métier.
-3. Lire [03-conception](03-conception/README.md) puis [04-developpement](04-developpement/README.md) pour comprendre la solution.
-4. Terminer par [05-deploiement](05-deploiement/README.md), [06-bilan](06-bilan/README.md) et [07-annexes](07-annexes/README.md).
+1. Commencer par [00-presentation](00-presentation/README.md) pour le profil candidat.
+2. Lire [01-introduction](01-introduction/README.md) pour le contexte.
+3. Enchaîner avec [02-cahier-des-charges](02-cahier-des-charges/README.md) pour le besoin métier.
+4. Lire [03-conception](03-conception/README.md) puis [04-developpement](04-developpement/README.md) pour comprendre la solution.
+5. Terminer par [05-deploiement](05-deploiement/README.md), [06-bilan](06-bilan/README.md) et [07-annexes](07-annexes/README.md).
 
 ---
 
-**Branche:** `docs/dossier-certification`
+**Projet:** Social Network

@@ -11,7 +11,11 @@ Cette section documente la conception complète du réseau social `social-networ
 
 ---
 
-## 📚 Documents Disponibles
+## 📚 Documents du Projet
+
+### Pilotage du travail
+
+La conception s'appuie sur les issues GitHub du projet Social Network. Les lots fonctionnels ont été organisés autour des sujets suivis dans le dépôt: authentification, follow, chat, notifications, groupes, événements, settings, i18n et DevOps.
 
 ### 1️⃣ [Pages et Wireframes](./pages.md)
 
@@ -58,7 +62,7 @@ Cette section documente la conception complète du réseau social `social-networ
 - **MCD** en DBML (import dbdiagram.io)
 - **MLD** détaillé en DBML
 - **MPD** PostgreSQL complet (DDL, contraintes, index, triggers)
-- Support de présentation technique pour la soutenance jury
+- Support de présentation technique pour la soutenance
 
 ---
 
@@ -253,8 +257,7 @@ Montre le schéma de base de données normalisé.
 
 ## 📋 Wireframes & Maquettes
 
-**Ressource Notion (Designs):**  
-https://zone01rouen.notion.site/#28688f0a85b44a6ea9b1da60cca90e5a
+**Designs du projet:** voir [pages.md](./pages.md) et les captures intégrées au dossier
 
 **À documenter dans cette section:**
 
@@ -273,7 +276,7 @@ https://zone01rouen.notion.site/#28688f0a85b44a6ea9b1da60cca90e5a
 - [x] User stories (43 stories)
 - [x] Design system défini
 - [x] Architecture data flow
-- [ ] Wireframes Notion documenter
+- [ ] Wireframes du projet documenter
 - [ ] Screenshots maquettes
 - [ ] User flows validation
 - [ ] Prototype Figma
@@ -293,14 +296,16 @@ https://zone01rouen.notion.site/#28688f0a85b44a6ea9b1da60cca90e5a
 ## 🚀 Prochaines Étapes
 
 1. **Documentation Wireframes:**
-   - Exporter screenshots Notion
-   - Créer wireframe.md avec images
-   - Annoter UX decisions
+
+- Exporter les captures du projet
+- Créer wireframe.md avec images
+- Annoter les choix UX
 
 2. **Validation Design:**
-   - Partager avec stakeholders
-   - Recueillir feedback
-   - Itérer si nécessaire
+
+- Valider avec l'équipe
+- Recueillir feedback
+- Itérer si nécessaire
 
 3. **Developer Handoff:**
    - Créer tasks pour développement

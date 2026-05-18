@@ -2,7 +2,27 @@
 
 ## 🎯 Vue d'Ensemble
 
-Les user stories suivantes définissent les fonctionnalités attendues du réseau social:
+Nous décrivons ci-dessous les user stories que nous avons rédigées et priorisées pour le projet. Le texte est rédigé à la première personne du pluriel pour refléter notre travail d'équipe et permettre d'indexer facilement chaque story sur les issues/PRs correspondantes du dépôt GitHub.
+
+---
+
+## 🔎 Preuves & Mapping GitHub
+
+Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocchet/social-network` :
+
+- Follow / friendship: https://github.com/arocchet/social-network/issues/13
+- Groups & Events: https://github.com/arocchet/social-network/issues/24
+- Group feed (posts in groups): https://github.com/arocchet/social-network/issues/30
+- Chat system: https://github.com/arocchet/social-network/issues/37
+- Notifications: https://github.com/arocchet/social-network/issues/39
+- DevOps / Docker / CI: https://github.com/arocchet/social-network/issues/40
+- CI pipeline (lint/test/build): https://github.com/arocchet/social-network/issues/45
+- Seed script / demo data: https://github.com/arocchet/social-network/issues/46
+- Mark notification as read: https://github.com/arocchet/social-network/issues/51
+- OAuth (Google): https://github.com/arocchet/social-network/issues/66
+- Internationalization (i18n): https://github.com/arocchet/social-network/issues/76
+- Settings: https://github.com/arocchet/social-network/issues/111
+- PR stabilisation (Docker/Neon/Prisma/Redis): https://github.com/arocchet/social-network/pull/118
 
 ---
 
@@ -599,8 +619,8 @@ Les user stories suivantes définissent les fonctionnalités attendues du résea
 ## 📝 Prochaines Étapes
 
 1. ✅ User stories écrites
-2. [ ] Wireframes créés (depuis Notion)
-3. [ ] Prototype Figma
-4. [ ] Validation avec stakeholders
+2. [ ] Wireframes créés pour le projet
+3. [ ] Prototype Figma du projet
+4. [ ] Validation avec l'équipe
 5. [ ] Sprint planning
 6. [ ] Implémentation Phase 1

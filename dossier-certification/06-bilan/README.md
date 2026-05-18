@@ -100,7 +100,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ---
 
-## 📈 Métriques de Référence
+## 📈 Métriques du Projet
 
 | Indicateur               | Valeur                 |
 | ------------------------ | ---------------------- |
@@ -111,7 +111,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 | Événements temps réel    | 4 familles principales |
 | Variables CSS thème      | 200+                   |
 
-Ces métriques servent de base objective pour montrer que le projet est suffisamment complet pour une soutenance de certification.
+Ces métriques servent à montrer que le projet est suffisamment complet pour mon examen de certification.
 
 ---
 

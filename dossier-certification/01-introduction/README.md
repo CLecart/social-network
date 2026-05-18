@@ -4,33 +4,37 @@
 
 ### 🎯 Problématique
 
-[À compléter avec le contexte du projet social-network]
+Le projet Social Network a pour objectif de concevoir une application web sociale moderne permettant à des utilisateurs de publier du contenu, interagir avec leur réseau, échanger en temps réel et organiser leurs échanges autour de groupes, d'événements et de notifications.
+
+Dans le cadre de la formation Zone01 Rouen Normandie, ce projet sert de support principal pour démontrer la maîtrise d'un développement full stack structuré, sécurisé et maintenable, en environnement collaboratif.
 
 ### 💡 Solution Proposée
 
 Plateforme de réseau social permettant:
 
-- [Feature 1]
-- [Feature 2]
-- [Feature 3]
+- publication de posts, stories et médias,
+- réactions et commentaires,
+- messagerie privée et notifications en temps réel,
+- gestion de profils, d'amis et de groupes,
+- recherche et découverte de contenu.
 
 ---
 
 ## 📊 Informations Projet
 
 **Titre:** Social Network  
-**Type:** Application web et mobile  
-**Stack Technologique:** Next.js, TypeScript, Prisma, PostgreSQL, Redis  
+**Type:** Application web
+**Stack Technologique:** Next.js, TypeScript, Prisma, PostgreSQL, Redis, Socket.io, Cloudinary
 **Déploiement:** Docker, Neon, Vercel
 
 ---
 
 ## 👥 Équipe
 
-- **Développeur:** [Ton nom]
-- **Mentor:** [À compléter]
-- **Date de démarrage:** [À compléter]
-- **Date de remise:** [À compléter]
+- **Développeur:** Christophe Lecart
+- **Cadre:** Projet de formation en équipe
+- **Date de démarrage:** 2024
+- **Statut:** Reconversion / recherche d'alternance
 
 ---
 
@@ -51,6 +55,7 @@ Plateforme de réseau social permettant:
 - [ ] Authentification sécurisée (JWT/Session)
 - [ ] Gestion des utilisateurs
 - [ ] Création et partage de contenu
+- [ ] Système de réactions et de commentaires
 - [ ] Système de notifications en temps réel
 - [ ] Responsive design (mobile/desktop)
 - [ ] Performance optimale
