@@ -1,0 +1,51 @@
+classDiagram
+  direction LR
+  class User {
+    +String id
+    +String email
+    +String username
+    +ProfileVisibility visibility
+  }
+  class Post {
+    +String id
+    +String message
+    +DateTime datetime
+    +Visibility visibility
+  }
+  class Comment {
+    +String id
+    +String message
+    +DateTime datetime
+  }
+  class Reaction {
+    +String id
+    +ReactionType type
+    +DateTime datetime
+  }
+  class Conversation {
+    +String id
+    +String title
+    +Boolean isGroup
+  }
+  class Message {
+    +String id
+    +String content
+    +MessageStatus status
+    +DateTime datetime
+  }
+  class Event {
+    +String id
+    +String title
+    +DateTime datetime
+  }
+
+  User "1" --> "0..*" Post : publie
+  User "1" --> "0..*" Comment : écrit
+  User "1" --> "0..*" Reaction : réagit
+  Post "1" --> "0..*" Comment : contient
+  Post "1" --> "0..*" Reaction : reçoit
+  Comment "1" --> "0..*" Reaction : reçoit
+  User "1" --> "0..*" Conversation : participe
+  Conversation "1" --> "0..*" Message : transporte
+  Conversation "1" --> "0..*" Event : héberge
+  User "1" --> "0..*" Event : organise
