@@ -21,39 +21,61 @@ Les éléments de déploiement et d'intégration continue sont documentés dans 
 
 - **app**: application Next.js 14+.
 - **db**: PostgreSQL pour les données métier.
-- **redis**: cache, sessions et pub/sub temps réel.
+- **Upstash Redis**: service temps réel configuré via variables d’environnement, sans service Redis local dédié dans `docker-compose.yml`.
 
 ### docker-compose.yml
 
-La configuration à la racine du projet orchestre les dépendances locales pour reproduire un environnement proche de la production.
+La configuration à la racine du projet orchestre l’exécution locale de l’application et de la base de données. Le service `app` utilise le fichier `.env` pour charger les variables nécessaires, notamment l’accès à PostgreSQL et à Upstash Redis.
 
 ```yaml
 services:
   app:
-    build: .
-    ports:
-      - "3000:3000"
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
       DATABASE_URL: ${DATABASE_URL}
-      REDIS_URL: ${REDIS_URL}
-      JWT_SECRET: ${JWT_SECRET}
-    depends_on:
-      - db
-      - redis
-
-  db:
-    image: postgres:16-alpine
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: "1"
     ports:
-      - "5432:5432"
+      - "3000:3000"
+
+  app-dev:
+    profiles: ["dev"]
+    image: oven/bun:1
+    working_dir: /app
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      POSTGRES_DB: social-network
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-
-  redis:
-    image: redis:7-alpine
+      DATABASE_URL: ${DATABASE_URL}
+      NODE_ENV: development
+      NEXT_TELEMETRY_DISABLED: "1"
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
+    command: >
+      sh -c "
+        bun install &&
+        bunx prisma generate &&
+        bunx prisma migrate deploy &&
+        bun run dev
+      "
     ports:
-      - "6379:6379"
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - app-node-modules:/app/node_modules
+      - app-next-cache:/app/.next
+    stdin_open: true
+    tty: true
+
+volumes:
+  app-node-modules:
+  app-next-cache:
 ```
 
 ### Dockerfile
@@ -74,7 +96,6 @@ Points importants:
 ### PostgreSQL sur Neon
 
 - **URL principale**: `DATABASE_URL`.
-- **URL directe**: `DIRECT_URL` pour Prisma.
 - **Migrations**: `prisma migrate deploy` en production.
 - **Sécurité**: secrets injectés via variables d'environnement, jamais committés.
 
@@ -105,12 +126,20 @@ Flux retenu:
 
 ```bash
 DATABASE_URL=postgresql://...
-DIRECT_URL=postgresql://...
-REDIS_URL=redis://...
 JWT_SECRET=...
 OAUTH_TOKEN_ENCRYPTION_KEY=...
-NEXT_PUBLIC_APP_URL=https://social-network.example.com
+UPSTASH_REDIS_REST_URL=https://...
+UPSTASH_REDIS_REST_TOKEN=...
+CLOUDINARY_CLOUD_NAME=...
+CLOUDINARY_API_KEY=...
+CLOUDINARY_API_SECRET=...
+NEXT_PUBLIC_GIPHY_API_KEY=...
+CLIENT_ID=...
+CLIENT_SECRET=...
+REDIRECT_URL=...
 ```
+
+> Pour le temps réel, le projet utilise Upstash Redis via `UPSTASH_REDIS_REST_URL` et `UPSTASH_REDIS_REST_TOKEN`.
 
 ### Contrôles post-déploiement
 
