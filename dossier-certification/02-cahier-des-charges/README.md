@@ -27,10 +27,9 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 
 #### 👤 Gestion des Utilisateurs
 
-- Inscription et authentification
-- Gestion de profil
-- Système de suivi (followers)
-- Vérification email
+- Inscription et authentification (email/password + Google OAuth)
+- Gestion de profil (avatar, bannière, bio, visibilité PUBLIC/PRIVATE)
+- Système de suivi (followers/following + demandes d'amitié)
 
 #### 📝 Publication et Interaction
 
@@ -48,9 +47,9 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 
 #### 🔍 Découverte
 
-- Recherche et filtrage
-- Recommandations
-- Explore/Trending
+- Recherche et filtrage (users, posts, groupes)
+- Historique de recherche
+- Exploration du contenu public
 
 ---
 
@@ -96,13 +95,15 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 
 ---
 
-## 🎯 Métriques de Succès
+## 🎯 Objectifs de Qualité
 
-- [ ] 99.5% d'uptime
-- [ ] Temps de charge < 2s
-- [ ] TTFB < 600ms
-- [ ] CLS < 0.1
-- [ ] Coverage tests > 80%
+| Indicateur              | Cible     | Approche retenue                          |
+| ----------------------- | --------- | ----------------------------------------- |
+| Disponibilité           | > 99 %    | Docker + Vercel + Neon serverless         |
+| Temps de chargement     | < 2 s     | SSR Next.js, React Query, lazy loading    |
+| TTFB                    | < 600 ms  | Edge CDN Vercel, cache Redis              |
+| Stabilité visuelle (CLS)| < 0.1     | Next.js Image, layout réservé             |
+| Couverture de tests     | > 80 %    | Jest, tests d'intégration API             |
 
 ---
 

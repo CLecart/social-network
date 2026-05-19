@@ -12,21 +12,21 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut   | Type              | Constraints      | Description            |
-| ---------- | ----------------- | ---------------- | ---------------------- |
-| id         | CUID              | PRIMARY KEY      | Identifiant unique     |
-| firstName  | String            | NULLABLE         | Prénom                 |
-| lastName   | String            | NULLABLE         | Nom de famille         |
-| password   | String            | NULLABLE         | Hash du mot de passe   |
-| email      | String            | UNIQUE           | Email utilisateur      |
-| birthDate  | DateTime          | NULLABLE         | Date de naissance      |
-| username   | String            | UNIQUE, NULLABLE | Pseudo unique          |
-| biography  | String            | NULLABLE         | Bio utilisateur        |
-| avatar     | String            | NULLABLE         | URL avatar             |
-| avatarId   | String            | NULLABLE         | ID Cloudinary          |
-| banner     | String            | NULLABLE         | URL bannière           |
-| bannerId   | String            | NULLABLE         | ID Cloudinary bannière |
-| visibility | ProfileVisibility | DEFAULT PUBLIC   | PUBLIC / PRIVATE       |
+| Attribut   | Type              | Constraints              | Description            |
+| ---------- | ----------------- | ------------------------ | ---------------------- |
+| id         | CUID              | PRIMARY KEY, NOT NULL    | Identifiant unique     |
+| firstName  | String            | NULL                     | Prénom                 |
+| lastName   | String            | NULL                     | Nom de famille         |
+| password   | String            | NULL                     | Hash du mot de passe   |
+| email      | String            | UNIQUE, NOT NULL         | Email utilisateur      |
+| birthDate  | DateTime          | NULL                     | Date de naissance      |
+| username   | String            | UNIQUE, NULL             | Pseudo unique          |
+| biography  | String            | NULL                     | Bio utilisateur        |
+| avatar     | String            | NULL                     | URL avatar             |
+| avatarId   | String            | NULL                     | ID Cloudinary          |
+| banner     | String            | NULL                     | URL bannière           |
+| bannerId   | String            | NULL                     | ID Cloudinary bannière |
+| visibility | ProfileVisibility | DEFAULT 'PUBLIC', NOT NULL | PUBLIC / PRIVATE     |
 
 ### Relations:
 
@@ -55,15 +55,15 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut   | Type       | Constraints    | Description                |
-| ---------- | ---------- | -------------- | -------------------------- |
-| id         | CUID       | PRIMARY KEY    | Identifiant unique         |
-| userId     | String     | FOREIGN KEY    | Propriétaire du post       |
-| message    | String     | NOT NULL       | Contenu texte              |
-| datetime   | DateTime   | DEFAULT now()  | Date de création           |
-| image      | String     | NULLABLE       | URL image                  |
-| mediaId    | String     | NULLABLE       | ID Cloudinary              |
-| visibility | Visibility | DEFAULT PUBLIC | PUBLIC / PRIVATE / FRIENDS |
+| Attribut   | Type       | Constraints                | Description                |
+| ---------- | ---------- | -------------------------- | -------------------------- |
+| id         | CUID       | PRIMARY KEY, NOT NULL      | Identifiant unique         |
+| userId     | String     | FOREIGN KEY, NOT NULL      | Propriétaire du post       |
+| message    | String     | NOT NULL                   | Contenu texte              |
+| datetime   | DateTime   | DEFAULT now(), NOT NULL    | Date de création           |
+| image      | String     | NULL                       | URL image                  |
+| mediaId    | String     | NULL                       | ID Cloudinary              |
+| visibility | Visibility | DEFAULT 'PUBLIC', NOT NULL | PUBLIC / PRIVATE / FRIENDS |
 
 ### Enums:
 
@@ -83,13 +83,13 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut | Type     | Constraints   | Description        |
-| -------- | -------- | ------------- | ------------------ |
-| id       | CUID     | PRIMARY KEY   | Identifiant unique |
-| postId   | String   | FOREIGN KEY   | Post parent        |
-| userId   | String   | FOREIGN KEY   | Auteur             |
-| message  | String   | NOT NULL      | Texte commentaire  |
-| datetime | DateTime | DEFAULT now() | Date création      |
+| Attribut | Type     | Constraints             | Description        |
+| -------- | -------- | ----------------------- | ------------------ |
+| id       | CUID     | PRIMARY KEY, NOT NULL   | Identifiant unique |
+| postId   | String   | FOREIGN KEY, NOT NULL   | Post parent        |
+| userId   | String   | FOREIGN KEY, NOT NULL   | Auteur             |
+| message  | String   | NOT NULL                | Texte commentaire  |
+| datetime | DateTime | DEFAULT now(), NOT NULL | Date création      |
 
 ### Relations:
 
@@ -105,15 +105,15 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut  | Type         | Constraints   | Description        |
-| --------- | ------------ | ------------- | ------------------ |
-| id        | CUID         | PRIMARY KEY   | Identifiant unique |
-| type      | ReactionType | NOT NULL      | Type de réaction   |
-| userId    | String       | FOREIGN KEY   | Auteur reaction    |
-| postId    | String       | NULLABLE      | Post réactionné    |
-| storyId   | String       | NULLABLE      | Story réactionnée  |
-| commentId | String       | NULLABLE      | Comment réactionné |
-| datetime  | DateTime     | DEFAULT now() | Date création      |
+| Attribut  | Type         | Constraints             | Description        |
+| --------- | ------------ | ----------------------- | ------------------ |
+| id        | CUID         | PRIMARY KEY, NOT NULL   | Identifiant unique |
+| type      | ReactionType | NOT NULL                | Type de réaction   |
+| userId    | String       | FOREIGN KEY, NOT NULL   | Auteur reaction    |
+| postId    | String       | NULL                    | Post réactionné    |
+| storyId   | String       | NULL                    | Story réactionnée  |
+| commentId | String       | NULL                    | Comment réactionné |
+| datetime  | DateTime     | DEFAULT now(), NOT NULL | Date création      |
 
 ### Enums:
 
@@ -140,17 +140,17 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut    | Type          | Constraints   | Description             |
-| ----------- | ------------- | ------------- | ----------------------- |
-| id          | CUID          | PRIMARY KEY   | Identifiant unique      |
-| senderId    | String        | FOREIGN KEY   | Expéditeur              |
-| receiverId  | String        | FOREIGN KEY   | Destinataire            |
-| message     | String        | NOT NULL      | Contenu message         |
-| image       | String        | NULLABLE      | URL image attachée      |
-| datetime    | DateTime      | DEFAULT now() | Date envoi              |
-| deliveredAt | DateTime      | NULLABLE      | Date livraison          |
-| readAt      | DateTime      | NULLABLE      | Date lecture            |
-| status      | MessageStatus | DEFAULT SENT  | SENT / DELIVERED / READ |
+| Attribut    | Type          | Constraints              | Description             |
+| ----------- | ------------- | ------------------------ | ----------------------- |
+| id          | CUID          | PRIMARY KEY, NOT NULL    | Identifiant unique      |
+| senderId    | String        | FOREIGN KEY, NOT NULL    | Expéditeur              |
+| receiverId  | String        | FOREIGN KEY, NOT NULL    | Destinataire            |
+| message     | String        | NOT NULL                 | Contenu message         |
+| image       | String        | NULL                     | URL image attachée      |
+| datetime    | DateTime      | DEFAULT now(), NOT NULL  | Date envoi              |
+| deliveredAt | DateTime      | NULL                     | Date livraison          |
+| readAt      | DateTime      | NULL                     | Date lecture            |
+| status      | MessageStatus | DEFAULT 'SENT', NOT NULL | SENT / DELIVERED / READ |
 
 ### Enums:
 
@@ -169,13 +169,13 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut  | Type             | Constraints   | Description           |
-| --------- | ---------------- | ------------- | --------------------- |
-| id        | CUID             | PRIMARY KEY   | Identifiant unique    |
-| userId    | String           | FOREIGN KEY   | Utilisateur demandeur |
-| friendId  | String           | FOREIGN KEY   | Ami destinataire      |
-| status    | InvitationStatus | NOT NULL      | PENDING / ACCEPTED    |
-| createdAt | DateTime         | DEFAULT now() | Date création         |
+| Attribut  | Type             | Constraints             | Description           |
+| --------- | ---------------- | ----------------------- | --------------------- |
+| id        | CUID             | PRIMARY KEY, NOT NULL   | Identifiant unique    |
+| userId    | String           | FOREIGN KEY, NOT NULL   | Utilisateur demandeur |
+| friendId  | String           | FOREIGN KEY, NOT NULL   | Ami destinataire      |
+| status    | InvitationStatus | NOT NULL                | PENDING / ACCEPTED    |
+| createdAt | DateTime         | DEFAULT now(), NOT NULL | Date création         |
 
 ### Enums:
 
@@ -198,14 +198,14 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut   | Type       | Constraints    | Description                |
-| ---------- | ---------- | -------------- | -------------------------- |
-| id         | CUID       | PRIMARY KEY    | Identifiant unique         |
-| userId     | String     | FOREIGN KEY    | Créateur                   |
-| datetime   | DateTime   | DEFAULT now()  | Date création              |
-| media      | String     | NULLABLE       | URL média                  |
-| mediaId    | String     | NULLABLE       | ID Cloudinary              |
-| visibility | Visibility | DEFAULT PUBLIC | PUBLIC / PRIVATE / FRIENDS |
+| Attribut   | Type       | Constraints                | Description                |
+| ---------- | ---------- | -------------------------- | -------------------------- |
+| id         | CUID       | PRIMARY KEY, NOT NULL      | Identifiant unique         |
+| userId     | String     | FOREIGN KEY, NOT NULL      | Créateur                   |
+| datetime   | DateTime   | DEFAULT now(), NOT NULL    | Date création              |
+| media      | String     | NULL                       | URL média                  |
+| mediaId    | String     | NULL                       | ID Cloudinary              |
+| visibility | Visibility | DEFAULT 'PUBLIC', NOT NULL | PUBLIC / PRIVATE / FRIENDS |
 
 ### Relations:
 
@@ -220,13 +220,13 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut  | Type     | Constraints   | Description             |
-| --------- | -------- | ------------- | ----------------------- |
-| id        | CUID     | PRIMARY KEY   | Identifiant unique      |
-| title     | String   | NULLABLE      | Nom conversation/groupe |
-| isGroup   | Boolean  | DEFAULT false | Est un groupe?          |
-| createdAt | DateTime | DEFAULT now() | Date création           |
-| ownerId   | String   | NULLABLE      | Propriétaire groupe     |
+| Attribut  | Type     | Constraints             | Description             |
+| --------- | -------- | ----------------------- | ----------------------- |
+| id        | CUID     | PRIMARY KEY, NOT NULL   | Identifiant unique      |
+| title     | String   | NULL                    | Nom conversation/groupe |
+| isGroup   | Boolean  | DEFAULT false, NOT NULL | Est un groupe           |
+| createdAt | DateTime | DEFAULT now(), NOT NULL | Date création           |
+| ownerId   | String   | NULL                    | Propriétaire groupe     |
 
 ### Relations:
 
@@ -246,14 +246,14 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut          | Type     | Constraints   | Description        |
-| ----------------- | -------- | ------------- | ------------------ |
-| id                | CUID     | PRIMARY KEY   | Identifiant unique |
-| userId            | String   | FOREIGN KEY   | Utilisateur        |
-| conversationId    | String   | FOREIGN KEY   | Conversation       |
-| joinedAt          | DateTime | DEFAULT now() | Date adhésion      |
-| lastSeenAt        | DateTime | NULLABLE      | Dernier accès      |
-| lastSeenMessageId | String   | NULLABLE      | Dernier message vu |
+| Attribut          | Type     | Constraints             | Description        |
+| ----------------- | -------- | ----------------------- | ------------------ |
+| id                | CUID     | PRIMARY KEY, NOT NULL   | Identifiant unique |
+| userId            | String   | FOREIGN KEY, NOT NULL   | Utilisateur        |
+| conversationId    | String   | FOREIGN KEY, NOT NULL   | Conversation       |
+| joinedAt          | DateTime | DEFAULT now(), NOT NULL | Date adhésion      |
+| lastSeenAt        | DateTime | NULL                    | Dernier accès      |
+| lastSeenMessageId | String   | NULL                    | Dernier message vu |
 
 ### Unique Constraint:
 
@@ -272,18 +272,18 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut       | Type          | Constraints   | Description             |
-| -------------- | ------------- | ------------- | ----------------------- |
-| id             | CUID          | PRIMARY KEY   | Identifiant unique      |
-| conversationId | String        | FOREIGN KEY   | Groupe/Conversation     |
-| senderId       | String        | FOREIGN KEY   | Expéditeur              |
-| message        | String        | NOT NULL      | Contenu                 |
-| image          | String        | NULLABLE      | URL image               |
-| sentAt         | DateTime      | DEFAULT now() | Date envoi              |
-| eventId        | String        | NULLABLE      | Événement associé       |
-| deliveredAt    | DateTime      | NULLABLE      | Date livraison          |
-| readAt         | DateTime      | NULLABLE      | Date lecture            |
-| status         | MessageStatus | DEFAULT SENT  | SENT / DELIVERED / READ |
+| Attribut       | Type          | Constraints              | Description             |
+| -------------- | ------------- | ------------------------ | ----------------------- |
+| id             | CUID          | PRIMARY KEY, NOT NULL    | Identifiant unique      |
+| conversationId | String        | FOREIGN KEY, NOT NULL    | Groupe/Conversation     |
+| senderId       | String        | FOREIGN KEY, NOT NULL    | Expéditeur              |
+| message        | String        | NOT NULL                 | Contenu                 |
+| image          | String        | NULL                     | URL image               |
+| sentAt         | DateTime      | DEFAULT now(), NOT NULL  | Date envoi              |
+| eventId        | String        | NULL                     | Événement associé       |
+| deliveredAt    | DateTime      | NULL                     | Date livraison          |
+| readAt         | DateTime      | NULL                     | Date lecture            |
+| status         | MessageStatus | DEFAULT 'SENT', NOT NULL | SENT / DELIVERED / READ |
 
 ### Relations:
 
@@ -299,14 +299,14 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut  | Type             | Constraints     | Description         |
-| --------- | ---------------- | --------------- | ------------------- |
-| id        | CUID             | PRIMARY KEY     | Identifiant unique  |
-| groupId   | String           | FOREIGN KEY     | Conversation/groupe |
-| inviterId | String           | FOREIGN KEY     | Invitant            |
-| invitedId | String           | FOREIGN KEY     | Invité              |
-| status    | InvitationStatus | DEFAULT PENDING | PENDING / ACCEPTED  |
-| createdAt | DateTime         | DEFAULT now()   | Date création       |
+| Attribut  | Type             | Constraints                | Description         |
+| --------- | ---------------- | -------------------------- | ------------------- |
+| id        | CUID             | PRIMARY KEY, NOT NULL      | Identifiant unique  |
+| groupId   | String           | FOREIGN KEY, NOT NULL      | Conversation/groupe |
+| inviterId | String           | FOREIGN KEY, NOT NULL      | Invitant            |
+| invitedId | String           | FOREIGN KEY, NOT NULL      | Invité              |
+| status    | InvitationStatus | DEFAULT 'PENDING', NOT NULL | PENDING / ACCEPTED |
+| createdAt | DateTime         | DEFAULT now(), NOT NULL    | Date création       |
 
 ### Unique Constraint:
 
@@ -326,13 +326,13 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut  | Type             | Constraints     | Description         |
-| --------- | ---------------- | --------------- | ------------------- |
-| id        | CUID             | PRIMARY KEY     | Identifiant unique  |
-| groupId   | String           | FOREIGN KEY     | Groupe/Conversation |
-| seeker    | String           | FOREIGN KEY     | Demandeur           |
-| status    | InvitationStatus | DEFAULT PENDING | PENDING / ACCEPTED  |
-| createdAt | DateTime         | DEFAULT now()   | Date création       |
+| Attribut  | Type             | Constraints                 | Description         |
+| --------- | ---------------- | --------------------------- | ------------------- |
+| id        | CUID             | PRIMARY KEY, NOT NULL       | Identifiant unique  |
+| groupId   | String           | FOREIGN KEY, NOT NULL       | Groupe/Conversation |
+| seeker    | String           | FOREIGN KEY, NOT NULL       | Demandeur           |
+| status    | InvitationStatus | DEFAULT 'PENDING', NOT NULL | PENDING / ACCEPTED  |
+| createdAt | DateTime         | DEFAULT now(), NOT NULL     | Date création       |
 
 ### Unique Constraint:
 
@@ -351,12 +351,12 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut | Type     | Constraints   | Description         |
-| -------- | -------- | ------------- | ------------------- |
-| id       | CUID     | PRIMARY KEY   | Identifiant unique  |
-| groupId  | String   | FOREIGN KEY   | Groupe/Conversation |
-| userId   | String   | FOREIGN KEY   | Membre              |
-| joinedAt | DateTime | DEFAULT now() | Date adhésion       |
+| Attribut | Type     | Constraints             | Description         |
+| -------- | -------- | ----------------------- | ------------------- |
+| id       | CUID     | PRIMARY KEY, NOT NULL   | Identifiant unique  |
+| groupId  | String   | FOREIGN KEY, NOT NULL   | Groupe/Conversation |
+| userId   | String   | FOREIGN KEY, NOT NULL   | Membre              |
+| joinedAt | DateTime | DEFAULT now(), NOT NULL | Date adhésion       |
 
 ### Unique Constraint:
 
@@ -375,15 +375,15 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut    | Type     | Constraints   | Description         |
-| ----------- | -------- | ------------- | ------------------- |
-| id          | CUID     | PRIMARY KEY   | Identifiant unique  |
-| title       | String   | NOT NULL      | Titre événement     |
-| description | String   | NOT NULL      | Description         |
-| datetime    | DateTime | NOT NULL      | Date/heure          |
-| groupId     | String   | FOREIGN KEY   | Groupe/Conversation |
-| ownerId     | String   | FOREIGN KEY   | Créateur            |
-| createdAt   | DateTime | DEFAULT now() | Date création       |
+| Attribut    | Type     | Constraints             | Description         |
+| ----------- | -------- | ----------------------- | ------------------- |
+| id          | CUID     | PRIMARY KEY, NOT NULL   | Identifiant unique  |
+| title       | String   | NOT NULL                | Titre événement     |
+| description | String   | NOT NULL                | Description         |
+| datetime    | DateTime | NOT NULL                | Date/heure          |
+| groupId     | String   | FOREIGN KEY, NOT NULL   | Groupe/Conversation |
+| ownerId     | String   | FOREIGN KEY, NOT NULL   | Créateur            |
+| createdAt   | DateTime | DEFAULT now(), NOT NULL | Date création       |
 
 ### Relations:
 
@@ -400,13 +400,13 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut  | Type       | Constraints   | Description        |
-| --------- | ---------- | ------------- | ------------------ |
-| id        | CUID       | PRIMARY KEY   | Identifiant unique |
-| userId    | String     | FOREIGN KEY   | Utilisateur        |
-| eventId   | String     | FOREIGN KEY   | Événement          |
-| status    | RsvpStatus | NOT NULL      | YES / NO / MAYBE   |
-| createdAt | DateTime   | DEFAULT now() | Date réponse       |
+| Attribut  | Type       | Constraints             | Description        |
+| --------- | ---------- | ----------------------- | ------------------ |
+| id        | CUID       | PRIMARY KEY, NOT NULL   | Identifiant unique |
+| userId    | String     | FOREIGN KEY, NOT NULL   | Utilisateur        |
+| eventId   | String     | FOREIGN KEY, NOT NULL   | Événement          |
+| status    | RsvpStatus | NOT NULL                | YES / NO / MAYBE   |
+| createdAt | DateTime   | DEFAULT now(), NOT NULL | Date réponse       |
 
 ### Enums:
 
@@ -429,14 +429,14 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut             | Type     | Constraints   | Description            |
-| -------------------- | -------- | ------------- | ---------------------- |
-| id                   | CUID     | PRIMARY KEY   | Identifiant unique     |
-| userId               | String   | UNIQUE FK     | Utilisateur            |
-| theme                | String   | DEFAULT light | light / dark           |
-| language             | String   | DEFAULT en    | Code langue (en, fr)   |
-| notificationsEnabled | Boolean  | DEFAULT true  | Notifications activées |
-| createdAt            | DateTime | DEFAULT now() | Date création          |
+| Attribut             | Type     | Constraints                  | Description            |
+| -------------------- | -------- | ---------------------------- | ---------------------- |
+| id                   | CUID     | PRIMARY KEY, NOT NULL        | Identifiant unique     |
+| userId               | String   | UNIQUE, FOREIGN KEY, NOT NULL | Utilisateur           |
+| theme                | String   | DEFAULT 'light', NOT NULL    | light / dark           |
+| language             | String   | DEFAULT 'en', NOT NULL       | Code langue (en, fr)   |
+| notificationsEnabled | Boolean  | DEFAULT true, NOT NULL       | Notifications activées |
+| createdAt            | DateTime | DEFAULT now(), NOT NULL      | Date création          |
 
 ### Relations:
 
@@ -450,14 +450,14 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut  | Type     | Constraints   | Description        |
-| --------- | -------- | ------------- | ------------------ |
-| id        | CUID     | PRIMARY KEY   | Identifiant unique |
-| userId    | String   | FOREIGN KEY   | Destinataire       |
-| type      | String   | NOT NULL      | Type notification  |
-| message   | String   | NOT NULL      | Contenu            |
-| isRead    | Boolean  | DEFAULT false | Lue?               |
-| createdAt | DateTime | DEFAULT now() | Date création      |
+| Attribut  | Type     | Constraints             | Description        |
+| --------- | -------- | ----------------------- | ------------------ |
+| id        | CUID     | PRIMARY KEY, NOT NULL   | Identifiant unique |
+| userId    | String   | FOREIGN KEY, NOT NULL   | Destinataire       |
+| type      | String   | NOT NULL                | Type notification  |
+| message   | String   | NOT NULL                | Contenu            |
+| isRead    | Boolean  | DEFAULT false, NOT NULL | Lue                |
+| createdAt | DateTime | DEFAULT now(), NOT NULL | Date création      |
 
 ### Index:
 
@@ -475,19 +475,19 @@ Analysé depuis `prisma/schema.prisma`
 
 ### Attributs:
 
-| Attribut          | Type   | Constraints | Description         |
-| ----------------- | ------ | ----------- | ------------------- |
-| id                | CUID   | PRIMARY KEY | Identifiant unique  |
-| userId            | String | FOREIGN KEY | Utilisateur         |
-| provider          | String | NOT NULL    | google, github, etc |
-| providerAccountId | String | NOT NULL    | ID chez provider    |
-| refresh_token     | String | NULLABLE    | Refresh token       |
-| access_token      | String | NULLABLE    | Access token        |
-| expires_at        | BigInt | NULLABLE    | Expiration          |
-| token_type        | String | NULLABLE    | Type de token       |
-| scope             | String | NULLABLE    | Permissions         |
-| id_token          | String | NULLABLE    | ID token            |
-| session_state     | String | NULLABLE    | État session        |
+| Attribut          | Type   | Constraints           | Description         |
+| ----------------- | ------ | --------------------- | ------------------- |
+| id                | CUID   | PRIMARY KEY, NOT NULL | Identifiant unique  |
+| userId            | String | FOREIGN KEY, NOT NULL | Utilisateur         |
+| provider          | String | NOT NULL              | google, github, etc |
+| providerAccountId | String | NOT NULL              | ID chez provider    |
+| refresh_token     | String | NULL                  | Refresh token       |
+| access_token      | String | NULL                  | Access token        |
+| expires_at        | BigInt | NULL                  | Expiration          |
+| token_type        | String | NULL                  | Type de token       |
+| scope             | String | NULL                  | Permissions         |
+| id_token          | String | NULL                  | ID token            |
+| session_state     | String | NULL                  | État session        |
 
 ### Unique Constraint:
 

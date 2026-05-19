@@ -68,13 +68,15 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 | Élément                 | Nombre     | Statut                                 |
 | ----------------------- | ---------- | -------------------------------------- |
 | Modèles Prisma          | 18         | ✅ Complets et documentés              |
-| Endpoints API           | 20+        | ✅ Spécifications complètes            |
-| Pages principales       | 12+        | ✅ Routes implémentées                 |
-| User stories            | 43         | ✅ Rôles, priorités, estimations       |
-| Événements temps réel   | 4 familles | ✅ Chat, notifications, typing, status |
-| Migrations DB           | 2+         | ✅ Structure versionnée                |
-| Lignes de documentation | 4000+      | ✅ Dossier et code commenté            |
-| Tests d'intégration     | 1+         | ✅ Authentification vérifiée           |
+| Endpoints API           | 60+        | ✅ Spécifications complètes (api-spec.md)      |
+| Pages principales       | 14         | ✅ Routes implémentées                         |
+| Composants React        | 110+       | ✅ Design system + composants métier           |
+| Hooks personnalisés     | 30+        | ✅ Logique UI découplée                        |
+| User stories            | 38+        | ✅ Rôles, priorités, critères d'acceptation    |
+| Événements temps réel   | 4 familles | ✅ Chat, notifications, typing, statuts        |
+| Migrations DB           | 2+         | ✅ Structure versionnée                        |
+| Lignes de documentation | 4000+      | ✅ Dossier et code                             |
+| Tests d'intégration     | Auth       | ✅ Inscription + connexion vérifiées           |
 
 ### Résultats Obtenus
 
@@ -217,6 +219,8 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 | Pages principales        | 12+                    |
 | User stories             | 43                     |
 | Événements temps réel    | 4 familles principales |
+| Composants React         | 110+                   |
+| Hooks personnalisés      | 30+                    |
 | Variables CSS thème      | 200+                   |
 
 Ces métriques servent à montrer que le projet est suffisamment complet pour mon examen de certification.

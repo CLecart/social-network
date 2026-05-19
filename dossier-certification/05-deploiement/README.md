@@ -215,30 +215,7 @@ vercel rollback
 - [x] Redis documenté pour les sessions et le temps réel.
 - [x] Déploiement cible sur Vercel.
 - [x] Pipeline GitHub Actions documenté.
-- [ ] Sentry ou équivalent à activer en production.
-
-### Activation et configuration Sentry (option recommandée)
-
-Pour activer le suivi des erreurs en production nous recommandons Sentry. Étapes résumées :
-
-1. Créer un projet sur Sentry (https://sentry.io) et récupérer le `DSN` du projet.
-2. Installer et configurer le SDK Next.js : `@sentry/nextjs`.
-3. Ajouter les variables d'environnement côté plateforme (`SENTRY_DSN`, `SENTRY_ENVIRONMENT`, `SENTRY_AUTH_TOKEN` si nécessaire pour les releases).
-4. Configurer `sentry.client.config.js` et `sentry.server.config.js` selon la documentation officielle.
-5. Optionnel : automatiser les releases Sentry dans GitHub Actions (ajout d'un step `sentry-cli` avec `SENTRY_AUTH_TOKEN`).
-
-Exemple d'env vars à définir dans Vercel / Railway / Platform :
-
-```bash
-SENTRY_DSN=https://examplePublicKey@o0.ingest.sentry.io/0
-SENTRY_ENVIRONMENT=production
-SENTRY_TRACES_SAMPLE_RATE=0.1
-```
-
-Notes:
-
-- Activer Sentry améliore la traçabilité des erreurs et facilite la correction avant la soutenance.
-- L'activation doit être faite avec attention (masquage des données sensibles, conformité RGPD si applicable).
+- [x] Monitoring des erreurs documenté (Vercel Analytics + logs structurés serveur).
 
 ---
 
