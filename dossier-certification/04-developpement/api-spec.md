@@ -2,7 +2,7 @@
 
 ## Vue d'Ensemble
 
-Tous les endpoints requièrent une authentification JWT via cookie HTTP-only (sauf `/auth/login` et `/auth/register`).
+Tous les endpoints requièrent une authentification JWT via cookie HTTP-only `authToken` (sauf les routes sous `/api/public/...`, notamment `/api/public/auth/login` et `/api/public/auth/register`). Le middleware (`src/middleware.ts`) protège tout par défaut.
 
 ### Response Format Standard
 
@@ -31,7 +31,7 @@ Tous les endpoints requièrent une authentification JWT via cookie HTTP-only (sa
 
 ## 🔐 Authentification
 
-### POST /api/auth/login
+### POST /api/public/auth/login
 
 Connexion utilisateur.
 
@@ -70,12 +70,12 @@ Connexion utilisateur.
 
 **Notes:**
 
-- JWT stocké en cookie HTTP-only sécurisé
-- Session Redis créée côté serveur
+- JWT signé par `jose`, stocké dans un cookie `authToken` (HttpOnly, SameSite=Lax).
+- Pas de session Redis : le JWT est auto-suffisant et validé à chaque requête par le middleware.
 
 ---
 
-### POST /api/auth/register
+### POST /api/public/auth/register
 
 Inscription nouvel utilisateur.
 
@@ -118,7 +118,7 @@ Inscription nouvel utilisateur.
 
 ---
 
-### POST /api/auth/logout
+### POST /api/public/auth/logout
 
 Déconnexion utilisateur.
 
@@ -134,8 +134,24 @@ Déconnexion utilisateur.
 
 **Notes:**
 
-- Invalide la session Redis
-- Supprime le cookie JWT
+- Supprime le cookie `authToken` côté client.
+- Aucune session serveur à invalider (le JWT est stateless ; la révocation forcée n'est pas implémentée).
+
+---
+
+### GET /api/public/auth/redirect
+
+Initie le flux OAuth Google (redirige vers `accounts.google.com`).
+
+**Auth:** ❌
+
+---
+
+### GET /api/public/auth/callback
+
+Callback OAuth Google : échange le `code` contre un token, crée/récupère l'utilisateur, signe un JWT et pose le cookie `authToken`.
+
+**Auth:** ❌ (mais sécurisé par le `state` OAuth)
 
 ---
 
@@ -861,116 +877,101 @@ Récupère les invitations de groupe en attente.
 
 ---
 
-## 🔄 Temps Réel (WebSocket / Socket.io)
+## 🔄 Temps Réel (Server-Sent Events)
 
-### Événements Socket.io
+Le projet n'utilise pas Socket.io ni de WebSocket persistant. Le push serveur → client passe par des endpoints **Server-Sent Events** qui pollent Upstash Redis pour détecter les nouveaux messages et statuts. C'est un compromis serverless-friendly (compatible Vercel), suffisant pour le volume cible.
 
-Les événements suivants sont gérés côté client et serveur via Socket.io (Redis adapter pour scalabilité multi-instance).
+### GET /api/private/chat/listen
 
-**Principaux événements:**
+Flux SSE des messages d'une conversation (direct ou groupe).
 
-#### `message:create`
+**Auth:** ✅ (cookie `authToken`)
 
-Nouveau message direct ou groupe.
+**Query Params :**
 
-**Payload:**
+- `conversationId` (requis)
+- `type` : `direct` (défaut) ou `group`
 
-```json
-{
-  "id": "msg-123",
-  "conversationId": "conv-456",
-  "senderId": "user-789",
-  "message": "Hello!",
-  "timestamp": "2025-05-04T10:00:00Z",
-  "status": "SENT"
-}
+**Response :**
+
+- Header `Content-Type: text/event-stream`
+- Premier event : `data: {"type":"connected"}\n\n`
+- Events suivants à chaque nouveau message détecté dans Redis (`latest:chat:{from}:{to}` ou `latest:chat:group:{groupId}`) :
+
+```
+data: {"id":"msg-123","conversationId":"conv-456","senderId":"user-789","message":"Hello!","datetime":"2025-05-04T10:00:00Z","status":"SENT"}
+
 ```
 
-#### `message:status`
+### GET /api/private/chat/typing/listen
 
-Mise à jour statut (DELIVERED / READ).
+Flux SSE des indicateurs de saisie.
 
-**Payload:**
-
-```json
-{
-  "messageId": "msg-123",
-  "status": "READ",
-  "timestamp": "2025-05-04T10:01:00Z"
-}
-```
-
-#### `notification:new`
-
-Nouvelle notification (like, comment, follow, etc).
-
-**Payload:**
+**Payload type :**
 
 ```json
-{
-  "id": "notif-123",
-  "userId": "user-456",
-  "type": "like",
-  "message": "John Doe liked your post",
-  "timestamp": "2025-05-04T10:05:00Z"
-}
+{ "conversationId": "conv-123", "userId": "user-456", "isTyping": true }
 ```
 
-#### `typing`
+### POST /api/private/chat/send
 
-Indicateur de saisie.
+Envoie un message : persiste via Prisma puis met à jour la clé Redis lue par les flux SSE des destinataires.
 
-**Payload:**
+**Auth:** ✅
 
-```json
-{
-  "conversationId": "conv-123",
-  "userId": "user-456",
-  "isTyping": true
-}
-```
+### POST /api/private/chat/typing
 
-#### `presence`
+Pousse un event `typing` dans Redis pour qu'il soit relayé par `/typing/listen`.
 
-Statut en ligne/hors ligne.
+### Statuts (DELIVERED / READ)
 
-**Payload:**
+Mis à jour via des endpoints REST classiques, pas via SSE :
 
-```json
-{
-  "userId": "user-456",
-  "isOnline": true,
-  "lastSeen": "2025-05-04T10:00:00Z"
-}
-```
+- `POST /api/private/conversations/[id]/mark-seen` (groupe)
+- `POST /api/private/direct-conversations/[id]/mark-seen` (DM)
+- `PATCH /api/private/direct-messages/[id]/status`
+- `PATCH /api/private/messages/[id]/status`
+
+### Notifications
+
+- `GET /api/private/notifications` — liste paginée
+- `PATCH /api/private/notifications/[id]/read` — marquer comme lu
+
+> Les notifications en quasi-temps réel reposent aujourd'hui sur le polling client + le rafraîchissement déclenché par les actions REST. Un flux SSE dédié `/notifications/listen` est un axe d'amélioration possible.
 
 ---
 
 ## 📊 Résumé Endpoints
 
-| Verb | Endpoint                       | Description          | Auth |
-| ---- | ------------------------------ | -------------------- | ---- |
-| POST | `/api/auth/login`              | Connexion            | ❌   |
-| POST | `/api/auth/register`           | Inscription          | ❌   |
-| POST | `/api/auth/logout`             | Déconnexion          | ✅   |
-| GET  | `/api/user/me`                 | ID utilisateur       | ✅   |
-| GET  | `/api/private/me`              | Profil complet       | ✅   |
-| PUT  | `/api/private/me`              | Modifier profil      | ✅   |
-| GET  | `/api/private/user`            | Profil public        | ✅   |
-| GET  | `/api/private/post`            | Lister posts         | ✅   |
-| POST | `/api/private/post`            | Créer post           | ✅   |
-| GET  | `/api/private/stories`         | Lister stories       | ✅   |
-| POST | `/api/private/stories`         | Créer story          | ✅   |
-| GET  | `/api/private/messages`        | Lister messages      | ✅   |
-| GET  | `/api/private/conversations`   | Lister conversations | ✅   |
-| GET  | `/api/private/groups`          | Lister groupes       | ✅   |
-| POST | `/api/private/groups`          | Créer groupe         | ✅   |
-| GET  | `/api/private/events`          | Lister événements    | ✅   |
-| POST | `/api/private/events`          | Créer événement      | ✅   |
-| GET  | `/api/private/friend-requests` | Demandes d'amitié    | ✅   |
-| POST | `/api/private/friend-requests` | Envoyer demande      | ✅   |
-| GET  | `/api/private/search`          | Rechercher           | ✅   |
-| GET  | `/api/private/invitations`     | Invitations groupe   | ✅   |
+| Verb  | Endpoint                              | Description                | Auth |
+| ----- | ------------------------------------- | -------------------------- | ---- |
+| POST  | `/api/public/auth/login`              | Connexion                  | ❌   |
+| POST  | `/api/public/auth/register`           | Inscription                | ❌   |
+| POST  | `/api/public/auth/logout`             | Déconnexion                | ✅   |
+| GET   | `/api/public/auth/redirect`           | Init OAuth Google          | ❌   |
+| GET   | `/api/public/auth/callback`           | Callback OAuth Google      | ❌   |
+| GET   | `/api/user/me`                        | ID utilisateur             | ✅   |
+| GET   | `/api/private/me`                     | Profil complet             | ✅   |
+| PUT   | `/api/private/me`                     | Modifier profil            | ✅   |
+| GET   | `/api/private/user`                   | Profil public              | ✅   |
+| GET   | `/api/private/post`                   | Lister posts               | ✅   |
+| POST  | `/api/private/post`                   | Créer post                 | ✅   |
+| GET   | `/api/private/stories`                | Lister stories             | ✅   |
+| POST  | `/api/private/stories`                | Créer story                | ✅   |
+| GET   | `/api/private/messages`               | Lister messages            | ✅   |
+| GET   | `/api/private/conversations`          | Lister conversations       | ✅   |
+| GET   | `/api/private/groups`                 | Lister groupes             | ✅   |
+| POST  | `/api/private/groups`                 | Créer groupe               | ✅   |
+| GET   | `/api/private/events`                 | Lister événements          | ✅   |
+| POST  | `/api/private/events`                 | Créer événement            | ✅   |
+| GET   | `/api/private/friend-requests`        | Demandes d'amitié          | ✅   |
+| POST  | `/api/private/friend-requests`        | Envoyer demande            | ✅   |
+| GET   | `/api/private/search`                 | Rechercher                 | ✅   |
+| GET   | `/api/private/invitations`            | Invitations groupe         | ✅   |
+| GET   | `/api/private/chat/listen` *(SSE)*    | Flux temps réel messages   | ✅   |
+| POST  | `/api/private/chat/send`              | Envoyer un message         | ✅   |
+| GET   | `/api/private/chat/typing/listen` *(SSE)* | Flux typing indicator  | ✅   |
+| POST  | `/api/private/chat/typing`            | Pousser un event typing    | ✅   |
 
 ---
 
@@ -986,11 +987,12 @@ Statut en ligne/hors ligne.
 
 ## 🔗 Implémentation
 
-- **Stack:** Next.js API Routes + Prisma + PostgreSQL
-- **Auth:** JWT + Redis sessions
-- **Real-time:** Socket.io + Redis pub/sub
+- **Stack:** Next.js 15 API Routes (App Router) + Prisma 6 + PostgreSQL (Neon)
+- **Auth:** JWT custom (`jose` + `jsonwebtoken`) + bcrypt, cookie `authToken`
+- **Real-time:** Server-Sent Events + Upstash Redis (polling REST)
 - **Storage:** Cloudinary
-- **Validation:** Zod schemas
+- **Validation:** Zod schemas (`src/lib/schemas/`)
+- **Runtime/Package manager:** Bun (`bun.lock`, image Docker `oven/bun:1`)
 
 ---
 

@@ -73,7 +73,7 @@ _(extraits de 02-cahier-des-charges + CDA mapping)_
 
 - [x] Refonte UI responsive
 - [x] Authentification JWT
-- [x] Real-time notifications (Socket.io + Redis)
+- [x] Real-time notifications & chat (Server-Sent Events + Upstash Redis)
 - [x] Database design (Prisma + PostgreSQL)
 - [x] Upload d'images (Cloudinary)
 - [x] Internationalization (i18n)
@@ -162,15 +162,15 @@ _(partie de 04-developpement)_
 ┌─────────────────────────────────────────┐
 │     CLIENT (React/Next.js)              │
 │     - UI Components (Tailwind + ShadCN) │
-│     - Real-time (Socket.io client)      │
+│     - Real-time (EventSource / SSE)     │
 │     - State mgmt (Context/zustand)      │
 └──────────────────┬──────────────────────┘
                    │ HTTP + WebSocket
 ┌──────────────────▼──────────────────────┐
 │     SERVEUR (Next.js API Routes)        │
-│     - Authentification (NextAuth/JWT)   │
+│     - Authentification (JWT custom)     │
 │     - Business logic                    │
-│     - API REST + Socket.io server       │
+│     - API REST + endpoints SSE          │
 └──────────────────┬──────────────────────┘
                    │ Prisma ORM
 ┌──────────────────▼──────────────────────┐
@@ -216,9 +216,9 @@ src/
 | Language           | TypeScript                   | Typage fort             |
 | Database           | PostgreSQL (Neon)            | Relationnel, ACID       |
 | ORM                | Prisma v5                    | Type-safe, migrations   |
-| Real-time          | Socket.io + Redis            | Notifications, chat     |
+| Real-time          | Server-Sent Events + Upstash Redis | Notifications, chat (serverless-friendly) |
 | Images             | Cloudinary                   | CDN, transformations    |
-| Auth               | NextAuth v5 / JWT            | Sécurisé, standard      |
+| Auth               | JWT custom (`jose` + `bcrypt`) + OAuth Google via `googleapis` | Stateless, contrôle total |
 | Testing            | Jest + React Testing Library | Unit + integration      |
 | Deployment         | Docker + Vercel/Railway      | Containerized, scalable |
 
@@ -248,7 +248,7 @@ Schéma d'architecture haut niveau (flows utilisateurs)
 
 #### **5.2 Authentification & Sécurité**
 
-- NextAuth configuration
+- Configuration JWT custom (`jose.SignJWT` + secret env)
 - JWT tokens
 - Password hashing
 - Session management
@@ -260,12 +260,12 @@ Schéma d'architecture haut niveau (flows utilisateurs)
 
 #### **5.3 API REST & Routes**
 
-- Endpoints principaux (POST /api/auth/login, etc.)
+- Endpoints principaux (POST /api/public/auth/login, /api/public/auth/register, etc.)
 - Validation des données (Zod schemas)
 - Error handling
 - Code extraits
 
-#### **5.4 Real-time avec Socket.io**
+#### **5.4 Real-time avec Server-Sent Events + Upstash Redis**
 
 - Connexion client/serveur
 - Event handlers (messages, notifications)
@@ -404,7 +404,7 @@ _(nouvelle section - valorise l'apprentissage)_
 
 #### **8.1 Domaines Explorés**
 
-- [ ] Real-time avec Socket.io (au-delà du simple chat)
+- [ ] Real-time avec Server-Sent Events (limites du polling Upstash, pistes pour pub/sub natif)
 - [ ] Optimisation de performance (pagination, lazy loading)
 - [ ] Scalabilité (caching, indexing)
 - [ ] Sécurité (JWT, CORS, rate limiting)
@@ -413,7 +413,7 @@ _(nouvelle section - valorise l'apprentissage)_
 
 #### **8.2 Sources d'Apprentissage**
 
-- [ ] Documentation officielle (Next.js, Socket.io, Prisma)
+- [ ] Documentation officielle (Next.js, MDN Server-Sent Events, Prisma, Upstash Redis)
 - [ ] Articles/blogs (Dev.to, Medium)
 - [ ] Communautés (Discord, GitHub)
 - [ ] Essais/erreurs personnels

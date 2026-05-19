@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Diagrammes UML — Social Network — RNCP 37873</title>
+<style>
+  :root { --bg:#fff; --fg:#222; --accent:#0066cc; --muted:#666; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 1600px; margin: 0 auto; padding: 24px; color: var(--fg); background: var(--bg); }
+  h1 { font-size: 28px; margin: 0 0 8px; }
+  .lead { color: var(--muted); margin: 0 0 32px; }
+  nav { background: #f4f6f8; padding: 16px; border-radius: 8px; margin-bottom: 32px; }
+  nav strong { display: block; margin-bottom: 8px; }
+  nav a { display: inline-block; margin: 4px 12px 4px 0; color: var(--accent); text-decoration: none; }
+  nav a:hover { text-decoration: underline; }
+  section { margin-bottom: 48px; padding-bottom: 32px; border-bottom: 1px solid #eee; }
+  section h2 { font-size: 20px; }
+  .actions { margin: 12px 0 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .actions button, .actions .btn {
+    background: var(--accent); color: white; border: none; padding: 8px 14px; border-radius: 6px;
+    font-size: 14px; cursor: pointer; text-decoration: none; display: inline-block;
+  }
+  .actions button:hover, .actions .btn:hover { background: #004999; }
+  .status { font-size: 13px; color: var(--muted); margin-top: 8px; min-height: 18px; }
+  .status.err { color: #c00; }
+  .mermaid { background: #fafafa; padding: 16px; border: 1px solid #eee; border-radius: 8px; overflow-x: auto; text-align: center; }
+  .mermaid[data-processed="true"] { background: transparent; border: none; padding: 0; }
+  .mermaid svg { max-width: 100%; height: auto; }
+</style>
+</head>
+<body>
+<h1>Diagrammes UML — Social Network</h1>
+<p class="lead">Projet RNCP 37873 — CDA. Christophe Lecart, Zone01 Rouen Normandie. <strong>Acteurs satellites en haut, Utilisateur central, domaines autour — format paysage 16:9.</strong></p>
+
+<nav>
+<strong>Sommaire :</strong>
+<a href="#classes-simplifie">Classes — simplifié</a>
+<a href="#classes-complet">Classes — complet</a>
+<a href="#enums">Enums</a>
+<a href="#use-case-complet">Cas d'utilisation — complet</a>
+<a href="#use-case-simplifie">Cas d'utilisation — simplifié</a>
+</nav>
+
+
+<section id="classes-simplifie">
+  <h2>Diagramme de Classes — Version simplifiée (radial)</h2>
+  <div class="actions">
+    <button onclick="downloadSVG('classes-simplifie')">⬇️ Télécharger en SVG</button>
+    <button onclick="downloadPNG('classes-simplifie', 2)">⬇️ Télécharger en PNG (2× HD)</button>
+    <button onclick="downloadPNG('classes-simplifie', 3)">⬇️ PNG (3× ultra-HD)</button>
+    <button onclick="copyMermaid('classes-simplifie')">📋 Copier la source</button>
+    <a class="btn" href="https://mermaid.live/edit" target="_blank" rel="noopener">↗️ mermaid.live</a>
+  </div>
+  <pre class="mermaid" id="src-classes-simplifie">flowchart TB
+  %% Rangée haute — 3 entités de contenu
+  subgraph TOP [" "]
+    direction LR
+    Post["&lt;b&gt;Post&lt;/b&gt;&lt;br/&gt;id : String&lt;br/&gt;message : String&lt;br/&gt;visibility : Visibility"]
+    Comment["&lt;b&gt;Comment&lt;/b&gt;&lt;br/&gt;id : String&lt;br/&gt;message : String"]
+    Reaction["&lt;b&gt;Reaction&lt;/b&gt;&lt;br/&gt;id : String&lt;br/&gt;type : ReactionType"]
+  end
+
+  %% Rangée centrale — User au cœur
+  subgraph CENTER [" "]
+    direction LR
+    User(["&lt;b&gt;👤 User&lt;/b&gt;&lt;br/&gt;id : String&lt;br/&gt;email : String&lt;br/&gt;username : String&lt;br/&gt;visibility : ProfileVisibility"]):::central
+  end
+
+  %% Rangée basse — 3 entités d'interaction
+  subgraph BOTTOM [" "]
+    direction LR
+    Conversation["&lt;b&gt;Conversation&lt;/b&gt;&lt;br/&gt;id : String&lt;br/&gt;title : String&lt;br/&gt;isGroup : Boolean"]
+    Message["&lt;b&gt;Message&lt;/b&gt;&lt;br/&gt;id : String&lt;br/&gt;content : String&lt;br/&gt;status : MessageStatus"]
+    Event["&lt;b&gt;Event&lt;/b&gt;&lt;br/&gt;id : String&lt;br/&gt;title : String&lt;br/&gt;datetime : DateTime"]
+  end
+
+  %% Relations User → contenus (rangée haute)
+  User --&gt;|publie 0..*| Post
+  User --&gt;|écrit 0..*| Comment
+  User --&gt;|réagit 0..*| Reaction
+
+  %% Relations entre contenus
+  Post --&gt;|contient 0..*| Comment
+  Post --&gt;|reçoit 0..*| Reaction
+  Comment --&gt;|reçoit 0..*| Reaction
+
+  %% Relations User → interactions (rangée basse)
+  User --&gt;|participe 0..*| Conversation
+  User --&gt;|organise 0..*| Event
+
+  %% Relations entre interactions
+  Conversation --&gt;|transporte 0..*| Message
+  Conversation --&gt;|héberge 0..*| Event
+
+  classDef central fill:#ff9966,stroke:#c44d00,stroke-width:3px,color:#000,font-weight:bold;</pre>
+</section>
+
+<section id="classes-complet">
+  <h2>Diagramme de Classes — Version complète (18 entités)</h2>
+  <div class="actions">
+    <button onclick="downloadSVG('classes-complet')">⬇️ Télécharger en SVG</button>
+    <button onclick="downloadPNG('classes-complet', 2)">⬇️ Télécharger en PNG (2× HD)</button>
+    <button onclick="downloadPNG('classes-complet', 3)">⬇️ PNG (3× ultra-HD)</button>
+    <button onclick="copyMermaid('classes-complet')">📋 Copier la source</button>
+    <a class="btn" href="https://mermaid.live/edit" target="_blank" rel="noopener">↗️ mermaid.live</a>
+  </div>
+  <pre class="mermaid" id="src-classes-complet">classDiagram
+  direction TB
+
+  class User {
+    +String id PK
+    +String firstName
+    +String lastName
+    +String password
+    +String email UK
+    +DateTime birthDate
+    +String username UK
+    +String biography
+    +String avatar
+    +String avatarId
+    +String banner
+    +String bannerId
+    +ProfileVisibility visibility
+  }
+  class Account {
+    +String id PK
+    +String userId FK
+    +String provider
+    +String providerAccountId
+    +String refresh_token
+    +String access_token
+    +BigInt expires_at
+    +String token_type
+    +String scope
+    +String id_token
+    +String session_state
+  }
+  class Post {
+    +String id PK
+    +String userId FK
+    +String message
+    +DateTime datetime
+    +String image
+    +String mediaId
+    +Visibility visibility
+  }
+  class Story {
+    +String id PK
+    +String userId FK
+    +DateTime datetime
+    +String media
+    +String mediaId
+    +Visibility visibility
+  }
+  class Comment {
+    +String id PK
+    +String postId FK
+    +String userId FK
+    +String message
+    +DateTime datetime
+  }
+  class Reaction {
+    +String id PK
+    +ReactionType type
+    +String userId FK
+    +String postId FK
+    +String storyId FK
+    +String commentId FK
+    +DateTime datetime
+  }
+  class Message {
+    +String id PK
+    +String senderId FK
+    +String receiverId FK
+    +String message
+    +String image
+    +DateTime datetime
+    +DateTime deliveredAt
+    +DateTime readAt
+    +MessageStatus status
+  }
+  class Friendship {
+    +String id PK
+    +String userId FK
+    +String friendId FK
+    +InvitationStatus status
+    +DateTime createdAt
+  }
+  class Conversation {
+    +String id PK
+    +String title
+    +Boolean isGroup
+    +DateTime createdAt
+    +String ownerId FK
+  }
+  class ConversationMember {
+    +String id PK
+    +String userId FK
+    +String conversationId FK
+    +DateTime joinedAt
+    +DateTime lastSeenAt
+    +String lastSeenMessageId
+  }
+  class GroupMessage {
+    +String id PK
+    +String conversationId FK
+    +String senderId FK
+    +String message
+    +String image
+    +DateTime sentAt
+    +String eventId FK
+    +DateTime deliveredAt
+    +DateTime readAt
+    +MessageStatus status
+  }
+  class GroupInvitation {
+    +String id PK
+    +String groupId FK
+    +String inviterId FK
+    +String invitedId FK
+    +InvitationStatus status
+    +DateTime createdAt
+  }
+  class GroupJoinRequest {
+    +String id PK
+    +String groupId FK
+    +String seeker FK
+    +InvitationStatus status
+    +DateTime createdAt
+  }
+  class GroupMember {
+    +String id PK
+    +String groupId FK
+    +String userId FK
+    +DateTime joinedAt
+  }
+  class Event {
+    +String id PK
+    +String title
+    +String description
+    +DateTime datetime
+    +String groupId FK
+    +String ownerId FK
+    +DateTime createdAt
+  }
+  class Rsvp {
+    +String id PK
+    +String userId FK
+    +String eventId FK
+    +RsvpStatus status
+    +DateTime createdAt
+  }
+  class Notification {
+    +String id PK
+    +String userId FK
+    +String type
+    +String message
+    +Boolean isRead
+    +DateTime createdAt
+  }
+  class UserSettings {
+    +String id PK
+    +String userId FK UK
+    +String theme
+    +String language
+    +Boolean notificationsEnabled
+    +DateTime createdAt
+  }
+
+  User "1" --&gt; "0..*" Post : crée
+  User "1" --&gt; "0..*" Story : crée
+  User "1" --&gt; "0..*" Comment : écrit
+  User "1" --&gt; "0..*" Reaction : réagit
+  User "1" --&gt; "0..*" Message : envoie
+  User "1" --&gt; "0..*" Notification : reçoit
+  User "1" --&gt; "0..1" UserSettings : possède
+  User "1" --&gt; "0..*" Account : authentifie via
+  User "1" --&gt; "0..*" Friendship : initie
+  User "1" --&gt; "0..*" Conversation : possède
+  User "1" --&gt; "0..*" ConversationMember : participe
+  User "1" --&gt; "0..*" GroupMessage : envoie
+  User "1" --&gt; "0..*" GroupMember : adhère
+  User "1" --&gt; "0..*" GroupInvitation : invite
+  User "1" --&gt; "0..*" GroupJoinRequest : demande
+  User "1" --&gt; "0..*" Event : organise
+  User "1" --&gt; "0..*" Rsvp : répond
+
+  Post "1" --&gt; "0..*" Comment : contient
+  Post "1" --&gt; "0..*" Reaction : reçoit
+  Story "1" --&gt; "0..*" Reaction : reçoit
+  Comment "1" --&gt; "0..*" Reaction : reçoit
+
+  Conversation "1" --&gt; "0..*" ConversationMember : a pour membres
+  Conversation "1" --&gt; "0..*" GroupMessage : contient
+  Conversation "1" --&gt; "0..*" GroupMember : enregistre
+  Conversation "1" --&gt; "0..*" GroupInvitation : émet
+  Conversation "1" --&gt; "0..*" GroupJoinRequest : reçoit
+  Conversation "1" --&gt; "0..*" Event : héberge
+
+  Event "1" --&gt; "0..*" Rsvp : collecte
+  Event "1" --&gt; "0..*" GroupMessage : référencé par</pre>
+</section>
+
+<section id="enums">
+  <h2>Enums du modèle de données</h2>
+  <div class="actions">
+    <button onclick="downloadSVG('enums')">⬇️ Télécharger en SVG</button>
+    <button onclick="downloadPNG('enums', 2)">⬇️ Télécharger en PNG (2× HD)</button>
+    <button onclick="downloadPNG('enums', 3)">⬇️ PNG (3× ultra-HD)</button>
+    <button onclick="copyMermaid('enums')">📋 Copier la source</button>
+    <a class="btn" href="https://mermaid.live/edit" target="_blank" rel="noopener">↗️ mermaid.live</a>
+  </div>
+  <pre class="mermaid" id="src-enums">flowchart LR
+  PV["&lt;b&gt;ProfileVisibility&lt;/b&gt;&lt;br/&gt;━━━━━━━━&lt;br/&gt;PUBLIC&lt;br/&gt;PRIVATE"]
+  V["&lt;b&gt;Visibility&lt;/b&gt;&lt;br/&gt;━━━━━━━━&lt;br/&gt;PUBLIC&lt;br/&gt;PRIVATE&lt;br/&gt;FRIENDS"]
+  IS["&lt;b&gt;InvitationStatus&lt;/b&gt;&lt;br/&gt;━━━━━━━━&lt;br/&gt;PENDING&lt;br/&gt;ACCEPTED"]
+  MS["&lt;b&gt;MessageStatus&lt;/b&gt;&lt;br/&gt;━━━━━━━━&lt;br/&gt;SENT&lt;br/&gt;DELIVERED&lt;br/&gt;READ"]
+  RS["&lt;b&gt;RsvpStatus&lt;/b&gt;&lt;br/&gt;━━━━━━━━&lt;br/&gt;YES&lt;br/&gt;NO&lt;br/&gt;MAYBE"]
+  RT["&lt;b&gt;ReactionType&lt;/b&gt;&lt;br/&gt;━━━━━━━━&lt;br/&gt;LIKE&lt;br/&gt;DISLIKE&lt;br/&gt;LOVE&lt;br/&gt;LAUGH&lt;br/&gt;SAD&lt;br/&gt;ANGRY&lt;br/&gt;WOW"]
+
+  %% Liens invisibles pour forcer l'alignement horizontal sur une seule ligne
+  PV ~~~ V ~~~ IS ~~~ MS ~~~ RS ~~~ RT
+
+  classDef enumBox fill:#fff8dc,stroke:#aaaa33,stroke-width:1.5px,color:#000;
+  class PV,V,IS,MS,RS,RT enumBox;</pre>
+</section>
+
+<section id="use-case-complet">
+  <h2>Diagramme de Cas d'Utilisation — Version complète (radial)</h2>
+  <div class="actions">
+    <button onclick="downloadSVG('use-case-complet')">⬇️ Télécharger en SVG</button>
+    <button onclick="downloadPNG('use-case-complet', 2)">⬇️ Télécharger en PNG (2× HD)</button>
+    <button onclick="downloadPNG('use-case-complet', 3)">⬇️ PNG (3× ultra-HD)</button>
+    <button onclick="copyMermaid('use-case-complet')">📋 Copier la source</button>
+    <a class="btn" href="https://mermaid.live/edit" target="_blank" rel="noopener">↗️ mermaid.live</a>
+  </div>
+  <pre class="mermaid" id="src-use-case-complet">flowchart TB
+  %% ============================================
+  %% RANGÉE 0 — Acteurs satellites (tout en haut)
+  %% ============================================
+  subgraph ACTORS [" "]
+    direction LR
+    V([Visiteur]):::actor
+    PG([Propriétaire de groupe]):::actor
+    OE([Organisateur d'événement]):::actor
+  end
+
+  %% ============================================
+  %% RANGÉE 1 — 4 domaines satellites haut
+  %% ============================================
+  subgraph TOP [" "]
+    direction LR
+
+    subgraph AUTH["🔐 Authentification"]
+      direction TB
+      UC_register(S'inscrire)
+      UC_login(Se connecter)
+      UC_google(Via Google)
+      UC_logout(Se déconnecter)
+    end
+
+    subgraph PROFILE["👤 Profil"]
+      direction TB
+      UC_viewMe(Mon profil)
+      UC_editMe(Modifier profil)
+      UC_settings(Paramètres)
+      UC_viewProfile(Profil d'autrui)
+    end
+
+    subgraph SEARCH["🔍 Recherche"]
+      direction TB
+      UC_search(Contenu)
+      UC_searchUsers(Utilisateurs)
+    end
+
+    subgraph SOCIAL["👥 Relations"]
+      direction TB
+      UC_friend(Demande d'amitié)
+      UC_follow(Suivre / Désabonner)
+      UC_followers(Voir followers)
+    end
+  end
+
+  %% ============================================
+  %% RANGÉE 2 — Acteur central (User seul)
+  %% ============================================
+  U(((👤 Utilisateur))):::central
+
+  %% Héritage des spécialisations (vers les acteurs en haut)
+  U -. spécialise .-&gt; PG
+  U -. spécialise .-&gt; OE
+
+  %% ============================================
+  %% RANGÉE 3 — 4 domaines satellites bas
+  %% ============================================
+  subgraph BOTTOM [" "]
+    direction LR
+
+    subgraph FEED["📝 Publications"]
+      direction TB
+      UC_feed(Feed et reels)
+      UC_post(Publier un post)
+      UC_viewPost(Voir un post)
+      UC_comment(Commenter)
+      UC_react(Réagir)
+      UC_story(Stories)
+    end
+
+    subgraph CHAT["💬 Messagerie"]
+      direction TB
+      UC_listConv(Conversations)
+      UC_send(Envoyer un message)
+      UC_listenSSE(Réception SSE)
+      UC_typing(Typing)
+      UC_seen(Marquer comme lu)
+    end
+
+    subgraph GROUPS["🏷️ Groupes"]
+      direction TB
+      UC_listGroups(Mes groupes)
+      UC_createGroup(Créer un groupe)
+      UC_joinReq(Demander à rejoindre)
+      UC_acceptInvite(Accepter invitation)
+      UC_leaveGroup(Quitter)
+      UC_manageGroup(Modifier / Supprimer)
+      UC_inviteMember(Inviter / Retirer)
+      UC_respondReq(Traiter demandes)
+    end
+
+    subgraph EVENTS["📅 Événements"]
+      direction TB
+      UC_listEvents(Voir événements)
+      UC_createEvent(Créer un événement)
+      UC_rsvp(RSVP)
+      UC_manageEvent(Modifier / Supprimer)
+    end
+  end
+
+  %% ============================================
+  %% LIAISONS — radiales depuis l'acteur central
+  %% ============================================
+
+  %% Visiteur → seulement l'auth
+  V ==&gt; AUTH
+
+  %% Utilisateur central → tous les domaines
+  U ==&gt; AUTH
+  U ==&gt; PROFILE
+  U ==&gt; SEARCH
+  U ==&gt; SOCIAL
+  U ==&gt; FEED
+  U ==&gt; CHAT
+  U ==&gt; GROUPS
+  U ==&gt; EVENTS
+
+  %% Acteurs spécialisés → cas spécifiques
+  PG -.modère.-&gt; UC_manageGroup
+  PG -.modère.-&gt; UC_inviteMember
+  PG -.modère.-&gt; UC_respondReq
+  OE -.organise.-&gt; UC_manageEvent
+
+  classDef actor fill:#ffe9b3,stroke:#b8860b,stroke-width:2px,color:#000;
+  classDef central fill:#ff9966,stroke:#c44d00,stroke-width:3px,color:#000,font-weight:bold;</pre>
+</section>
+
+<section id="use-case-simplifie">
+  <h2>Diagramme de Cas d'Utilisation — Version simplifiée (radial)</h2>
+  <div class="actions">
+    <button onclick="downloadSVG('use-case-simplifie')">⬇️ Télécharger en SVG</button>
+    <button onclick="downloadPNG('use-case-simplifie', 2)">⬇️ Télécharger en PNG (2× HD)</button>
+    <button onclick="downloadPNG('use-case-simplifie', 3)">⬇️ PNG (3× ultra-HD)</button>
+    <button onclick="copyMermaid('use-case-simplifie')">📋 Copier la source</button>
+    <a class="btn" href="https://mermaid.live/edit" target="_blank" rel="noopener">↗️ mermaid.live</a>
+  </div>
+  <pre class="mermaid" id="src-use-case-simplifie">flowchart TB
+  %% Rangée haute — 4 satellites
+  subgraph TOP [" "]
+    direction LR
+    UC1(👤 Gérer&lt;br/&gt;mon profil)
+    UC2(📝 Publier&lt;br/&gt;et interagir)
+    UC3(💬 Échanger&lt;br/&gt;en temps réel)
+    UC7(🔍 Rechercher&lt;br/&gt;et découvrir)
+  end
+
+  %% Rangée centrale — acteurs
+  subgraph CENTER [" "]
+    direction LR
+    V([Visiteur]):::actor
+    U(((👤 Utilisateur))):::central
+  end
+  V -. devient .-&gt; U
+
+  %% Visiteur ne peut que s'authentifier
+  V --&gt; Auth(🔐 S'authentifier)
+
+  %% Rangée basse — 3 satellites
+  subgraph BOTTOM [" "]
+    direction LR
+    UC4(👥 Construire&lt;br/&gt;mon réseau)
+    UC5(🏷️ Animer&lt;br/&gt;un groupe)
+    UC6(📅 Participer à&lt;br/&gt;un événement)
+  end
+
+  %% Flèches radiales depuis User
+  U ==&gt; UC1
+  U ==&gt; UC2
+  U ==&gt; UC3
+  U ==&gt; UC7
+  U ==&gt; UC4
+  U ==&gt; UC5
+  U ==&gt; UC6
+
+  classDef actor fill:#ffe9b3,stroke:#b8860b,stroke-width:2px,color:#000;
+  classDef central fill:#ff9966,stroke:#c44d00,stroke-width:3px,color:#000,font-weight:bold;</pre>
+</section>
+
+
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true, theme: "default", securityLevel: "loose", fontFamily: "sans-serif", flowchart: { htmlLabels: true, curve: "basis" } });
+
+  window.__sources = {"classes-simplifie": "flowchart TB\n  %% Rang\u00e9e haute \u2014 3 entit\u00e9s de contenu\n  subgraph TOP [\" \"]\n    direction LR\n    Post[\"<b>Post</b><br/>id : String<br/>message : String<br/>visibility : Visibility\"]\n    Comment[\"<b>Comment</b><br/>id : String<br/>message : String\"]\n    Reaction[\"<b>Reaction</b><br/>id : String<br/>type : ReactionType\"]\n  end\n\n  %% Rang\u00e9e centrale \u2014 User au c\u0153ur\n  subgraph CENTER [\" \"]\n    direction LR\n    User([\"<b>\ud83d\udc64 User</b><br/>id : String<br/>email : String<br/>username : String<br/>visibility : ProfileVisibility\"]):::central\n  end\n\n  %% Rang\u00e9e basse \u2014 3 entit\u00e9s d'interaction\n  subgraph BOTTOM [\" \"]\n    direction LR\n    Conversation[\"<b>Conversation</b><br/>id : String<br/>title : String<br/>isGroup : Boolean\"]\n    Message[\"<b>Message</b><br/>id : String<br/>content : String<br/>status : MessageStatus\"]\n    Event[\"<b>Event</b><br/>id : String<br/>title : String<br/>datetime : DateTime\"]\n  end\n\n  %% Relations User \u2192 contenus (rang\u00e9e haute)\n  User -->|publie 0..*| Post\n  User -->|\u00e9crit 0..*| Comment\n  User -->|r\u00e9agit 0..*| Reaction\n\n  %% Relations entre contenus\n  Post -->|contient 0..*| Comment\n  Post -->|re\u00e7oit 0..*| Reaction\n  Comment -->|re\u00e7oit 0..*| Reaction\n\n  %% Relations User \u2192 interactions (rang\u00e9e basse)\n  User -->|participe 0..*| Conversation\n  User -->|organise 0..*| Event\n\n  %% Relations entre interactions\n  Conversation -->|transporte 0..*| Message\n  Conversation -->|h\u00e9berge 0..*| Event\n\n  classDef central fill:#ff9966,stroke:#c44d00,stroke-width:3px,color:#000,font-weight:bold;", "classes-complet": "classDiagram\n  direction TB\n\n  class User {\n    +String id PK\n    +String firstName\n    +String lastName\n    +String password\n    +String email UK\n    +DateTime birthDate\n    +String username UK\n    +String biography\n    +String avatar\n    +String avatarId\n    +String banner\n    +String bannerId\n    +ProfileVisibility visibility\n  }\n  class Account {\n    +String id PK\n    +String userId FK\n    +String provider\n    +String providerAccountId\n    +String refresh_token\n    +String access_token\n    +BigInt expires_at\n    +String token_type\n    +String scope\n    +String id_token\n    +String session_state\n  }\n  class Post {\n    +String id PK\n    +String userId FK\n    +String message\n    +DateTime datetime\n    +String image\n    +String mediaId\n    +Visibility visibility\n  }\n  class Story {\n    +String id PK\n    +String userId FK\n    +DateTime datetime\n    +String media\n    +String mediaId\n    +Visibility visibility\n  }\n  class Comment {\n    +String id PK\n    +String postId FK\n    +String userId FK\n    +String message\n    +DateTime datetime\n  }\n  class Reaction {\n    +String id PK\n    +ReactionType type\n    +String userId FK\n    +String postId FK\n    +String storyId FK\n    +String commentId FK\n    +DateTime datetime\n  }\n  class Message {\n    +String id PK\n    +String senderId FK\n    +String receiverId FK\n    +String message\n    +String image\n    +DateTime datetime\n    +DateTime deliveredAt\n    +DateTime readAt\n    +MessageStatus status\n  }\n  class Friendship {\n    +String id PK\n    +String userId FK\n    +String friendId FK\n    +InvitationStatus status\n    +DateTime createdAt\n  }\n  class Conversation {\n    +String id PK\n    +String title\n    +Boolean isGroup\n    +DateTime createdAt\n    +String ownerId FK\n  }\n  class ConversationMember {\n    +String id PK\n    +String userId FK\n    +String conversationId FK\n    +DateTime joinedAt\n    +DateTime lastSeenAt\n    +String lastSeenMessageId\n  }\n  class GroupMessage {\n    +String id PK\n    +String conversationId FK\n    +String senderId FK\n    +String message\n    +String image\n    +DateTime sentAt\n    +String eventId FK\n    +DateTime deliveredAt\n    +DateTime readAt\n    +MessageStatus status\n  }\n  class GroupInvitation {\n    +String id PK\n    +String groupId FK\n    +String inviterId FK\n    +String invitedId FK\n    +InvitationStatus status\n    +DateTime createdAt\n  }\n  class GroupJoinRequest {\n    +String id PK\n    +String groupId FK\n    +String seeker FK\n    +InvitationStatus status\n    +DateTime createdAt\n  }\n  class GroupMember {\n    +String id PK\n    +String groupId FK\n    +String userId FK\n    +DateTime joinedAt\n  }\n  class Event {\n    +String id PK\n    +String title\n    +String description\n    +DateTime datetime\n    +String groupId FK\n    +String ownerId FK\n    +DateTime createdAt\n  }\n  class Rsvp {\n    +String id PK\n    +String userId FK\n    +String eventId FK\n    +RsvpStatus status\n    +DateTime createdAt\n  }\n  class Notification {\n    +String id PK\n    +String userId FK\n    +String type\n    +String message\n    +Boolean isRead\n    +DateTime createdAt\n  }\n  class UserSettings {\n    +String id PK\n    +String userId FK UK\n    +String theme\n    +String language\n    +Boolean notificationsEnabled\n    +DateTime createdAt\n  }\n\n  User \"1\" --> \"0..*\" Post : cr\u00e9e\n  User \"1\" --> \"0..*\" Story : cr\u00e9e\n  User \"1\" --> \"0..*\" Comment : \u00e9crit\n  User \"1\" --> \"0..*\" Reaction : r\u00e9agit\n  User \"1\" --> \"0..*\" Message : envoie\n  User \"1\" --> \"0..*\" Notification : re\u00e7oit\n  User \"1\" --> \"0..1\" UserSettings : poss\u00e8de\n  User \"1\" --> \"0..*\" Account : authentifie via\n  User \"1\" --> \"0..*\" Friendship : initie\n  User \"1\" --> \"0..*\" Conversation : poss\u00e8de\n  User \"1\" --> \"0..*\" ConversationMember : participe\n  User \"1\" --> \"0..*\" GroupMessage : envoie\n  User \"1\" --> \"0..*\" GroupMember : adh\u00e8re\n  User \"1\" --> \"0..*\" GroupInvitation : invite\n  User \"1\" --> \"0..*\" GroupJoinRequest : demande\n  User \"1\" --> \"0..*\" Event : organise\n  User \"1\" --> \"0..*\" Rsvp : r\u00e9pond\n\n  Post \"1\" --> \"0..*\" Comment : contient\n  Post \"1\" --> \"0..*\" Reaction : re\u00e7oit\n  Story \"1\" --> \"0..*\" Reaction : re\u00e7oit\n  Comment \"1\" --> \"0..*\" Reaction : re\u00e7oit\n\n  Conversation \"1\" --> \"0..*\" ConversationMember : a pour membres\n  Conversation \"1\" --> \"0..*\" GroupMessage : contient\n  Conversation \"1\" --> \"0..*\" GroupMember : enregistre\n  Conversation \"1\" --> \"0..*\" GroupInvitation : \u00e9met\n  Conversation \"1\" --> \"0..*\" GroupJoinRequest : re\u00e7oit\n  Conversation \"1\" --> \"0..*\" Event : h\u00e9berge\n\n  Event \"1\" --> \"0..*\" Rsvp : collecte\n  Event \"1\" --> \"0..*\" GroupMessage : r\u00e9f\u00e9renc\u00e9 par", "enums": "flowchart LR\n  PV[\"<b>ProfileVisibility</b><br/>\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501<br/>PUBLIC<br/>PRIVATE\"]\n  V[\"<b>Visibility</b><br/>\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501<br/>PUBLIC<br/>PRIVATE<br/>FRIENDS\"]\n  IS[\"<b>InvitationStatus</b><br/>\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501<br/>PENDING<br/>ACCEPTED\"]\n  MS[\"<b>MessageStatus</b><br/>\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501<br/>SENT<br/>DELIVERED<br/>READ\"]\n  RS[\"<b>RsvpStatus</b><br/>\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501<br/>YES<br/>NO<br/>MAYBE\"]\n  RT[\"<b>ReactionType</b><br/>\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501<br/>LIKE<br/>DISLIKE<br/>LOVE<br/>LAUGH<br/>SAD<br/>ANGRY<br/>WOW\"]\n\n  %% Liens invisibles pour forcer l'alignement horizontal sur une seule ligne\n  PV ~~~ V ~~~ IS ~~~ MS ~~~ RS ~~~ RT\n\n  classDef enumBox fill:#fff8dc,stroke:#aaaa33,stroke-width:1.5px,color:#000;\n  class PV,V,IS,MS,RS,RT enumBox;", "use-case-complet": "flowchart TB\n  %% ============================================\n  %% RANG\u00c9E 0 \u2014 Acteurs satellites (tout en haut)\n  %% ============================================\n  subgraph ACTORS [\" \"]\n    direction LR\n    V([Visiteur]):::actor\n    PG([Propri\u00e9taire de groupe]):::actor\n    OE([Organisateur d'\u00e9v\u00e9nement]):::actor\n  end\n\n  %% ============================================\n  %% RANG\u00c9E 1 \u2014 4 domaines satellites haut\n  %% ============================================\n  subgraph TOP [\" \"]\n    direction LR\n\n    subgraph AUTH[\"\ud83d\udd10 Authentification\"]\n      direction TB\n      UC_register(S'inscrire)\n      UC_login(Se connecter)\n      UC_google(Via Google)\n      UC_logout(Se d\u00e9connecter)\n    end\n\n    subgraph PROFILE[\"\ud83d\udc64 Profil\"]\n      direction TB\n      UC_viewMe(Mon profil)\n      UC_editMe(Modifier profil)\n      UC_settings(Param\u00e8tres)\n      UC_viewProfile(Profil d'autrui)\n    end\n\n    subgraph SEARCH[\"\ud83d\udd0d Recherche\"]\n      direction TB\n      UC_search(Contenu)\n      UC_searchUsers(Utilisateurs)\n    end\n\n    subgraph SOCIAL[\"\ud83d\udc65 Relations\"]\n      direction TB\n      UC_friend(Demande d'amiti\u00e9)\n      UC_follow(Suivre / D\u00e9sabonner)\n      UC_followers(Voir followers)\n    end\n  end\n\n  %% ============================================\n  %% RANG\u00c9E 2 \u2014 Acteur central (User seul)\n  %% ============================================\n  U(((\ud83d\udc64 Utilisateur))):::central\n\n  %% H\u00e9ritage des sp\u00e9cialisations (vers les acteurs en haut)\n  U -. sp\u00e9cialise .-> PG\n  U -. sp\u00e9cialise .-> OE\n\n  %% ============================================\n  %% RANG\u00c9E 3 \u2014 4 domaines satellites bas\n  %% ============================================\n  subgraph BOTTOM [\" \"]\n    direction LR\n\n    subgraph FEED[\"\ud83d\udcdd Publications\"]\n      direction TB\n      UC_feed(Feed et reels)\n      UC_post(Publier un post)\n      UC_viewPost(Voir un post)\n      UC_comment(Commenter)\n      UC_react(R\u00e9agir)\n      UC_story(Stories)\n    end\n\n    subgraph CHAT[\"\ud83d\udcac Messagerie\"]\n      direction TB\n      UC_listConv(Conversations)\n      UC_send(Envoyer un message)\n      UC_listenSSE(R\u00e9ception SSE)\n      UC_typing(Typing)\n      UC_seen(Marquer comme lu)\n    end\n\n    subgraph GROUPS[\"\ud83c\udff7\ufe0f Groupes\"]\n      direction TB\n      UC_listGroups(Mes groupes)\n      UC_createGroup(Cr\u00e9er un groupe)\n      UC_joinReq(Demander \u00e0 rejoindre)\n      UC_acceptInvite(Accepter invitation)\n      UC_leaveGroup(Quitter)\n      UC_manageGroup(Modifier / Supprimer)\n      UC_inviteMember(Inviter / Retirer)\n      UC_respondReq(Traiter demandes)\n    end\n\n    subgraph EVENTS[\"\ud83d\udcc5 \u00c9v\u00e9nements\"]\n      direction TB\n      UC_listEvents(Voir \u00e9v\u00e9nements)\n      UC_createEvent(Cr\u00e9er un \u00e9v\u00e9nement)\n      UC_rsvp(RSVP)\n      UC_manageEvent(Modifier / Supprimer)\n    end\n  end\n\n  %% ============================================\n  %% LIAISONS \u2014 radiales depuis l'acteur central\n  %% ============================================\n\n  %% Visiteur \u2192 seulement l'auth\n  V ==> AUTH\n\n  %% Utilisateur central \u2192 tous les domaines\n  U ==> AUTH\n  U ==> PROFILE\n  U ==> SEARCH\n  U ==> SOCIAL\n  U ==> FEED\n  U ==> CHAT\n  U ==> GROUPS\n  U ==> EVENTS\n\n  %% Acteurs sp\u00e9cialis\u00e9s \u2192 cas sp\u00e9cifiques\n  PG -.mod\u00e8re.-> UC_manageGroup\n  PG -.mod\u00e8re.-> UC_inviteMember\n  PG -.mod\u00e8re.-> UC_respondReq\n  OE -.organise.-> UC_manageEvent\n\n  classDef actor fill:#ffe9b3,stroke:#b8860b,stroke-width:2px,color:#000;\n  classDef central fill:#ff9966,stroke:#c44d00,stroke-width:3px,color:#000,font-weight:bold;", "use-case-simplifie": "flowchart TB\n  %% Rang\u00e9e haute \u2014 4 satellites\n  subgraph TOP [\" \"]\n    direction LR\n    UC1(\ud83d\udc64 G\u00e9rer<br/>mon profil)\n    UC2(\ud83d\udcdd Publier<br/>et interagir)\n    UC3(\ud83d\udcac \u00c9changer<br/>en temps r\u00e9el)\n    UC7(\ud83d\udd0d Rechercher<br/>et d\u00e9couvrir)\n  end\n\n  %% Rang\u00e9e centrale \u2014 acteurs\n  subgraph CENTER [\" \"]\n    direction LR\n    V([Visiteur]):::actor\n    U(((\ud83d\udc64 Utilisateur))):::central\n  end\n  V -. devient .-> U\n\n  %% Visiteur ne peut que s'authentifier\n  V --> Auth(\ud83d\udd10 S'authentifier)\n\n  %% Rang\u00e9e basse \u2014 3 satellites\n  subgraph BOTTOM [\" \"]\n    direction LR\n    UC4(\ud83d\udc65 Construire<br/>mon r\u00e9seau)\n    UC5(\ud83c\udff7\ufe0f Animer<br/>un groupe)\n    UC6(\ud83d\udcc5 Participer \u00e0<br/>un \u00e9v\u00e9nement)\n  end\n\n  %% Fl\u00e8ches radiales depuis User\n  U ==> UC1\n  U ==> UC2\n  U ==> UC3\n  U ==> UC7\n  U ==> UC4\n  U ==> UC5\n  U ==> UC6\n\n  classDef actor fill:#ffe9b3,stroke:#b8860b,stroke-width:2px,color:#000;\n  classDef central fill:#ff9966,stroke:#c44d00,stroke-width:3px,color:#000,font-weight:bold;"};
+
+  // ---------- Helpers ----------
+
+  function getSvgElement(name) {
+    const section = document.getElementById(name);
+    return section ? section.querySelector("svg") : null;
+  }
+
+  // Returns SVG cloned with explicit width/height inlined (required for canvas rasterization)
+  function serializeSvg(svg) {
+    const clone = svg.cloneNode(true);
+    clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    clone.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+
+    // Get the actual dimensions
+    const bbox = svg.getBBox();
+    const vb = svg.viewBox.baseVal;
+    const w = Math.ceil(vb && vb.width ? vb.width : Math.max(bbox.width, 800));
+    const h = Math.ceil(vb && vb.height ? vb.height : Math.max(bbox.height, 600));
+
+    clone.setAttribute("width", String(w));
+    clone.setAttribute("height", String(h));
+    if (!clone.getAttribute("viewBox")) {
+      clone.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    }
+
+    const xml = new XMLSerializer().serializeToString(clone);
+    return { xml, w, h };
+  }
+
+  window.copyMermaid = function (name) {
+    const text = window.__sources[name];
+    navigator.clipboard.writeText(text).then(
+      () => alert(`Source Mermaid « ${name} » copié.`),
+      (e) => alert("Échec copie : " + e.message)
+    );
+  };
+
+  window.downloadSVG = function (name) {
+    const svg = getSvgElement(name);
+    if (!svg) { alert("SVG pas encore rendu, réessaie."); return; }
+    const { xml } = serializeSvg(svg);
+    const blob = new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n' + xml], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = name + ".svg"; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  };
+
+  // Robust PNG export: data URL (not Blob URL), explicit dimensions, foreignObject handling
+  window.downloadPNG = async function (name, scale) {
+    scale = scale || 2;
+    const svg = getSvgElement(name);
+    if (!svg) { alert("SVG pas encore rendu, réessaie."); return; }
+
+    try {
+      const { xml, w, h } = serializeSvg(svg);
+
+      // Encode as base64 data URL — more reliable than Blob URL for canvas drawImage
+      const encoded = btoa(unescape(encodeURIComponent(xml)));
+      const dataUrl = "data:image/svg+xml;base64," + encoded;
+
+      const img = new Image();
+      img.decoding = "async";
+
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = () => reject(new Error("Image SVG impossible à charger (possiblement à cause de foreignObject — essaie le SVG)"));
+        img.src = dataUrl;
+      });
+
+      const canvas = document.createElement("canvas");
+      canvas.width = w * scale;
+      canvas.height = h * scale;
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // toDataURL avoids the Blob CORS path
+      const pngUrl = canvas.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = pngUrl;
+      a.download = name + (scale > 1 ? `.${scale}x` : "") + ".png";
+      a.click();
+    } catch (err) {
+      console.error(err);
+      alert("Échec PNG : " + err.message + "\n\nAstuce : utilise le SVG (Inkscape/PowerPoint l'importent directement), ou ouvre mermaid.live pour un export PNG natif.");
+    }
+  };
+</script>
+</body>
+</html>

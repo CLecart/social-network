@@ -24,7 +24,7 @@ Plateforme de réseau social permettant:
 
 **Titre:** Social Network  
 **Type:** Application web
-**Stack Technologique:** Next.js, TypeScript, Prisma, PostgreSQL, Redis, Socket.io, Cloudinary
+**Stack Technologique:** Next.js 15 (App Router), TypeScript, Prisma 6, PostgreSQL (Neon), Upstash Redis, Server-Sent Events, Cloudinary, JWT custom (`jose`/`bcrypt`)
 **Déploiement:** Docker, Neon, Vercel
 
 ---

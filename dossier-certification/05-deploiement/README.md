@@ -19,9 +19,9 @@ Les éléments de déploiement et d'intégration continue sont documentés dans 
 
 ### Services principaux
 
-- **app**: application Next.js 14+.
-- **db**: PostgreSQL pour les données métier.
-- **redis**: cache, sessions et pub/sub temps réel.
+- **app**: application Next.js 15 (App Router), runtime Bun.
+- **db**: PostgreSQL pour les données métier (en local) / Neon (en prod).
+- **redis**: Upstash Redis (REST) — cache léger et buffer de messages pour les flux SSE temps réel. Pas de pub/sub TCP : un Redis local OSS est utilisé en compose pour le développement.
 
 ### docker-compose.yml
 
@@ -80,11 +80,12 @@ Points importants:
 
 ### Redis
 
-Redis sert à trois usages:
+Upstash Redis sert à deux usages dans le projet :
 
-- sessions serveur pour l'invalidation JWT;
-- cache applicatif léger;
-- diffusion des événements Socket.io entre instances.
+- cache applicatif léger ;
+- buffer de messages (clés `latest:chat:{from}:{to}`, `latest:chat:group:{groupId}`) lu par les endpoints **Server-Sent Events** (`/api/private/chat/listen`, `/api/private/chat/typing/listen`) pour pousser les événements aux clients.
+
+Le JWT n'est pas stocké côté serveur : il est stateless. Les sessions Redis évoquées dans certaines roadmaps internes (révocation forcée, multi-device) sont un axe d'amélioration, pas l'implémentation actuelle.
 
 ---
 
@@ -126,14 +127,16 @@ NEXT_PUBLIC_APP_URL=https://social-network.example.com
 
 ### GitHub Actions
 
-Un pipeline simple suffit pour ce projet de certification:
+Un pipeline simple suffit pour ce projet de certification :
 
-- `lint` pour ESLint;
-- `test` pour Jest;
-- `build` pour Next.js;
+- `lint` pour ESLint ;
+- `test` pour Jest (via `bun run test`, qui appelle Jest avec `--experimental-vm-modules`) ;
+- `build` pour Next.js (avec `prisma generate` préalable) ;
 - `deploy` pour Vercel ou un déploiement équivalent.
 
-Workflow de déploiement du projet:
+Le projet utilise **Bun** comme package manager et runtime (cohérent avec `bun.lock` et l'image Docker `oven/bun:1`). Le `package-lock.json` est conservé pour interopérabilité, mais Bun est la source de vérité.
+
+Workflow de déploiement du projet :
 
 ```yaml
 name: CI
@@ -148,13 +151,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v1
         with:
-          node-version: 20
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run test
-      - run: npm run build
+          bun-version: "1"
+      - run: bun install --frozen-lockfile
+      - run: bunx prisma generate
+      - run: bun run lint
+      - run: bun run test
+      - run: bun run build
 ```
 
 ---
@@ -163,10 +167,10 @@ jobs:
 
 ### Observabilité
 
-- **Logs applicatifs**: console structurée côté serveur.
-- **Vercel Analytics**: suivi des performances front.
-- **Sentry**: suivi des erreurs et régressions.
-- **Alertes**: surveillance des échecs de build et de déploiement.
+- **Logs applicatifs**: console structurée côté serveur (sortie capturée par Vercel).
+- **Vercel Analytics**: suivi des performances front (à activer côté plateforme).
+- **Sentry**: *non installé à ce jour*. Présenté comme axe d'amélioration ci-dessous.
+- **Alertes**: surveillance des échecs de build et de déploiement via les notifications Vercel + GitHub Actions.
 
 ### Réversibilité
 

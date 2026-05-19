@@ -1,0 +1,42 @@
+flowchart TB
+  %% Rangée haute — 3 entités de contenu
+  subgraph TOP [" "]
+    direction LR
+    Post["<b>Post</b><br/>id : String<br/>message : String<br/>visibility : Visibility"]
+    Comment["<b>Comment</b><br/>id : String<br/>message : String"]
+    Reaction["<b>Reaction</b><br/>id : String<br/>type : ReactionType"]
+  end
+
+  %% Rangée centrale — User au cœur
+  subgraph CENTER [" "]
+    direction LR
+    User(["<b>👤 User</b><br/>id : String<br/>email : String<br/>username : String<br/>visibility : ProfileVisibility"]):::central
+  end
+
+  %% Rangée basse — 3 entités d'interaction
+  subgraph BOTTOM [" "]
+    direction LR
+    Conversation["<b>Conversation</b><br/>id : String<br/>title : String<br/>isGroup : Boolean"]
+    Message["<b>Message</b><br/>id : String<br/>content : String<br/>status : MessageStatus"]
+    Event["<b>Event</b><br/>id : String<br/>title : String<br/>datetime : DateTime"]
+  end
+
+  %% Relations User → contenus (rangée haute)
+  User -->|publie 0..*| Post
+  User -->|écrit 0..*| Comment
+  User -->|réagit 0..*| Reaction
+
+  %% Relations entre contenus
+  Post -->|contient 0..*| Comment
+  Post -->|reçoit 0..*| Reaction
+  Comment -->|reçoit 0..*| Reaction
+
+  %% Relations User → interactions (rangée basse)
+  User -->|participe 0..*| Conversation
+  User -->|organise 0..*| Event
+
+  %% Relations entre interactions
+  Conversation -->|transporte 0..*| Message
+  Conversation -->|héberge 0..*| Event
+
+  classDef central fill:#ff9966,stroke:#c44d00,stroke-width:3px,color:#000,font-weight:bold;

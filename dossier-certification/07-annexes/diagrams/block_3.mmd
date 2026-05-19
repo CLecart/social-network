@@ -1,0 +1,40 @@
+classDiagram
+  direction LR
+  class ProfileVisibility {
+    <<enumeration>>
+    PUBLIC
+    PRIVATE
+  }
+  class Visibility {
+    <<enumeration>>
+    PUBLIC
+    PRIVATE
+    FRIENDS
+  }
+  class ReactionType {
+    <<enumeration>>
+    LIKE
+    DISLIKE
+    LOVE
+    LAUGH
+    SAD
+    ANGRY
+    WOW
+  }
+  class InvitationStatus {
+    <<enumeration>>
+    PENDING
+    ACCEPTED
+  }
+  class MessageStatus {
+    <<enumeration>>
+    SENT
+    DELIVERED
+    READ
+  }
+  class RsvpStatus {
+    <<enumeration>>
+    YES
+    NO
+    MAYBE
+  }

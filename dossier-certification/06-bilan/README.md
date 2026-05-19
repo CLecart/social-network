@@ -14,9 +14,10 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
    - Gérer les cookies HTTP-only côté serveur sans exposer de jetons au client.
    - Synchroniser middleware, sessions Redis et validations route handlers.
 
-2. **Temps réel multi-instance**
-   - Diffuser les événements Socket.io sur plusieurs serveurs.
-   - Garantir la persistance avant émission pour éviter les pertes de message.
+2. **Temps réel sans WebSocket persistant (SSE + Upstash Redis)**
+   - Le choix Vercel serverless + Upstash REST a écarté Socket.io. Il a fallu construire un mécanisme push compatible serverless : endpoints `/api/private/chat/listen` (Server-Sent Events) qui pollent Upstash Redis sur des clés `latest:chat:*`.
+   - Garantir la persistance Prisma avant la mise à jour de la clé Redis pour éviter les pertes ou les messages incohérents.
+   - Gérer proprement la fermeture du flux SSE côté client (`request.signal.addEventListener("abort", ...)`) pour ne pas laisser de polling orphelin côté serveur.
 
 3. **Modélisation Prisma**
    - Conserver une base cohérente malgré les nombreuses relations et contraintes d'unicité.
@@ -38,7 +39,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 - **20+ endpoints API** décrits avec payloads et réponses.
 - **12+ pages principales** couvertes dans la conception.
 - **43 user stories** organisées par rôle et priorité.
-- **Temps réel Socket.io** documenté avec Redis adapter.
+- **Temps réel via Server-Sent Events + Upstash Redis** documenté de bout en bout (endpoint `chat/listen`, clé Redis, ack côté API).
 - **Architecture complète** du projet formalisée pour revue jury.
 
 ### Points Forts
@@ -54,6 +55,10 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 - Compléter les mesures de performance réelles avec des relevés Lighthouse.
 - Ajouter une couverture de tests plus large sur les routes sensibles.
 - Formaliser davantage la supervision de production et les alertes.
+- Implémenter les **droits RGPD** manquants : suppression de compte (droit à l'oubli) et export des données (droit à la portabilité) — voir l'audit complet dans [04-developpement/securite-rgpd.md](../04-developpement/securite-rgpd.md).
+- Corriger la vulnérabilité **XSS résiduelle** dans `ChatMessage.tsx` (sanitization du markdown via `DOMPurify` ou `react-markdown`).
+- Ajouter **rate limiting** sur les endpoints sensibles (`/login`, `/register`, `/chat/send`) via `@upstash/ratelimit`.
+- Ajouter les **headers HTTP de sécurité** (CSP, X-Frame-Options, Referrer-Policy) dans `next.config.ts`.
 
 ---
 
@@ -66,7 +71,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 - Prisma pour un modèle relationnel riche.
 - PostgreSQL et gestion des relations complexes.
 - Redis pour sessions, cache et pub/sub.
-- Socket.io pour les usages temps réel.
+- Server-Sent Events + Upstash Redis pour le push temps réel sans WebSocket persistant.
 - Docker et déploiement d'une stack full-stack.
 
 ### Compétences Transversales

@@ -65,6 +65,8 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 - HTTPS obligatoire
 - Contraintes de réactions: un utilisateur ne peut pas multiplier une même réaction sur un même contenu
 
+> 📌 Détails techniques + audit complet (mesures en place, risques résiduels, conformité RGPD, roadmap de durcissement) dans [04-developpement/securite-rgpd.md](../04-developpement/securite-rgpd.md).
+
 ### 📈 Scalabilité
 
 - Cache Redis

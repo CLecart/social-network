@@ -1,0 +1,195 @@
+classDiagram
+  direction LR
+
+  class User {
+    +String id PK
+    +String firstName
+    +String lastName
+    +String password
+    +String email UK
+    +DateTime birthDate
+    +String username UK
+    +String biography
+    +String avatar
+    +String avatarId
+    +String banner
+    +String bannerId
+    +ProfileVisibility visibility
+  }
+  class Account {
+    +String id PK
+    +String userId FK
+    +String provider
+    +String providerAccountId
+    +String refresh_token
+    +String access_token
+    +BigInt expires_at
+    +String token_type
+    +String scope
+    +String id_token
+    +String session_state
+  }
+  class Post {
+    +String id PK
+    +String userId FK
+    +String message
+    +DateTime datetime
+    +String image
+    +String mediaId
+    +Visibility visibility
+  }
+  class Story {
+    +String id PK
+    +String userId FK
+    +DateTime datetime
+    +String media
+    +String mediaId
+    +Visibility visibility
+  }
+  class Comment {
+    +String id PK
+    +String postId FK
+    +String userId FK
+    +String message
+    +DateTime datetime
+  }
+  class Reaction {
+    +String id PK
+    +ReactionType type
+    +String userId FK
+    +String postId FK
+    +String storyId FK
+    +String commentId FK
+    +DateTime datetime
+  }
+  class Message {
+    +String id PK
+    +String senderId FK
+    +String receiverId FK
+    +String message
+    +String image
+    +DateTime datetime
+    +DateTime deliveredAt
+    +DateTime readAt
+    +MessageStatus status
+  }
+  class Friendship {
+    +String id PK
+    +String userId FK
+    +String friendId FK
+    +InvitationStatus status
+    +DateTime createdAt
+  }
+  class Conversation {
+    +String id PK
+    +String title
+    +Boolean isGroup
+    +DateTime createdAt
+    +String ownerId FK
+  }
+  class ConversationMember {
+    +String id PK
+    +String userId FK
+    +String conversationId FK
+    +DateTime joinedAt
+    +DateTime lastSeenAt
+    +String lastSeenMessageId
+  }
+  class GroupMessage {
+    +String id PK
+    +String conversationId FK
+    +String senderId FK
+    +String message
+    +String image
+    +DateTime sentAt
+    +String eventId FK
+    +DateTime deliveredAt
+    +DateTime readAt
+    +MessageStatus status
+  }
+  class GroupInvitation {
+    +String id PK
+    +String groupId FK
+    +String inviterId FK
+    +String invitedId FK
+    +InvitationStatus status
+    +DateTime createdAt
+  }
+  class GroupJoinRequest {
+    +String id PK
+    +String groupId FK
+    +String seeker FK
+    +InvitationStatus status
+    +DateTime createdAt
+  }
+  class GroupMember {
+    +String id PK
+    +String groupId FK
+    +String userId FK
+    +DateTime joinedAt
+  }
+  class Event {
+    +String id PK
+    +String title
+    +String description
+    +DateTime datetime
+    +String groupId FK
+    +String ownerId FK
+    +DateTime createdAt
+  }
+  class Rsvp {
+    +String id PK
+    +String userId FK
+    +String eventId FK
+    +RsvpStatus status
+    +DateTime createdAt
+  }
+  class Notification {
+    +String id PK
+    +String userId FK
+    +String type
+    +String message
+    +Boolean isRead
+    +DateTime createdAt
+  }
+  class UserSettings {
+    +String id PK
+    +String userId FK UK
+    +String theme
+    +String language
+    +Boolean notificationsEnabled
+    +DateTime createdAt
+  }
+
+  User "1" --> "0..*" Post : crée
+  User "1" --> "0..*" Story : crée
+  User "1" --> "0..*" Comment : écrit
+  User "1" --> "0..*" Reaction : réagit
+  User "1" --> "0..*" Message : envoie
+  User "1" --> "0..*" Notification : reçoit
+  User "1" --> "0..1" UserSettings : possède
+  User "1" --> "0..*" Account : authentifie via
+  User "1" --> "0..*" Friendship : initie
+  User "1" --> "0..*" Conversation : possède
+  User "1" --> "0..*" ConversationMember : participe
+  User "1" --> "0..*" GroupMessage : envoie
+  User "1" --> "0..*" GroupMember : adhère
+  User "1" --> "0..*" GroupInvitation : invite
+  User "1" --> "0..*" GroupJoinRequest : demande
+  User "1" --> "0..*" Event : organise
+  User "1" --> "0..*" Rsvp : répond
+
+  Post "1" --> "0..*" Comment : contient
+  Post "1" --> "0..*" Reaction : reçoit
+  Story "1" --> "0..*" Reaction : reçoit
+  Comment "1" --> "0..*" Reaction : reçoit
+
+  Conversation "1" --> "0..*" ConversationMember : a pour membres
+  Conversation "1" --> "0..*" GroupMessage : contient
+  Conversation "1" --> "0..*" GroupMember : enregistre
+  Conversation "1" --> "0..*" GroupInvitation : émet
+  Conversation "1" --> "0..*" GroupJoinRequest : reçoit
+  Conversation "1" --> "0..*" Event : héberge
+
+  Event "1" --> "0..*" Rsvp : collecte
+  Event "1" --> "0..*" GroupMessage : référencé par

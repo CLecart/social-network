@@ -87,20 +87,40 @@ CLOUDINARY_API_SECRET=demo
 ### Test d'authentification du projet
 
 ```typescript
-import { POST } from "@/app/api/auth/login/route";
+import { POST } from "@/app/api/public/auth/register/route";
+import { db } from "@/lib/db";
+import { hashPassword } from "@/lib/security/hash";
+import { NextRequest } from "next/server";
 
-describe("POST /api/auth/login", () => {
-  it("returns 200 for valid credentials", async () => {
-    const request = new Request("http://localhost/api/auth/login", {
-      method: "POST",
-      body: JSON.stringify({
-        email: "user@example.com",
-        password: "password123",
-      }),
-    });
+beforeAll(async () => {
+  await db.user.create({
+    data: {
+      username: "testuser",
+      email: "test@example.com",
+      password: await hashPassword("password123"),
+      firstName: "Test",
+      lastName: "User",
+      birthDate: new Date("1990-01-01"),
+    },
+  });
+});
 
-    const response = await POST(request as any);
-    expect(response.status).toBe(200);
+describe("POST /api/public/auth/register", () => {
+  it("should register user and return success", async () => {
+    const formData = new FormData();
+    formData.append("username", `testuser_${Date.now()}`);
+    formData.append("email", `testuser_${Date.now()}@example.com`);
+    formData.append("password", "password123");
+    formData.append("firstname", "Test");
+    formData.append("lastname", "User");
+    formData.append("dateOfBirth", "1990-01-01");
+
+    const req = { formData: async () => formData } as unknown as NextRequest;
+    const res = await POST(req);
+
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.success).toBe(true);
   });
 });
 ```
@@ -115,11 +135,11 @@ describe("POST /api/auth/login", () => {
 flowchart LR
     Client[Browser] --> Next[Next.js App]
     Next --> API[API Routes]
-    API --> DB[(PostgreSQL)]
-    API --> Redis[(Redis)]
+    API --> DB[(PostgreSQL - Neon)]
+    API --> Redis[(Upstash Redis)]
     API --> Cloudinary[(Cloudinary)]
-    Client <--> Socket[Socket.io]
-    Socket <--> Redis
+    Client -- "EventSource / fetch stream" --> SSE[SSE Endpoints]
+    SSE --> Redis
 ```
 
 ### Flux de Données
@@ -154,16 +174,19 @@ sequenceDiagram
 
 ### Bibliothèques Principales
 
-- Next.js
-- Prisma
+- Next.js 15 (App Router)
+- React 19
+- Prisma 6
 - TypeScript
-- Tailwind CSS
-- Redis
-- Socket.io
-- Cloudinary
-- Jest
+- Tailwind CSS + Radix UI / shadcn
+- `@upstash/redis` (REST)
+- `jose` + `jsonwebtoken` (JWT)
+- `googleapis` (OAuth Google)
+- Cloudinary (`next-cloudinary`)
+- Jest + `ts-jest`
 - Zod
-- bcryptjs
+- `bcrypt`
+- Bun (runtime + package manager)
 
 ---
 

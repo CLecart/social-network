@@ -34,8 +34,8 @@ graph LR
 
   subgraph Backend
     NextAPI[Next.js API Routes / App Router Server Actions]
-    Socket[Socket.io Server]
-    Redis[Redis (pub/sub, cache, sessions)]
+    SSE[SSE Endpoints\n/api/private/chat/listen]
+    Redis[Upstash Redis\nREST: cache + buffer de messages]
     Prisma[Prisma Client]
   end
 
@@ -49,8 +49,8 @@ graph LR
   NextAPI --> Prisma
   Prisma --> Postgres
   NextAPI --> Redis
-  Socket --> Redis
-  Browser --> Socket
+  SSE --> Redis
+  Browser -- "EventSource / fetch stream" --> SSE
   NextAPI --> Storage
   Browser --> Storage
 
@@ -65,33 +65,42 @@ sequenceDiagram
   participant B as Browser
   participant N as Next.js API
   participant P as Prisma
-  participant R as Redis
 
-  B->>N: POST /api/auth/login {email,password}
+  B->>N: POST /api/public/auth/login {email, password}
   N->>P: SELECT user WHERE email
   P-->>N: user row
-  N->>N: verify password, create JWT
-  N->>R: store session (uuid -> userId)
-  N-->>B: set-cookie HttpOnly JWT; 200 OK
+  N->>N: bcrypt.compare(password, user.password)
+  N->>N: jose.SignJWT({userId}) signé avec JWT_SECRET
+  N-->>B: Set-Cookie: authToken=<JWT>; HttpOnly; SameSite=Lax; 200 OK
 ```
 
-### Real-time Messaging Sequence
+Le JWT est validé par le middleware Next.js à chaque requête non publique (voir `src/middleware.ts`). Aucun NextAuth.js n'est utilisé : la stack auth est custom à base de `jose` + `jsonwebtoken` + `bcrypt`.
+
+### Real-time Messaging Sequence (SSE + Upstash Redis)
 
 ```mermaid
 sequenceDiagram
   participant U1 as User A (Browser)
-  participant S as Socket.io Server
-  participant R as Redis
-  participant DB as Postgres
+  participant API as Next.js API Route
+  participant DB as PostgreSQL
+  participant R as Upstash Redis
+  participant U2 as User B (Browser, SSE open)
 
-  U1->>S: socket.emit('message', {to, body})
-  S->>DB: INSERT message
-  DB-->>S: saved message
-  S->>R: publish message (channel:user:{to})
-  R-->>S: deliver (other servers)
-  S-->>U2: socket.emit('message', payload)
-  S-->>U1: ack (status SENT/DISPATCHED)
+  U1->>API: POST /api/private/chat/send {to, body}
+  API->>DB: INSERT message (Prisma)
+  DB-->>API: saved message
+  API->>R: SET latest:chat:{from}:{to} = payload
+  API-->>U1: 200 OK (status SENT)
+
+  Note over U2,R: U2 a ouvert /api/private/chat/listen?conversationId=...\n(EventSource maintenu côté navigateur)
+  loop polling Upstash Redis
+    U2->>R: GET latest:chat:{from}:{to}
+    R-->>U2: payload (si nouveau)
+  end
+  U2-->>U2: render message (SSE push)
 ```
+
+Compromis assumé : Upstash Redis est un service REST (pas de pub/sub TCP). On polle la clé `latest:chat:*` côté endpoint SSE, ce qui suffit pour le volume de la formation et reste compatible serverless (Vercel).
 
 ### Schéma ER (Simplifié)
 
@@ -111,25 +120,34 @@ erDiagram
 
 ## Authentification & Middleware
 
-- Auth via JWT stocké en cookie HTTP-only; refresh tokens optionnels.
-- Middleware Next.js valide JWT sur routes protégées (server-side) et redirige vers `/login` si absent/expiré.
-- Sessions courtes côté serveur (Redis) pour invalidation forcée et gestion multi-device.
+- Auth custom (sans NextAuth) : JWT signé par `jose` (`jose.SignJWT`) avec un secret applicatif `JWT_SECRET`, stocké dans un cookie `authToken` (HttpOnly, SameSite=Lax).
+- Le password est hashé avec `bcrypt` (12 rounds) avant insertion. La vérification se fait via `bcrypt.compare` au login.
+- OAuth Google géré via `googleapis` (callback `/api/public/auth/callback`), pas via NextAuth. Le modèle Prisma `Account` est compatible NextAuth mais non utilisé par lui ici.
+- Middleware Next.js (`src/middleware.ts`) :
+  - protège **tout par défaut** via le matcher `'/((?!_next/static|_next/image|favicon.ico).*)'`,
+  - laisse passer les routes publiques applicatives (`/login`, `/register`, `/palette`) et toutes les routes sous `/api/public/...`,
+  - vérifie le cookie `authToken` via `verifyJwt`, redirige sur `/login` si invalide,
+  - injecte un header `x-user-id` dans la requête pour les handlers downstream.
+- Pas de session Redis : le JWT est auto-suffisant. L'invalidation forcée n'est pas implémentée et serait un ajout de roadmap (liste de révocation, version de token, ou TTL court + refresh).
 
-Pattern recommandé:
-
-- `middleware.ts` vérifie cookie, charge user id, attache `request.user` pour handlers.
+> 📌 **Section dédiée :** l'ensemble des mesures de sécurité (authentification, protection contre XSS / CSRF / SQLi / clickjacking, headers HTTP, validation Zod, OAuth state, rate limiting) **et la conformité RGPD** (données collectées, droits de la personne concernée, durée de conservation, roadmap de durcissement) sont détaillées dans [securite-rgpd.md](./securite-rgpd.md). À consulter en priorité par le jury.
 
 ---
 
-## Temps réel (Socket.io)
+## Temps réel (Server-Sent Events + Upstash Redis)
 
-- Socket.io côté serveur utilise Redis adapter pour scalabilité multi-instance.
-- Evénements principaux:
-  - `message:create` (DM / groupe)
-  - `message:status` (DELIVERED / READ)
-  - `notification:new`
-  - `typing` / `presence`
-- Persist messages via Prisma → PostgreSQL, puis publier via Redis pub/sub pour diffusion.
+- Le projet utilise **Server-Sent Events (SSE)** plutôt que des WebSockets. C'est suffisant pour le besoin (push serveur → client en chat 1‑to‑1 et 1‑to‑group), et compatible nativement avec l'exécution serverless de Vercel.
+- Endpoint SSE: `GET /api/private/chat/listen?conversationId=...&type=direct|group` (voir `src/app/api/private/chat/listen/route.ts`). Le navigateur consomme le flux via un `EventSource` / `fetch` en streaming côté `src/hooks/use-real-time-chat.ts`.
+- Côté serveur, chaque envoi de message (`POST /api/private/chat/send`) :
+  1. persiste le message via Prisma dans PostgreSQL,
+  2. écrit la dernière version dans Upstash Redis sous une clé `latest:chat:{from}:{to}` (ou `latest:chat:group:{groupId}`),
+  3. répond au client expéditeur.
+- L'endpoint SSE polle Upstash Redis (REST) pour cette clé et pousse les nouveaux messages dans le flux ouvert du destinataire.
+- Événements applicatifs principaux :
+  - `message:create` (DM / groupe) — publication via clé Redis dédiée
+  - `message:status` (DELIVERED / READ) — via endpoints `/api/private/.../mark-seen` et `/status`
+  - `typing` / `presence` — flux SSE séparé `/api/private/chat/typing/listen`
+- Compromis assumé : Upstash Redis ne propose pas de pub/sub TCP, le polling est volontairement court mais reste un coût à surveiller. Pour passer à l'échelle, on basculerait vers un Redis classique en pub/sub ou un service managé type Ably / Pusher.
 
 ---
 
@@ -139,11 +157,13 @@ Pattern recommandé:
 
 ### Résumé Rapide
 
-**Auth:**
+**Auth (routes publiques, hors middleware) :**
 
-- `POST /api/auth/login` — Connexion
-- `POST /api/auth/register` — Inscription
-- `POST /api/auth/logout` — Déconnexion
+- `POST /api/public/auth/login` — Connexion
+- `POST /api/public/auth/register` — Inscription
+- `POST /api/public/auth/logout` — Déconnexion
+- `GET  /api/public/auth/redirect` — Redirection OAuth Google (initie le flux)
+- `GET  /api/public/auth/callback` — Callback OAuth Google
 
 **Users:**
 
@@ -197,25 +217,50 @@ Pattern recommandé:
 
 ### Authentification (Middleware)
 
-**`src/middleware.ts`** — Valide JWT et charge user ID sur routes protégées:
+**`src/middleware.ts`** — Valide le JWT et injecte `x-user-id` sur toutes les routes non publiques :
 
 ```typescript
 import { NextRequest, NextResponse } from "next/server";
+import { verifyJwt } from "./lib/jwt/verifyJwt";
 
-export function middleware(request: NextRequest) {
-  const token = request.cookies.get("auth_token")?.value;
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-  // Redirect to login if no token
-  if (!token && request.nextUrl.pathname.startsWith("/api/private")) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // Routes publiques (pages)
+  const publicRoutes = ["/login", "/register", "/palette"];
+  const isPublicRoute = publicRoutes.some((r) => pathname.startsWith(r));
+
+  // API publiques
+  const isPublicApi = pathname.startsWith("/api/public");
+
+  // Fichiers statiques images
+  const imageExtensions = [".avif", ".jpg", ".jpeg", ".png", ".gif", ".svg", ".webp", ".ico", ".bmp"];
+  const isImageRequest = imageExtensions.some((ext) => pathname.toLowerCase().endsWith(ext));
+
+  if (isPublicRoute || isPublicApi || isImageRequest) {
+    return NextResponse.next();
   }
 
-  // Continue if token exists or public route
-  return NextResponse.next();
+  const token = req.cookies.get("authToken")?.value;
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  let payload = null;
+  try {
+    payload = await verifyJwt(token);
+  } catch {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-user-id", payload.userId);
+  return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
 export const config = {
-  matcher: ["/api/private/:path*", "/(feed)/:path*"],
+  // Match toutes les routes sauf les fichiers statiques Next.js
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
 ```
 
@@ -252,34 +297,67 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-### Real-time Socket.io
+### Real-time (Server-Sent Events)
 
-**`src/lib/server/websocket/socket.ts`** — Gère messages en temps réel:
+**`src/app/api/private/chat/listen/route.ts`** — endpoint SSE qui pousse les nouveaux messages dans un flux ouvert côté client :
 
 ```typescript
-import { Server } from "socket.io";
-import { createAdapter } from "@socket.io/redis-adapter";
-import { redisdb } from "./redis";
+import { NextRequest } from "next/server";
+import { redisdb } from "@/lib/server/websocket/redis";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
-export function initializeSocket(httpServer: any) {
-  const io = new Server(httpServer, {
-    adapter: createAdapter(redisdb, redisdb),
+export async function GET(request: NextRequest) {
+  const userId = await getUserIdFromRequest(request);
+  if (!userId) return new Response("Unauthorized", { status: 401 });
+
+  const { searchParams } = new URL(request.url);
+  const conversationId = searchParams.get("conversationId");
+  const type = searchParams.get("type") || "direct";
+
+  const stream = new ReadableStream({
+    start(controller) {
+      const encoder = new TextEncoder();
+      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "connected" })}\n\n`));
+
+      let isActive = true;
+      let lastMessageId = "";
+
+      // Polling Upstash Redis (REST) — pas de pub/sub TCP disponible
+      (async function pollForMessages() {
+        while (isActive) {
+          const channels = type === "direct"
+            ? [`latest:chat:${userId}:${conversationId}`, `latest:chat:${conversationId}:${userId}`]
+            : [`latest:chat:group:${conversationId}`];
+
+          for (const channel of channels) {
+            const data = await redisdb.get(channel);
+            if (data && (data as any).id && (data as any).id !== lastMessageId) {
+              lastMessageId = (data as any).id;
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
+            }
+          }
+          await new Promise((r) => setTimeout(r, 1000));
+        }
+      })();
+
+      request.signal.addEventListener("abort", () => {
+        isActive = false;
+        controller.close();
+      });
+    },
   });
 
-  io.on("connection", (socket) => {
-    socket.on("message:create", async (payload) => {
-      // Save to database
-      const msg = await db.message.create({ data: payload });
-      // Publish via Redis for multi-instance
-      io.to(payload.receiverId).emit("message:create", msg);
-    });
-
-    socket.on("typing", (data) => {
-      socket.broadcast.to(data.conversationId).emit("typing", data);
-    });
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache, no-transform",
+      Connection: "keep-alive",
+    },
   });
 }
 ```
+
+Côté envoi, `POST /api/private/chat/send` persiste le message via Prisma puis met à jour la clé Redis `latest:chat:{from}:{to}` qui sera lue par le polling SSE du destinataire.
 
 ---
 
@@ -287,30 +365,56 @@ export function initializeSocket(httpServer: any) {
 
 ### Tests
 
-**Stratégie recommandée:**
+**État actuel :**
 
-- Unit tests: Jest + React Testing Library
-- Integration tests: Playwright or Cypress (end-to-end)
-- Backend tests: supertest + Jest for API routes
-- Contract tests for real-time events (optionnel)
+- Tests d'intégration backend : Jest + `ts-jest` + `node --experimental-vm-modules` (voir `__tests__/integrations/authentification.test.ts`).
+- Pas (encore) de framework E2E branché côté navigateur.
 
-**Sample test (`__tests__/integrations/auth.test.ts`):**
+**Plan d'extension (roadmap dossier) :**
+
+- Unit tests UI : Jest + React Testing Library sur les composants critiques (formulaires d'auth, feed, reactions).
+- Tests d'intégration backend : étendre la couverture à `/api/private/post`, `/api/private/chat/send`, `/api/private/friend-requests`.
+- E2E : ajouter Playwright (privilégié pour son setup TypeScript simple) sur les parcours « inscription → publication → réaction → suppression ».
+- Tests contractuels SSE : valider le format `data: <json>\n\n` du flux temps réel.
+
+**Sample test (`__tests__/integrations/authentification.test.ts`) — extrait :**
 
 ```typescript
-import { POST } from "@/app/api/auth/login/route";
+import { POST } from "@/app/api/public/auth/register/route";
+import { login } from "@/lib/server/user/login";
+import { db } from "@/lib/db";
+import { hashPassword } from "@/lib/security/hash";
+import { NextRequest } from "next/server";
 
-describe("POST /api/auth/login", () => {
-  it("should login with valid credentials", async () => {
-    const req = new Request(new URL("http://localhost/api/auth/login"), {
-      method: "POST",
-      body: JSON.stringify({
-        email: "test@example.com",
-        password: "password123",
-      }),
-    });
+beforeAll(async () => {
+  await db.user.create({
+    data: {
+      username: "testuser",
+      email: "test@example.com",
+      password: await hashPassword("password123"),
+      firstName: "Test",
+      lastName: "User",
+      birthDate: new Date("1990-01-01"),
+    },
+  });
+});
 
-    const response = await POST(req as any);
-    expect(response.status).toBe(200);
+describe("POST /api/public/auth/register", () => {
+  it("should register user and return success", async () => {
+    const formData = new FormData();
+    formData.append("username", `testuser_${Date.now()}`);
+    formData.append("email", `testuser_${Date.now()}@example.com`);
+    formData.append("password", "password123");
+    formData.append("firstname", "Test");
+    formData.append("lastname", "User");
+    formData.append("dateOfBirth", "1990-01-01");
+
+    const req = { formData: async () => formData } as unknown as NextRequest;
+    const res = await POST(req);
+
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.success).toBe(true);
   });
 });
 ```
@@ -328,16 +432,19 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
         with:
-          node-version: "18"
+          bun-version: "1"
 
-      - run: npm install
-      - run: npm run lint
-      - run: npm run test
-      - run: npm run build
+      - run: bun install --frozen-lockfile
+      - run: bunx prisma generate
+      - run: bun run lint
+      - run: bun run test
+      - run: bun run build
 ```
+
+> Le projet utilise **Bun** comme package manager et runtime, en cohérence avec `bun.lock` et le `Dockerfile` (image `oven/bun:1`).
 
 ---
 
@@ -377,7 +484,7 @@ src/
 │   │   ├── api/           # API response helpers
 │   │   ├── user/          # User queries
 │   │   ├── post/          # Post queries
-│   │   └── websocket/     # Socket.io setup
+│   │   └── websocket/     # Client Upstash Redis (réutilisé par les endpoints SSE)
 │   ├── schemas/           # Zod validators
 │   └── utils/             # Helpers
 └── middleware.ts          # Auth middleware
@@ -397,7 +504,7 @@ src/
 - [x] Auth (JWT + HTTP-only cookies + middleware)
 - [x] API routes (20+ endpoints documentés)
 - [x] Database (Prisma + 18 models)
-- [x] Real-time (Socket.io + Redis adapter)
+- [x] Real-time (Server-Sent Events + Upstash Redis)
 - [x] Error handling (validation + exceptions)
 - [x] File uploads (Cloudinary integration)
 - [x] Pagination (infinite scroll)
@@ -418,126 +525,4 @@ src/
 ---
 
 **Last Updated:** 2026-05-04  
-**Version:** 1.0
-
-# 04 - Développement
-
-## 🏗️ Architecture Générale
-
-### Stack Technologique
-
-```
-Frontend:
-├── Next.js 14+ (React Framework)
-├── TypeScript (Type Safety)
-├── Tailwind CSS (Styling)
-├── React Query/SWR (Data Fetching)
-└── Zustand/Jotai (State Management)
-
-Backend:
-├── Next.js API Routes
-├── Prisma (ORM)
-├── PostgreSQL (Database)
-├── Redis (Caching/Sessions)
-└── Socket.io (Real-time)
-
-Infrastructure:
-├── Docker (Containerization)
-├── Neon (Serverless PostgreSQL)
-├── Vercel (Hosting)
-├── GitHub Actions (CI/CD)
-└── Sentry (Monitoring)
-```
-
----
-
-## 📁 Structure du Projet
-
-```
-src/
-├── app/                     # Next.js App Router
-│   ├── (auth)/             # Route group authentification
-│   ├── (protected)/        # Route group protégées
-│   ├── api/                # API endpoints
-│   └── components/         # Components réutilisables
-├── lib/                    # Utilitaires et helpers
-│   ├── db.ts              # Prisma client
-│   ├── auth.ts            # Logique authentification
-│   └── validators.ts      # Validation données
-├── hooks/                  # Custom React hooks
-├── types/                  # Typage TypeScript
-├── middleware.ts           # Middlewares Next.js
-└── prisma/
-    ├── schema.prisma       # Modèle de données
-    └── migrations/         # Historique migrations
-```
-
----
-
-## 🗄️ Modèle de Données
-
-### Entités Principales
-
-- **User:** Profil utilisateur
-- **Post:** Article/Tweet publié
-- **Comment:** Commentaire sur post
-- **Message:** Message privé
-- **Follow:** Relation de suivi
-- **Like:** Réaction à un post/comment
-- **Group:** Communauté/Groupe
-- **Notification:** Alerte utilisateur
-
----
-
-## 🔐 Authentification
-
-### Stratégie
-
-- JWT tokens pour API
-- Cookies HTTP-only pour sessions
-- Refresh tokens
-- Rate limiting
-
-### Implémentation
-
-- NextAuth.js (optionnel)
-- JWT avec secret
-- Password hashing: bcrypt
-
----
-
-## 🔄 Communication Temps Réel
-
-### WebSocket / Socket.io
-
-- Notifications en direct
-- Live messaging
-- User presence
-- Activity feed updates
-
----
-
-## 🧪 Tests
-
-- [ ] Unit Tests (Jest)
-- [ ] Integration Tests (Testing Library)
-- [ ] E2E Tests (Cypress/Playwright)
-- [ ] Performance Tests (Lighthouse)
-
----
-
-## 📊 Monitoring et Logs
-
-- Error tracking: Sentry
-- Performance: Vercel Analytics
-- Logs: Console/Datadog
-
----
-
-## 🚀 Optimisations
-
-- [ ] Code splitting
-- [ ] Image optimization
-- [ ] Database indexing
-- [ ] Caching strategy
-- [ ] Compression (gzip/brotli)
+**Version:** 1.1

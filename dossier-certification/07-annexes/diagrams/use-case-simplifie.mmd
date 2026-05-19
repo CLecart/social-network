@@ -1,0 +1,40 @@
+flowchart TB
+  %% Rangée haute — 4 satellites
+  subgraph TOP [" "]
+    direction LR
+    UC1(👤 Gérer<br/>mon profil)
+    UC2(📝 Publier<br/>et interagir)
+    UC3(💬 Échanger<br/>en temps réel)
+    UC7(🔍 Rechercher<br/>et découvrir)
+  end
+
+  %% Rangée centrale — acteurs
+  subgraph CENTER [" "]
+    direction LR
+    V([Visiteur]):::actor
+    U(((👤 Utilisateur))):::central
+  end
+  V -. devient .-> U
+
+  %% Visiteur ne peut que s'authentifier
+  V --> Auth(🔐 S'authentifier)
+
+  %% Rangée basse — 3 satellites
+  subgraph BOTTOM [" "]
+    direction LR
+    UC4(👥 Construire<br/>mon réseau)
+    UC5(🏷️ Animer<br/>un groupe)
+    UC6(📅 Participer à<br/>un événement)
+  end
+
+  %% Flèches radiales depuis User
+  U ==> UC1
+  U ==> UC2
+  U ==> UC3
+  U ==> UC7
+  U ==> UC4
+  U ==> UC5
+  U ==> UC6
+
+  classDef actor fill:#ffe9b3,stroke:#b8860b,stroke-width:2px,color:#000;
+  classDef central fill:#ff9966,stroke:#c44d00,stroke-width:3px,color:#000,font-weight:bold;

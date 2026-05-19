@@ -471,7 +471,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ## 🔗 Model: Account
 
-**Description:** Comptes OAuth (NextAuth)
+**Description:** Comptes OAuth Google (modèle compatible NextAuth, mais l'implémentation utilise `googleapis` côté `/api/public/auth/callback` ; NextAuth n'est pas branché).
 
 ### Attributs:
 

@@ -687,8 +687,555 @@ CREATE INDEX idx_notifications_user_id ON notifications(user_id);
 
 ---
 
+## 4. Diagramme de Classes (UML)
+
+Le diagramme de classes formalise les 18 entités persistées par Prisma, leurs attributs typés et les relations entre elles. Il est aligné mot pour mot sur `prisma/schema.prisma`.
+
+### 4.1 Version simplifiée (pour la slide de soutenance)
+
+Sept entités cœur, layout **radial** avec User au centre. Représenté en `flowchart` (avec attributs en multi-ligne) plutôt qu'en `classDiagram` car ce dernier ne permet pas de forcer un placement radial — l'algorithme dagre place les classes en ligne ou en colonne. Pour la version stricte UML avec accolades, voir 4.2.
+
+```mermaid
+flowchart TB
+  %% Rangée haute — 3 entités de contenu
+  subgraph TOP [" "]
+    direction LR
+    Post["<b>Post</b><br/>id : String<br/>message : String<br/>visibility : Visibility"]
+    Comment["<b>Comment</b><br/>id : String<br/>message : String"]
+    Reaction["<b>Reaction</b><br/>id : String<br/>type : ReactionType"]
+  end
+
+  %% Rangée centrale — User au cœur
+  subgraph CENTER [" "]
+    direction LR
+    User(["<b>👤 User</b><br/>id : String<br/>email : String<br/>username : String<br/>visibility : ProfileVisibility"]):::central
+  end
+
+  %% Rangée basse — 3 entités d'interaction
+  subgraph BOTTOM [" "]
+    direction LR
+    Conversation["<b>Conversation</b><br/>id : String<br/>title : String<br/>isGroup : Boolean"]
+    Message["<b>Message</b><br/>id : String<br/>content : String<br/>status : MessageStatus"]
+    Event["<b>Event</b><br/>id : String<br/>title : String<br/>datetime : DateTime"]
+  end
+
+  %% Relations User → contenus (rangée haute)
+  User -->|publie 0..*| Post
+  User -->|écrit 0..*| Comment
+  User -->|réagit 0..*| Reaction
+
+  %% Relations entre contenus
+  Post -->|contient 0..*| Comment
+  Post -->|reçoit 0..*| Reaction
+  Comment -->|reçoit 0..*| Reaction
+
+  %% Relations User → interactions (rangée basse)
+  User -->|participe 0..*| Conversation
+  User -->|organise 0..*| Event
+
+  %% Relations entre interactions
+  Conversation -->|transporte 0..*| Message
+  Conversation -->|héberge 0..*| Event
+
+  classDef central fill:#ff9966,stroke:#c44d00,stroke-width:3px,color:#000,font-weight:bold;
+```
+
+> Cette version est volontairement orientée « domaine métier ». Les entités techniques (`Account`, `UserSettings`, `Notification`, `GroupInvitation`, `GroupJoinRequest`, `ConversationMember`, `GroupMember`, `Rsvp`, `Story`, `Friendship`) sont citées à l'oral mais reportées dans la version complète ci-dessous pour ne pas saturer la slide.
+
+### 4.2 Version complète (référence pour le dossier écrit)
+
+Les 18 entités persistées, leurs attributs typés et leurs relations.
+
+```mermaid
+classDiagram
+  direction TB
+
+  class User {
+    +String id PK
+    +String firstName
+    +String lastName
+    +String password
+    +String email UK
+    +DateTime birthDate
+    +String username UK
+    +String biography
+    +String avatar
+    +String avatarId
+    +String banner
+    +String bannerId
+    +ProfileVisibility visibility
+  }
+  class Account {
+    +String id PK
+    +String userId FK
+    +String provider
+    +String providerAccountId
+    +String refresh_token
+    +String access_token
+    +BigInt expires_at
+    +String token_type
+    +String scope
+    +String id_token
+    +String session_state
+  }
+  class Post {
+    +String id PK
+    +String userId FK
+    +String message
+    +DateTime datetime
+    +String image
+    +String mediaId
+    +Visibility visibility
+  }
+  class Story {
+    +String id PK
+    +String userId FK
+    +DateTime datetime
+    +String media
+    +String mediaId
+    +Visibility visibility
+  }
+  class Comment {
+    +String id PK
+    +String postId FK
+    +String userId FK
+    +String message
+    +DateTime datetime
+  }
+  class Reaction {
+    +String id PK
+    +ReactionType type
+    +String userId FK
+    +String postId FK
+    +String storyId FK
+    +String commentId FK
+    +DateTime datetime
+  }
+  class Message {
+    +String id PK
+    +String senderId FK
+    +String receiverId FK
+    +String message
+    +String image
+    +DateTime datetime
+    +DateTime deliveredAt
+    +DateTime readAt
+    +MessageStatus status
+  }
+  class Friendship {
+    +String id PK
+    +String userId FK
+    +String friendId FK
+    +InvitationStatus status
+    +DateTime createdAt
+  }
+  class Conversation {
+    +String id PK
+    +String title
+    +Boolean isGroup
+    +DateTime createdAt
+    +String ownerId FK
+  }
+  class ConversationMember {
+    +String id PK
+    +String userId FK
+    +String conversationId FK
+    +DateTime joinedAt
+    +DateTime lastSeenAt
+    +String lastSeenMessageId
+  }
+  class GroupMessage {
+    +String id PK
+    +String conversationId FK
+    +String senderId FK
+    +String message
+    +String image
+    +DateTime sentAt
+    +String eventId FK
+    +DateTime deliveredAt
+    +DateTime readAt
+    +MessageStatus status
+  }
+  class GroupInvitation {
+    +String id PK
+    +String groupId FK
+    +String inviterId FK
+    +String invitedId FK
+    +InvitationStatus status
+    +DateTime createdAt
+  }
+  class GroupJoinRequest {
+    +String id PK
+    +String groupId FK
+    +String seeker FK
+    +InvitationStatus status
+    +DateTime createdAt
+  }
+  class GroupMember {
+    +String id PK
+    +String groupId FK
+    +String userId FK
+    +DateTime joinedAt
+  }
+  class Event {
+    +String id PK
+    +String title
+    +String description
+    +DateTime datetime
+    +String groupId FK
+    +String ownerId FK
+    +DateTime createdAt
+  }
+  class Rsvp {
+    +String id PK
+    +String userId FK
+    +String eventId FK
+    +RsvpStatus status
+    +DateTime createdAt
+  }
+  class Notification {
+    +String id PK
+    +String userId FK
+    +String type
+    +String message
+    +Boolean isRead
+    +DateTime createdAt
+  }
+  class UserSettings {
+    +String id PK
+    +String userId FK UK
+    +String theme
+    +String language
+    +Boolean notificationsEnabled
+    +DateTime createdAt
+  }
+
+  User "1" --> "0..*" Post : crée
+  User "1" --> "0..*" Story : crée
+  User "1" --> "0..*" Comment : écrit
+  User "1" --> "0..*" Reaction : réagit
+  User "1" --> "0..*" Message : envoie
+  User "1" --> "0..*" Notification : reçoit
+  User "1" --> "0..1" UserSettings : possède
+  User "1" --> "0..*" Account : authentifie via
+  User "1" --> "0..*" Friendship : initie
+  User "1" --> "0..*" Conversation : possède
+  User "1" --> "0..*" ConversationMember : participe
+  User "1" --> "0..*" GroupMessage : envoie
+  User "1" --> "0..*" GroupMember : adhère
+  User "1" --> "0..*" GroupInvitation : invite
+  User "1" --> "0..*" GroupJoinRequest : demande
+  User "1" --> "0..*" Event : organise
+  User "1" --> "0..*" Rsvp : répond
+
+  Post "1" --> "0..*" Comment : contient
+  Post "1" --> "0..*" Reaction : reçoit
+  Story "1" --> "0..*" Reaction : reçoit
+  Comment "1" --> "0..*" Reaction : reçoit
+
+  Conversation "1" --> "0..*" ConversationMember : a pour membres
+  Conversation "1" --> "0..*" GroupMessage : contient
+  Conversation "1" --> "0..*" GroupMember : enregistre
+  Conversation "1" --> "0..*" GroupInvitation : émet
+  Conversation "1" --> "0..*" GroupJoinRequest : reçoit
+  Conversation "1" --> "0..*" Event : héberge
+
+  Event "1" --> "0..*" Rsvp : collecte
+  Event "1" --> "0..*" GroupMessage : référencé par
+```
+
+**Notes UML :**
+
+- Les méthodes des classes ne sont pas modélisées ici : ce sont des entités de persistance, pas des classes métier au sens objet classique. Le comportement vit dans la couche `src/lib/server/...` (queries Prisma) et dans les routes API.
+- Les contraintes d'unicité composite (`@@unique`) sont omises pour la lisibilité : `Reaction(userId,postId)` / `(userId,storyId)` / `(userId,commentId)`, `Friendship(userId,friendId)`, `ConversationMember(userId,conversationId)`, `GroupInvitation(groupId,invitedId)`, `GroupJoinRequest(groupId,seeker)`, `GroupMember(groupId,userId)`, `Rsvp(userId,eventId)`, `Account(provider,providerAccountId)`.
+- Tous les `id` sont des `cuid()` (chaîne, pas `int`).
+- Les enums sont définis dans la section 4.3.
+
+### 4.3 Enums
+
+Les 6 énumérations utilisées par le schéma Prisma. Représentées en `flowchart` (un bloc par enum) plutôt qu'en `classDiagram` car la version 11+ de Mermaid plante sur un `classDiagram` sans aucune relation.
+
+```mermaid
+flowchart LR
+  PV["<b>ProfileVisibility</b><br/>━━━━━━━━<br/>PUBLIC<br/>PRIVATE"]
+  V["<b>Visibility</b><br/>━━━━━━━━<br/>PUBLIC<br/>PRIVATE<br/>FRIENDS"]
+  IS["<b>InvitationStatus</b><br/>━━━━━━━━<br/>PENDING<br/>ACCEPTED"]
+  MS["<b>MessageStatus</b><br/>━━━━━━━━<br/>SENT<br/>DELIVERED<br/>READ"]
+  RS["<b>RsvpStatus</b><br/>━━━━━━━━<br/>YES<br/>NO<br/>MAYBE"]
+  RT["<b>ReactionType</b><br/>━━━━━━━━<br/>LIKE<br/>DISLIKE<br/>LOVE<br/>LAUGH<br/>SAD<br/>ANGRY<br/>WOW"]
+
+  %% Liens invisibles pour forcer l'alignement horizontal sur une seule ligne
+  PV ~~~ V ~~~ IS ~~~ MS ~~~ RS ~~~ RT
+
+  classDef enumBox fill:#fff8dc,stroke:#aaaa33,stroke-width:1.5px,color:#000;
+  class PV,V,IS,MS,RS,RT enumBox;
+```
+
+---
+
+## 5. Diagramme de Cas d'Utilisation (UML)
+
+Représente les interactions entre les **acteurs** du système et les **cas d'utilisation** offerts par l'application, déduits des endpoints réellement exposés dans `src/app/api/`.
+
+### 5.1 Acteurs
+
+| Acteur | Description | Périmètre |
+|---|---|---|
+| **Visiteur** | Utilisateur non authentifié | Routes `/api/public/auth/*` uniquement |
+| **Utilisateur** | Utilisateur authentifié (cookie `authToken` valide) | Toutes les routes `/api/private/*` |
+| **Auteur de contenu** | Spécialisation : utilisateur ayant créé un post / story / comment / réaction | Modifier ou supprimer son propre contenu |
+| **Propriétaire de groupe** | Spécialisation : utilisateur ayant créé un groupe (`Conversation.ownerId`) | Inviter, accepter les demandes, modifier, supprimer le groupe |
+| **Organisateur d'événement** | Spécialisation : utilisateur ayant créé un événement (`Event.ownerId`) | Modifier ou supprimer l'événement |
+
+> **Note importante pour le jury :** il n'existe pas de rôle « administrateur » ou « modérateur » distinct dans le projet. La modération est exclusivement assurée par les **propriétaires** de leurs propres contenus et groupes. C'est un choix de scope assumé du projet de formation. Un futur rôle Admin (et l'écran de modération associé) est listé en axe d'évolution dans `06-bilan`.
+
+### 5.2 Vue d'ensemble (Mermaid)
+
+Layout **radial** : l'acteur **Utilisateur** est positionné au centre, entouré de 8 domaines fonctionnels (4 au-dessus, 4 en-dessous) et flanqué des acteurs satellites (Visiteur à gauche, Propriétaire de groupe et Organisateur d'événement à droite). Chaque domaine regroupe ses cas d'utilisation, et l'Utilisateur est relié à chacun d'eux par une seule flèche « participe à ». Les cas redondants ont été regroupés pour la lisibilité.
+
+```mermaid
+flowchart TB
+  %% ============================================
+  %% RANGÉE 0 — Acteurs satellites (tout en haut)
+  %% ============================================
+  subgraph ACTORS [" "]
+    direction LR
+    V([Visiteur]):::actor
+    PG([Propriétaire de groupe]):::actor
+    OE([Organisateur d'événement]):::actor
+  end
+
+  %% ============================================
+  %% RANGÉE 1 — 4 domaines satellites haut
+  %% ============================================
+  subgraph TOP [" "]
+    direction LR
+
+    subgraph AUTH["🔐 Authentification"]
+      direction TB
+      UC_register(S'inscrire)
+      UC_login(Se connecter)
+      UC_google(Via Google)
+      UC_logout(Se déconnecter)
+    end
+
+    subgraph PROFILE["👤 Profil"]
+      direction TB
+      UC_viewMe(Mon profil)
+      UC_editMe(Modifier profil)
+      UC_settings(Paramètres)
+      UC_viewProfile(Profil d'autrui)
+    end
+
+    subgraph SEARCH["🔍 Recherche"]
+      direction TB
+      UC_search(Contenu)
+      UC_searchUsers(Utilisateurs)
+    end
+
+    subgraph SOCIAL["👥 Relations"]
+      direction TB
+      UC_friend(Demande d'amitié)
+      UC_follow(Suivre / Désabonner)
+      UC_followers(Voir followers)
+    end
+  end
+
+  %% ============================================
+  %% RANGÉE 2 — Acteur central (User seul)
+  %% ============================================
+  U(((👤 Utilisateur))):::central
+
+  %% Héritage des spécialisations (vers les acteurs en haut)
+  U -. spécialise .-> PG
+  U -. spécialise .-> OE
+
+  %% ============================================
+  %% RANGÉE 3 — 4 domaines satellites bas
+  %% ============================================
+  subgraph BOTTOM [" "]
+    direction LR
+
+    subgraph FEED["📝 Publications"]
+      direction TB
+      UC_feed(Feed et reels)
+      UC_post(Publier un post)
+      UC_viewPost(Voir un post)
+      UC_comment(Commenter)
+      UC_react(Réagir)
+      UC_story(Stories)
+    end
+
+    subgraph CHAT["💬 Messagerie"]
+      direction TB
+      UC_listConv(Conversations)
+      UC_send(Envoyer un message)
+      UC_listenSSE(Réception SSE)
+      UC_typing(Typing)
+      UC_seen(Marquer comme lu)
+    end
+
+    subgraph GROUPS["🏷️ Groupes"]
+      direction TB
+      UC_listGroups(Mes groupes)
+      UC_createGroup(Créer un groupe)
+      UC_joinReq(Demander à rejoindre)
+      UC_acceptInvite(Accepter invitation)
+      UC_leaveGroup(Quitter)
+      UC_manageGroup(Modifier / Supprimer)
+      UC_inviteMember(Inviter / Retirer)
+      UC_respondReq(Traiter demandes)
+    end
+
+    subgraph EVENTS["📅 Événements"]
+      direction TB
+      UC_listEvents(Voir événements)
+      UC_createEvent(Créer un événement)
+      UC_rsvp(RSVP)
+      UC_manageEvent(Modifier / Supprimer)
+    end
+  end
+
+  %% ============================================
+  %% LIAISONS — radiales depuis l'acteur central
+  %% ============================================
+
+  %% Visiteur → seulement l'auth
+  V ==> AUTH
+
+  %% Utilisateur central → tous les domaines
+  U ==> AUTH
+  U ==> PROFILE
+  U ==> SEARCH
+  U ==> SOCIAL
+  U ==> FEED
+  U ==> CHAT
+  U ==> GROUPS
+  U ==> EVENTS
+
+  %% Acteurs spécialisés → cas spécifiques
+  PG -.modère.-> UC_manageGroup
+  PG -.modère.-> UC_inviteMember
+  PG -.modère.-> UC_respondReq
+  OE -.organise.-> UC_manageEvent
+
+  classDef actor fill:#ffe9b3,stroke:#b8860b,stroke-width:2px,color:#000;
+  classDef central fill:#ff9966,stroke:#c44d00,stroke-width:3px,color:#000,font-weight:bold;
+```
+
+**Lecture du diagramme :**
+
+- Le **cercle orange** au centre représente l'acteur **Utilisateur** (rôle de base, hérité par tous les acteurs authentifiés).
+- Les flèches épaisses (`==>`) partent de l'Utilisateur vers chaque **domaine** (subgraph) — l'Utilisateur « participe à » tout le domaine.
+- Les **acteurs spécialisés** (Propriétaire de groupe, Organisateur d'événement) sont liés directement aux cas spécifiques qu'ils débloquent (flèches en pointillés).
+- Le **Visiteur** ne peut accéder qu'au domaine Authentification.
+
+### 5.3 Version simplifiée (pour la slide de soutenance)
+
+Même logique radiale : Utilisateur au cœur, 7 domaines d'usage en satellites — optimisé pour une slide paysage 16:9.
+
+```mermaid
+flowchart TB
+  %% Rangée haute — 4 satellites
+  subgraph TOP [" "]
+    direction LR
+    UC1(👤 Gérer<br/>mon profil)
+    UC2(📝 Publier<br/>et interagir)
+    UC3(💬 Échanger<br/>en temps réel)
+    UC7(🔍 Rechercher<br/>et découvrir)
+  end
+
+  %% Rangée centrale — acteurs
+  subgraph CENTER [" "]
+    direction LR
+    V([Visiteur]):::actor
+    U(((👤 Utilisateur))):::central
+  end
+  V -. devient .-> U
+
+  %% Visiteur ne peut que s'authentifier
+  V --> Auth(🔐 S'authentifier)
+
+  %% Rangée basse — 3 satellites
+  subgraph BOTTOM [" "]
+    direction LR
+    UC4(👥 Construire<br/>mon réseau)
+    UC5(🏷️ Animer<br/>un groupe)
+    UC6(📅 Participer à<br/>un événement)
+  end
+
+  %% Flèches radiales depuis User
+  U ==> UC1
+  U ==> UC2
+  U ==> UC3
+  U ==> UC7
+  U ==> UC4
+  U ==> UC5
+  U ==> UC6
+
+  classDef actor fill:#ffe9b3,stroke:#b8860b,stroke-width:2px,color:#000;
+  classDef central fill:#ff9966,stroke:#c44d00,stroke-width:3px,color:#000,font-weight:bold;
+```
+
+### 5.4 Mapping cas d'utilisation → endpoints réels
+
+Pour la défense devant le jury, ce tableau permet de pointer directement le code à l'écran.
+
+| Cas d'utilisation | Endpoint(s) `src/app/api/...` |
+|---|---|
+| S'inscrire | `POST /public/auth/register` |
+| Se connecter | `POST /public/auth/login` |
+| Se connecter via Google | `GET /public/auth/redirect/google` → `GET /public/auth/callback/google` |
+| Se déconnecter | `POST /public/auth/logout` |
+| Consulter mon profil | `GET /private/me` (complet) ou `GET /user/me` (id seul) |
+| Modifier mon profil | `PUT /private/me` |
+| Modifier mes paramètres | `PATCH /private/user/settings` |
+| Consulter un profil | `GET /private/user/[userId]` + `GET /private/profile/[userId]/summary` |
+| Consulter le feed | `GET /private/post/getAllPosts` |
+| Consulter les reels | `GET /private/post/getVideoReels` |
+| Publier un post | `POST /private/post` |
+| Voir un post | `GET /private/post/[id]` |
+| Voir les posts d'un profil | `GET /private/post/profile/[userId]` |
+| Commenter un post | `POST /private/post/[id]/comments` |
+| Réagir / Retirer une réaction | `PUT /private/reaction` / `DELETE /private/reaction/[id]` |
+| Publier / Voir les stories | `POST /private/stories` / `GET /private/stories` |
+| Rechercher | `GET /private/search` + `GET /private/users/search` + `GET /private/chat/search-users` |
+| Demande d'amitié | `POST /private/friend-requests` / `PATCH /private/friend-requests/[requestId]` |
+| Statut d'amitié | `GET /private/friend-requests/status/[userId]` |
+| Suivre / Se désabonner | `POST /private/follow/[id]` / `DELETE /private/unfollow/[id]` |
+| Lister followers/following | `GET /private/follow/[id]/followers` et `/following` |
+| Stats follow | `GET /private/follow/stats/[id]` |
+| Lister conversations | `GET /private/chat/conversations` |
+| Lister messages | `GET /private/chat/messages` + `GET /private/messages` |
+| Envoyer un message | `POST /private/chat/send` |
+| Recevoir messages temps réel | `GET /private/chat/listen` *(SSE)* |
+| Indicateur de saisie | `POST /private/chat/typing` + `GET /private/chat/typing/listen` *(SSE)* |
+| Marquer comme lu | `POST /private/conversations/[id]/mark-seen` + équivalents DM + `PUT /private/messages/[id]/status` |
+| Compteur non-lus | `GET /private/conversations/[id]/unread-count` + `GET /private/notifications/unread-messages` |
+| Lister mes groupes | `GET /private/groups` |
+| Créer un groupe | `POST /private/groups/create` (ou `POST /private/groups`) |
+| Voir un groupe | `GET /private/groups/[id]` |
+| Modifier / Supprimer un groupe | `PUT /private/groups/[id]` / `DELETE /private/groups/[id]` |
+| Inviter un membre | `POST /private/groups/[id]/invite` ou `POST /private/groups/[id]/invitations` |
+| Demander à rejoindre | `POST /private/groups/[id]/join-request` |
+| Répondre à une invitation | `POST /private/groups/[id]/respond-invite` + `PUT /private/invitations/[id]` |
+| Répondre à une demande d'adhésion | `POST /private/groups/[id]/respond-request` |
+| Quitter un groupe | `POST /private/groups/[id]/leave` |
+| Retirer un membre | `DELETE /private/groups/[id]/members` |
+| Lister les invitations reçues | `GET /private/invitations` + `GET /private/groups/[id]/invitations` |
+| Lister les événements | `GET /private/events` |
+| Voir un événement | `GET /private/events/[id]` |
+| Événements à venir | `GET /private/notifications/upcoming-events` |
+| Créer un événement | `POST /private/events` ou `POST /private/groups/[id]/events` |
+| Modifier / Supprimer un événement | `PUT /private/events/[id]` / `DELETE /private/events/[id]` |
+| RSVP / Annuler RSVP | `POST /private/events/[id]/rsvp` / `DELETE /private/events/[id]/rsvp` |
+
+---
+
 ## Utilisation
 
-- **MCD / MLD**: coller dans dbdiagram.io pour visualiser les relations.
-- **MPD**: utiliser comme base SQL de référence pour expliquer la structure physique pendant la soutenance.
-- **Conformité**: ce document suit les noms de modèles, champs et contraintes de `prisma/schema.prisma`.
+- **MCD / MLD** : coller dans dbdiagram.io pour visualiser les relations.
+- **MPD** : utiliser comme base SQL de référence pour expliquer la structure physique pendant la soutenance.
+- **Diagramme de classes** : section 4 ci-dessus, rendu Mermaid sur GitHub ou via [mermaid.live](https://mermaid.live) pour export PNG/SVG en vue d'intégration dans le diaporama.
+- **Diagramme de cas d'utilisation** : section 5 ci-dessus, même méthode d'export.
+- **Conformité** : ce document suit les noms de modèles, champs et contraintes de `prisma/schema.prisma` et la liste exhaustive des routes de `src/app/api/`.
