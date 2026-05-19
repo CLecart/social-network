@@ -128,7 +128,7 @@ Pattern recommandé:
 
 ## Temps réel (Upstash Redis + SSE Polling)
 
-- Architecture: Client poll les endpoints SSE toutes les 500ms au lieu de Socket.io.
+- Architecture: Client poll les endpoints SSE toutes les 500ms via Upstash Redis.
 - Evénements principaux (via Redis keys):
   - `message:{conversationId}:{messageId}` → contenu du message
   - `message:status:{messageId}` → SENT / DELIVERED / READ
@@ -407,7 +407,7 @@ src/
 │   │   ├── api/           # API response helpers
 │   │   ├── user/          # User queries
 │   │   ├── post/          # Post queries
-│   │   └── websocket/     # Socket.io setup
+│   │   └── websocket/     # Redis/SSE real-time helpers
 │   ├── schemas/           # Zod validators
 │   └── utils/             # Helpers
 └── middleware.ts          # Auth middleware
@@ -530,7 +530,7 @@ src/
 
 ### Implémentation
 
-- NextAuth.js (optionnel)
+- OAuth provider integration (Google login)
 - JWT avec secret
 - Password hashing: bcrypt
 

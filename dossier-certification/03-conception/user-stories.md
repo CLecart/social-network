@@ -338,7 +338,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 - **I want to** être notifié des actions (like, comment, follow, message)
 - **So that** je reste engagé
 - **Acceptance Criteria:**
-  - [ ] WebSocket notifications
+  - [ ] Notifications temps réel via SSE/Redis
   - [ ] Badge sur icône notifs
   - [ ] Desktop notifications (optionnel)
   - [ ] Email notifications (optionnel)

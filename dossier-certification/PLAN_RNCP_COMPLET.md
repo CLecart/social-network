@@ -162,15 +162,15 @@ _(partie de 04-developpement)_
 ┌─────────────────────────────────────────┐
 │     CLIENT (React/Next.js)              │
 │     - UI Components (Tailwind + ShadCN) │
-│     - Real-time (Socket.io client)      │
+│     - Real-time (SSE polling client)    │
 │     - State mgmt (Context/zustand)      │
 └──────────────────┬──────────────────────┘
                    │ HTTP + SSE/Polling
 ┌──────────────────▼──────────────────────┐
 │     SERVEUR (Next.js API Routes)        │
-│     - Authentification (NextAuth/JWT)   │
+│     - Authentification (JWT + cookies)  │
 │     - Business logic                    │
-│     - API REST + Socket.io server       │
+│     - API REST + SSE/Redis real-time    │
 └──────────────────┬──────────────────────┘
                    │ Prisma ORM
 ┌──────────────────▼──────────────────────┐
@@ -218,7 +218,7 @@ src/
 | ORM                | Prisma v5                    | Type-safe, migrations   |
 | Real-time          | SSE + Redis                  | Notifications, chat     |
 | Images             | Cloudinary                   | CDN, transformations    |
-| Auth               | NextAuth v5 / JWT            | Sécurisé, standard      |
+| Auth               | OAuth / JWT                  | Sécurisé, standard      |
 | Testing            | Jest + React Testing Library | Unit + integration      |
 | Deployment         | Docker + Vercel/Railway      | Containerized, scalable |
 
@@ -248,7 +248,7 @@ Schéma d'architecture haut niveau (flows utilisateurs)
 
 #### **5.2 Authentification & Sécurité**
 
-- NextAuth configuration
+- OAuth configuration
 - JWT tokens
 - Password hashing
 - Session management

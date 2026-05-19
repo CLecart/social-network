@@ -17,7 +17,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
    - Résultat : authentification robuste et vérifiée à chaque requête protégée.
 
 2. **Temps réel avec Redis et SSE**
-   - Le projet utilise Upstash Redis avec un mécanisme de polling/SSE plutôt que Socket.io classique.
+   - Le projet utilise Upstash Redis avec un mécanisme de polling/SSE pour la synchronisation temps réel.
    - Garantir la persistance des messages dans Redis avant leur émission au client.
    - Gérer la disconnexion/reconnexion et éviter les duplicatas.
    - Résultat : notifications et messages en temps réel fiables avec latence acceptable.

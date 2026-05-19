@@ -56,8 +56,7 @@ REDIS_URL=redis://localhost:6379
 
 # Auth
 JWT_SECRET=change-me
-NEXTAUTH_SECRET=change-me-too
-NEXTAUTH_URL=http://localhost:3000
+OAUTH_TOKEN_ENCRYPTION_KEY=change-me-too
 
 # App
 NEXT_PUBLIC_APP_URL=http://localhost:3000

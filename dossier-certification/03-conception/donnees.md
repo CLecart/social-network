@@ -471,7 +471,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ## 🔗 Model: Account
 
-**Description:** Comptes OAuth (NextAuth)
+**Description:** Comptes OAuth
 
 ### Attributs:
 
