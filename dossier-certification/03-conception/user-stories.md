@@ -340,8 +340,6 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 - **Acceptance Criteria:**
   - [ ] Notifications temps réel via SSE/Redis
   - [ ] Badge sur icône notifs
-  - [ ] Desktop notifications (optionnel)
-  - [ ] Email notifications (optionnel)
 
 #### US027: Consulter notifications
 
@@ -491,70 +489,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-## 👨‍💼 Modérateur (Moderator)
-
-#### US039: Rapporter un post
-
-- **As a** utilisateur
-- **I want to** rapporter un post inappropriate
-- **So that** les admins peuvent agir
-- **Acceptance Criteria:**
-  - [ ] Report button
-  - [ ] Select raison (spam, violent, etc)
-  - [ ] Confirmation
-  - [ ] Hidden temporairement
-
-#### US040: Supprimer post signalé
-
-- **As a** modérateur
-- **I want to** supprimer les posts rapportés
-- **So that** on maintient la qualité
-- **Acceptance Criteria:**
-  - [ ] View reported posts
-  - [ ] Delete/dismiss
-  - [ ] Notify auteur
-  - [ ] Log action
-
-#### US041: Bloquer utilisateur
-
-- **As a** modérateur
-- **I want to** bloquer un utilisateur
-- **So that** on stoppe le spam/abuse
-- **Acceptance Criteria:**
-  - [ ] Block button
-  - [ ] Blocked user voit "non disponible"
-  - [ ] Can't follow/message
-  - [ ] Can unblock
-
----
-
-## 🛡️ Admin
-
-#### US042: Dashboard admin
-
-- **As an** admin
-- **I want to** voir les stats du réseau
-- **So that** je monitorise
-- **Acceptance Criteria:**
-  - [ ] User count
-  - [ ] Post count
-  - [ ] Daily active users
-  - [ ] Reports pending
-
-#### US043: Bannir utilisateur
-
-- **As an** admin
-- **I want to** bannir un utilisateur
-- **So that** on élimine les abuseurs
-- **Acceptance Criteria:**
-  - [ ] Ban button
-  - [ ] User cannot login
-  - [ ] Content invisible
-  - [ ] Can appeal ban
-
----
-
-## 📊 Priorités & Estimation
+## Priorités & Estimation
 
 ### Phase 1: MVP (MUST HAVE) - 4 semaines
 
@@ -580,7 +515,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ### Phase 3: Polish (NICE TO HAVE) - 1 semaine
 
-- US013, US016, US023, US040, US042
+- US013, US016, US023
 
 ---
 
@@ -601,19 +536,13 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 - ✅ JWT authentication
 - ✅ Input validation + sanitization
-- ✅ Rate limiting
-- ✅ CORS configured
 - ✅ Error logging
 - ✅ Database indexes
-- ✅ API documentation (OpenAPI/Swagger)
 
 **DevOps:**
 
 - ✅ Docker containerization
 - ✅ CI/CD pipeline (GitHub Actions)
-- ✅ Monitoring + logging
-- ✅ Backup strategy
-- ✅ SSL/TLS encryption
 
 ---
 

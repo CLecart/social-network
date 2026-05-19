@@ -46,10 +46,8 @@ La conception s'appuie sur les issues GitHub du projet Social Network. Les lots 
 
 ### 3️⃣ [User Stories](./user-stories.md)
 
-- **43 User Stories** organisées par rôle:
-  - 👤 Utilisateur classique (28 stories)
-  - 👨‍💼 Modérateur (3 stories)
-  - 🛡️ Admin (2 stories)
+- **38 User Stories** organisées par rôle:
+  - 👤 Utilisateur classique (38 stories)
 - **Priorités & Estimations:** HIGH/MEDIUM/LOW
 - **Phases de développement:**
   - Phase 1 MVP (25 jours)

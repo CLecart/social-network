@@ -4,6 +4,10 @@
 
 Structuré à partir du référentiel RNCP 37873 et du projet Social Network.
 
+> Ce document présente le plan du dossier professionnel : sections à rédiger, contenus à couvrir et correspondance avec les blocs RNCP.
+>
+> Les titres « Contenu à couvrir » sont des points à traiter dans le dossier, pas des exigences textuelles du diplôme.
+
 ---
 
 ## 📖 STRUCTURE DÉTAILLÉE
@@ -67,7 +71,7 @@ _(extraits de 02-cahier-des-charges + CDA mapping)_
 
 **Pages estimées:** 2-3 pages
 
-**Contenu à couvrir:**
+> Note : dans ce plan, les cases cochées correspondent aux fonctionnalités déjà implémentées dans le code et aux preuves à utiliser dans le dossier. Les cases décochées correspondent à des éléments à expliciter dans le dossier ou à des sujets non couverts par le projet actuel.
 
 #### **2.1 Objectifs Techniques**
 
@@ -76,7 +80,7 @@ _(extraits de 02-cahier-des-charges + CDA mapping)_
 - [x] Real-time notifications (SSE + Redis)
 - [x] Database design (Prisma + PostgreSQL)
 - [x] Upload d'images (Cloudinary)
-- [x] Internationalization (i18n)
+- [x] Local date formatting / UI localization
 - [x] Tests (Jest, integration tests)
 - [x] Deployment (Docker + Vercel)
 
@@ -87,6 +91,13 @@ _(extraits de 02-cahier-des-charges + CDA mapping)_
 | **BLOC 1** – Développer une application sécurisée                                   | UI responsive + composants métier + JWT auth + tests unitaires   |
 | **BLOC 2** – Concevoir et développer une application sécurisée organisée en couches | Architecture Next.js (client/serveur/DB) + API REST + Prisma ORM |
 | **BLOC 3** – Préparer le déploiement d'une application sécurisée                    | Docker + CI/CD + tests automatisés + deployment Vercel           |
+
+#### **2.3 Couverture RNCP 37873**
+
+- **BC01** : installé et configuré l’environnement, développé des interfaces utilisateur, conçu des composants métier et documenté le projet.
+- **BC02** : analysé les besoins, défini une architecture multicouche, conçu une base de données relationnelle et développé des accès aux données SQL/NoSQL.
+- **BC03** : préparé et documenté les tests, préparé le déploiement avec Docker, et contribué à la mise en production via une démarche DevOps.
+- **Précisions** : le projet couvre uniquement les utilisateurs authentifiés et ne propose pas de module admin spécifique.
 
 **À intégrer:**
 
@@ -105,10 +116,10 @@ _(de 02-cahier-des-charges + 03-conception)_
 
 #### **3.1 Analyse des Utilisateurs**
 
-- [ ] Utilisateur anonyme (découverte)
-- [ ] Utilisateur authentifié (publication, interaction)
-- [ ] Utilisateur avec amis (follow, chat privé)
-- [ ] Admin (modération, statistiques)
+- [x] Utilisateur authentifié (publication, interaction)
+- [x] Utilisateur avec amis (follow, chat privé)
+
+> Limite fonctionnelle : l'application actuelle est réservée aux utilisateurs authentifiés et ne propose pas d'accès public ou de module admin.
 
 #### **3.2 User Stories Détaillées**
 
@@ -132,19 +143,19 @@ Liste complète + description (Auth, Posts, Comments, Reactions, Follow, Message
 
 #### **3.4 Maquettes/Interfaces**
 
-- [ ] Écran de connexion
-- [ ] Feed principal
-- [ ] Profil utilisateur
-- [ ] Conversation privée
-- [ ] Notifications
+- [x] Écran de connexion
+- [x] Feed principal
+- [x] Profil utilisateur
+- [x] Conversation privée
+- [x] Notifications
 
 #### **3.5 Rôles et Permissions**
 
-| Rôle    | Droits                         |
-| ------- | ------------------------------ |
-| Anonyme | Voir feed public, s'inscrire   |
-| User    | Publier, commenter, DM, follow |
-| Admin   | Modérer, voir stats            |
+| Rôle | Droits                         |
+| ---- | ------------------------------ |
+| User | Publier, commenter, DM, follow |
+
+> L'application est conçue pour des utilisateurs authentifiés uniquement.
 
 ---
 
@@ -163,7 +174,7 @@ _(partie de 04-developpement)_
 │     CLIENT (React/Next.js)              │
 │     - UI Components (Tailwind + ShadCN) │
 │     - Real-time (SSE polling client)    │
-│     - State mgmt (Context/zustand)      │
+│     - State mgmt (React Context + hooks) │
 └──────────────────┬──────────────────────┘
                    │ HTTP + SSE/Polling
 ┌──────────────────▼──────────────────────┐
@@ -218,7 +229,7 @@ src/
 | ORM                | Prisma v5                    | Type-safe, migrations   |
 | Real-time          | SSE + Redis                  | Notifications, chat     |
 | Images             | Cloudinary                   | CDN, transformations    |
-| Auth               | OAuth / JWT                  | Sécurisé, standard      |
+| Auth               | Google OAuth + JWT           | Sécurisé, standard      |
 | Testing            | Jest + React Testing Library | Unit + integration      |
 | Deployment         | Docker + Vercel/Railway      | Containerized, scalable |
 
@@ -248,10 +259,9 @@ Schéma d'architecture haut niveau (flows utilisateurs)
 
 #### **5.2 Authentification & Sécurité**
 
-- OAuth configuration
-- JWT tokens
-- Password hashing
-- Session management
+- Google OAuth + JWT configuration
+- Password hashing (bcrypt)
+- Session management via cookies sécurisés
 - Code extraits:
 
 ```typescript
@@ -269,7 +279,7 @@ Schéma d'architecture haut niveau (flows utilisateurs)
 
 - Connexion client/serveur
 - Event handlers (messages, notifications)
-- Redis subscription
+- Redis polling (Upstash Redis / SSE)
 - Code extraits
 
 #### **5.5 Base de Données (Prisma)**
@@ -300,9 +310,7 @@ model Post {
 
 #### **5.7 Système de Notifications**
 
-- Push notifications
 - In-app notifications
-- Email notifications (optionnel)
 - Code extraits
 
 ---
@@ -318,10 +326,8 @@ _(nouvelle section)_
 #### **6.1 Stratégie de Test**
 
 - [ ] Tests unitaires (composants, hooks, utils)
-- [ ] Tests d'intégration (API routes)
-- [ ] Tests E2E (Playwright/Cypress)
-- [ ] Tests de sécurité (injection SQL, XSS, CSRF)
-- [ ] Tests de performance
+- [x] Tests d'intégration (API routes)
+- [ ] Couverture de tests et stratégie de régression
 
 #### **6.2 Jeux d'Essai**
 
@@ -334,7 +340,8 @@ _(nouvelle section)_
 
 #### **6.3 Environnement de Test**
 
-- Docker Compose pour PostgreSQL + Redis
+- Docker Compose pour PostgreSQL + application locale
+- Upstash Redis en cloud pour les scénarios temps réel
 - Fixtures/seeds de données
 - Mock API responses
 
@@ -370,12 +377,9 @@ _(nouvelle section - TRÈS importante)_
 
 - [ ] Authentification JWT sécurisée
 - [ ] Passwords hashés (bcrypt)
-- [ ] HTTPS obligatoire
-- [ ] Protection CSRF/XSS
+- [ ] Protection XSS / validation des entrées
 - [ ] SQL injection prevention (Prisma)
 - [ ] Validation des données (Zod)
-- [ ] Rate limiting
-- [ ] CORS configuration
 
 #### **7.3 Respect du RGPD**
 
@@ -404,18 +408,18 @@ _(nouvelle section - valorise l'apprentissage)_
 
 #### **8.1 Domaines Explorés**
 
-- [ ] Real-time avec SSE / Redis (au-delà du simple chat)
-- [ ] Optimisation de performance (pagination, lazy loading)
+- [x] Real-time avec SSE / Redis (au-delà du simple chat)
+- [x] Optimisation de performance (pagination, lazy loading)
 - [ ] Scalabilité (caching, indexing)
-- [ ] Sécurité (JWT, CORS, rate limiting)
-- [ ] Déploiement en production (Docker, CI/CD)
-- [ ] Testing (Jest setup, test coverage)
+- [x] Sécurité (JWT auth, Zod validation)
+- [x] Déploiement en production (Docker, CI/CD)
+- [x] Testing (Jest setup, test coverage)
 
 #### **8.2 Sources d'Apprentissage**
 
 - [ ] Documentation officielle (Next.js, Prisma, Upstash Redis)
 - [ ] Articles/blogs (Dev.to, Medium)
-- [ ] Communautés (Discord, GitHub)
+- [x] Communautés (GitHub)
 - [ ] Essais/erreurs personnels
 
 #### **8.3 Découvertes Principales**
@@ -503,13 +507,11 @@ _(structurer 07-annexes)_
 
 - [ ] UI des pages principales
 - [ ] Mobile views
-- [ ] Admin dashboard (si applicable)
 
 #### **10.5 Documentation**
 
 - [ ] README complet
 - [ ] Setup instructions
-- [ ] API documentation
 - [ ] Contributing guide
 
 #### **10.6 Tests**

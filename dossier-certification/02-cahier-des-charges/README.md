@@ -59,10 +59,8 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 ### 🔒 Sécurité
 
 - Authentification JWT/OAuth
-- Protection CSRF
 - Validation des données
 - Chiffrement des mots de passe (bcrypt)
-- HTTPS obligatoire
 - Contraintes de réactions: un utilisateur ne peut pas multiplier une même réaction sur un même contenu
 
 ### 📈 Scalabilité
@@ -87,15 +85,14 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 
 ## 📊 User Stories
 
-| Utilisateur | Action            | Priorité | Critères d'acceptation          |
-| ----------- | ----------------- | -------- | ------------------------------- |
-| Visiteur    | S'inscrire        | ⭐⭐⭐   | Email validé, compte créé       |
-| Utilisateur | Se connecter      | ⭐⭐⭐   | Session JWT créée               |
-| Utilisateur | Créer un post     | ⭐⭐⭐   | Post visible immédiatement      |
-| Utilisateur | Commenter         | ⭐⭐⭐   | Commentaire visible             |
-| Utilisateur | Liker/Réagir      | ⭐⭐     | Compteur mis à jour             |
-| Utilisateur | Suivre un user    | ⭐⭐     | Feed personnalisé               |
-| Modérateur  | Supprimer contenu | ⭐⭐     | Contenu supprimé définitivement |
+| Utilisateur | Action         | Priorité | Critères d'acceptation     |
+| ----------- | -------------- | -------- | -------------------------- |
+| Visiteur    | S'inscrire     | ⭐⭐⭐   | Email validé, compte créé  |
+| Utilisateur | Se connecter   | ⭐⭐⭐   | Session JWT créée          |
+| Utilisateur | Créer un post  | ⭐⭐⭐   | Post visible immédiatement |
+| Utilisateur | Commenter      | ⭐⭐⭐   | Commentaire visible        |
+| Utilisateur | Liker/Réagir   | ⭐⭐     | Compteur mis à jour        |
+| Utilisateur | Suivre un user | ⭐⭐     | Feed personnalisé          |
 
 ---
 

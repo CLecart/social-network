@@ -49,23 +49,33 @@ Liens directs vers les issues et PRs utilisées comme preuves dans le dossier:
 ```bash
 # Database
 DATABASE_URL=postgresql://user:password@localhost:5432/social-network
-DIRECT_URL=postgresql://user:password@localhost:5432/social-network
-
-# Redis
-REDIS_URL=redis://localhost:6379
+DATABASE_TEST_URL=file:./test.db
 
 # Auth
 JWT_SECRET=change-me
 OAUTH_TOKEN_ENCRYPTION_KEY=change-me-too
 
-# App
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_API_URL=http://localhost:3000/api
+# Redis (Upstash)
+UPSTASH_REDIS_REST_URL=https://...
+UPSTASH_REDIS_REST_TOKEN=...
 
-# Media
+# Cloudinary
 CLOUDINARY_CLOUD_NAME=demo
 CLOUDINARY_API_KEY=demo
 CLOUDINARY_API_SECRET=demo
+
+# External APIs
+NEXT_PUBLIC_GIPHY_API_KEY=demo
+
+# Google OAuth
+CLIENT_ID=...
+CLIENT_SECRET=...
+REDIRECT_URL=http://localhost:3000/api/auth/google/callback
+
+# Optional test/fallback values
+DISABLE_CLOUDINARY=true
+FALLBACK_AVATAR_URL=https://example.com/avatar.png
+FALLBACK_COVER_URL=https://example.com/cover.png
 ```
 
 ### Docker

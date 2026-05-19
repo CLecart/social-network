@@ -320,9 +320,8 @@ export async function GET(req: NextRequest) {
 **Stratégie recommandée:**
 
 - Unit tests: Jest + React Testing Library
-- Integration tests: Playwright or Cypress (end-to-end)
-- Backend tests: supertest + Jest for API routes
-- Contract tests for real-time events (optionnel)
+- Integration tests: Jest + Testing Library for API routes
+- Contract tests pour événements temps réel (optionnel)
 
 **Sample test (`__tests__/integrations/auth.test.ts`):**
 
@@ -462,7 +461,7 @@ Frontend:
 ├── TypeScript (Type Safety)
 ├── Tailwind CSS (Styling)
 ├── React Query/SWR (Data Fetching)
-└── Zustand/Jotai (State Management)
+└── React Context + custom hooks (State Management)
 
 Backend:
 ├── Next.js API Routes
@@ -526,11 +525,10 @@ src/
 - JWT tokens pour API
 - Cookies HTTP-only pour sessions
 - Refresh tokens
-- Rate limiting
 
 ### Implémentation
 
-- OAuth provider integration (Google login)
+- Google OAuth integration
 - JWT avec secret
 - Password hashing: bcrypt
 
@@ -551,16 +549,15 @@ src/
 
 - [ ] Unit Tests (Jest)
 - [ ] Integration Tests (Testing Library)
-- [ ] E2E Tests (Cypress/Playwright)
-- [ ] Performance Tests (Lighthouse)
+- [ ] Couverture des tests et validation fonctionnelle
 
 ---
 
 ## 📊 Monitoring et Logs
 
-- Error tracking: Sentry
-- Performance: Vercel Analytics
-- Logs: Console/Datadog
+- Erreurs : console / logs serveur
+- Performance : analyses de build et tests
+- Logs : console
 
 ---
 
