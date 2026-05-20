@@ -26,7 +26,7 @@ Candidat : **Christophe Lecart**
 
 **1. Tâches et opérations effectuées :**
 
-Dans le cadre du projet Social Network, j'ai conçu et développé le système d'authentification de l'application. J'ai mis en place les endpoints d'inscription et de connexion (`/api/auth/register` et `/api/auth/login`) en Next.js App Router avec TypeScript. Les mots de passe sont hachés via bcryptjs avant stockage en base de données. À la connexion, je génère un token JWT stocké dans un cookie HTTP-only sécurisé, invisible du JavaScript client, pour prévenir les attaques XSS. J'ai également mis en place un middleware Next.js qui vérifie le cookie à chaque requête protégée et redirige les utilisateurs non authentifiés. Les sessions actives sont stockées dans Redis (clé UUID → userId) pour permettre l'invalidation à distance sans attendre l'expiration du JWT.
+Dans le cadre du projet Social Network, j'ai conçu et développé le système d'authentification de l'application. J'ai mis en place les endpoints d'inscription et de connexion (`/api/auth/register` et `/api/auth/login`) en Next.js App Router avec TypeScript. Les mots de passe sont hachés via bcrypt avant stockage en base de données. À la connexion, je génère un token JWT stocké dans un cookie HTTP-only sécurisé, invisible du JavaScript client, pour prévenir les attaques XSS. J'ai également mis en place un middleware Next.js qui vérifie le cookie à chaque requête protégée et redirige les utilisateurs non authentifiés. Les sessions actives sont stockées dans Redis (clé UUID → userId) pour permettre l'invalidation à distance sans attendre l'expiration du JWT.
 
 **2. Moyens utilisés :**
 
@@ -41,13 +41,13 @@ Dans le cadre du projet Social Network, j'ai conçu et développé le système d
 
 **3. Avec qui avez-vous travaillé ?**
 
-J'ai travaillé au sein d'une équipe de 4 développeurs dans le cadre de la formation Zone01 Rouen Normandie. La coordination s'est faite via GitHub (issues, pull requests, code reviews). J'ai été responsable de la partie authentification et sécurisation des routes.
+J'ai travaillé au sein d'une équipe de 6 développeurs dans le cadre de la formation Zone01 Rouen Normandie. La coordination s'est faite via GitHub (issues, pull requests, code reviews). J'ai été responsable de la partie authentification et sécurisation des routes.
 
 **4. Contexte :**
 
 - Nom de l'entreprise / organisme : Zone01 Rouen Normandie
 - Chantier / service : Projet Social Network — module Authentification & Sécurité
-- Période d'exercice : Du janvier 2024 au mai 2025
+- Période d'exercice : Du janvier 2024 au mai 2026
 
 **5. Informations complémentaires :**
 
@@ -79,7 +79,7 @@ En équipe de 6 développeurs, avec revues de code mutuelles via GitHub Pull Req
 
 - Nom de l'entreprise / organisme : Zone01 Rouen Normandie
 - Chantier / service : Projet Social Network — couche API & sécurité des données
-- Période d'exercice : Du mars 2024 au mai 2025
+- Période d'exercice : Du mars 2024 au mai 2026
 
 **5. Informations complémentaires :**
 
@@ -114,7 +114,7 @@ En équipe de 6 développeurs. La modélisation des données a été une étape 
 
 - Nom de l'entreprise / organisme : Zone01 Rouen Normandie
 - Chantier / service : Projet Social Network — architecture & modélisation
-- Période d'exercice : Du janvier 2024 au mai 2025
+- Période d'exercice : Du janvier 2024 au mai 2026
 
 **5. Informations complémentaires :**
 
@@ -148,7 +148,7 @@ En équipe de 6 développeurs. J'ai travaillé en binôme sur la partie temps r�
 
 - Nom de l'entreprise / organisme : Zone01 Rouen Normandie
 - Chantier / service : Projet Social Network — fonctionnalités temps réel
-- Période d'exercice : Du juin 2024 au mai 2025
+- Période d'exercice : Du juin 2024 au mai 2026
 
 **5. Informations complémentaires :**
 
@@ -184,7 +184,7 @@ En équipe de 6 développeurs. La partie DevOps a été menée en collaboration,
 
 - Nom de l'entreprise / organisme : Zone01 Rouen Normandie
 - Chantier / service : Projet Social Network — infrastructure & CI/CD
-- Période d'exercice : Du septembre 2024 au mai 2025
+- Période d'exercice : Du septembre 2024 au mai 2026
 
 **5. Informations complémentaires :**
 
@@ -217,7 +217,7 @@ En équipe de 6 développeurs, avec une répartition des responsabilités sur la
 
 - Nom de l'entreprise / organisme : Zone01 Rouen Normandie
 - Chantier / service : Projet Social Network — mise en production
-- Période d'exercice : Du novembre 2024 au mai 2025
+- Période d'exercice : Du novembre 2024 au mai 2026
 
 **5. Informations complémentaires :**
 
@@ -324,7 +324,7 @@ L'utilisation de Neon (PostgreSQL serverless) avec une URL directe (`DIRECT_URL`
 
 | Intitulé | Autorité / Organisme | Date |
 |---|---|---|
-| Concepteur Développeur d'Applications (en cours) | Zone01 Rouen Normandie | 2024 – 2025 |
+| Concepteur Développeur d'Applications (en cours) | Zone01 Rouen Normandie | 2024 – 2026 |
 | BTS Maintenance des Automatismes Industriels (MAI) | Établissement de formation | 2003 |
 | BAC PRO MSMA (Maintenance des Systèmes Mécaniques Automatisés) | Établissement de formation | 2000 |
 

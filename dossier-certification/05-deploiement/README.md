@@ -19,7 +19,7 @@ Les éléments de déploiement et d'intégration continue sont documentés dans 
 
 ### Services principaux
 
-- **app**: application Next.js 14+.
+- **app**: application Next.js 15.
 - **db**: PostgreSQL pour les données métier.
 - **Upstash Redis**: service temps réel configuré via variables d’environnement, sans service Redis local dédié dans `docker-compose.yml`.
 
