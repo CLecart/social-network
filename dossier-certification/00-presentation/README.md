@@ -14,15 +14,14 @@
 
 ## En une phrase
 
-Technicien industriel reconverti au développement full stack après 20 ans d'expérience terrain, je cherche une alternance pour finaliser ma transition vers le métier de Concepteur Développeur d'Applications.
-
+Développeur full stack en reconversion après plus de 20 ans dans l'industrie, je finalise mon Bac+3 CDA à Zone01 Rouen Normandie (juin 2026) et prépare une alternance pour poursuivre en Bac+5 Chef de Projet, Architecture et Green IT (juin 2026 – juin 2028).
 ---
 
 ## Le récit : d'où je viens, pourquoi je change
 
 ### 20 ans de terrain industriel
 
-J'ai commencé en alternance en 2000 chez GPH comme technicien de maintenance, puis en 2002 chez Lubrizol en bureau d'études. Mon BTS MAI en poche en 2003, j'ai enchaîné chez KONE Ascenseurs (2004-2010) comme régleur et technicien de mise en service, avant de rejoindre SOCOTEC Équipements pendant 14 ans (2010-2024) en tant qu'expert en vérifications générales périodiques et mise en service.
+J'ai commencé en alternance en 2000 chez GPH comme technicien de maintenance, puis en 2002 chez Lubrizol en bureau d'études. Sorti de formation BTS MAI en 2003, j'ai enchaîné en missions d'intérim (manutentionnaire, technicien, régisseur technique), puis chez KONE Ascenseurs (2004-2010) comme technicien hautement qualifié, régleur et mise en service, avant de rejoindre SOCOTEC Équipements pendant 14 ans (2010-2024) : expert en vérifications générales périodiques et mise en service (ascenseurs, levage, machines, EPI), collaboration avec les ingénieurs sur l'analyse technique et les rapports de conformité, responsable matériels, étalonnage et métrologie, tutorat et accompagnement d'équipes sur outils et process.
 
 Ces deux décennies m'ont appris :
 
@@ -46,8 +45,8 @@ En 2024, j'ai pris la décision : **je passe à 100 % côté concepteur d'outils
 
 J'ai rejoint **Zone01 Rouen Normandie** en 2024 pour suivre la formation de Concepteur Développeur d'Applications. La pédagogie m'a séduit :
 
-- **Pas de cours magistraux** : on apprend par projet, en autonomie, avec un peer-coaching constant.
-- **Stack moderne** : Go, JavaScript/TypeScript, React, Next.js, PostgreSQL, Docker — les technos qui se trouvent réellement sur le marché en 2025.
+- **Pas de cours magistraux** : on apprend par projet, en autonomie — la pédagogie repose sur l'apprentissage pair-à-pair (peer-to-peer) entre apprenants : chacun avance à son rythme, s'entraide, et s'évalue mutuellement via des audits de code.
+- **Stack moderne** : Go, JavaScript/TypeScript, React, Next.js, PostgreSQL, Docker — les technos qui se trouvent réellement sur le marché en 2026.
 - **Travail en équipe** : tous les projets significatifs sont en groupe, ce qui rejoue les conditions d'une vraie équipe dev.
 - **Échec encouragé** : on a le droit de se planter, c'est même attendu — l'important est de comprendre pourquoi.
 
@@ -55,15 +54,28 @@ Cette approche colle parfaitement à mon profil : je sais apprendre seul (20 ans
 
 ---
 
+## Projets réalisés
+
+| Projet | Technologies | Description |
+|---|---|---|
+| **Social Network** | Next.js, React/TS, Prisma, PostgreSQL, Redis, Docker | Réseau social complet : authentification JWT, posts/stories/réactions, chat direct et groupe en temps réel, groupes, événements, notifications. Projet principal de certification. |
+| **PartiQ** | Next.js, React/TS, Prisma, PostgreSQL, Docker | Plateforme B2B : catalogue produits, ticketing avec workflows de statut, messagerie temps réel, tableaux de bord, base de connaissances alimentée par IA. |
+| **AbrisCraft** | Next.js, Three.js/R3F, React/TS, Prisma, PostgreSQL | Configurateur 3D interactif d'abris de jardin : sélection matériaux, estimation dynamique des coûts, chatbot intégré pour support contextuel. |
+| **Pochet du Courval** | React/TS, Three.js/R3F, Framer Motion, Vite, Vitest | Site vitrine luxe pour un artisan verrier : bouteille 3D générée procéduralement, animations Framer Motion, détection WebGL avec fallback. |
+| **Groupie-Tracker** | Go, HTML/CSS/JS, Gorilla Mux, API REST | Application web affichant des données d'artistes musicaux depuis une API REST : carte interactive des concerts, recherche et filtres par artiste, lieu ou année. |
+| **BombermanDX** | JavaScript, HTML5, CSS3 | Jeu navigateur inspiré de Bomberman : IA ennemie, power-ups, niveaux multiples, détection de collision et gestion DOM optimisées. |
+
+---
+
 ## Ce que la formation m'a apporté (au-delà des technos)
 
 ### Compétences techniques
 
-- **TypeScript** : typage strict, génériques, inférence, schémas Zod
-- **Next.js 15 + React 19** : App Router, Server Components, Server Actions
-- **PostgreSQL + Prisma 6** : modélisation, migrations, queries optimisées
-- **Docker + CI/CD** : conteneurisation, déploiement automatisé
-- **REST + temps réel** : conception d'API, Server-Sent Events
+- **Langages** : TypeScript, JavaScript, Java, Go
+- **Frameworks** : Next.js 15, React 19, Node.js, Angular
+- **BDD** : PostgreSQL, SQL, Prisma 6
+- **DevOps** : Git, CI/CD, Docker, pnpm
+- **API & intégration** : REST, GraphQL, chatbots IA, Server-Sent Events
 - **Sécurité applicative** : JWT, bcrypt, OWASP Top 10, RGPD
 
 ### Compétences transverses gagnées
@@ -120,28 +132,7 @@ Cette approche colle parfaitement à mon profil : je sais apprendre seul (20 ans
 
 ## Recherche d'alternance
 
-### Format
-
-- **Statut visé :** alternance Concepteur Développeur d'Applications (RNCP 37873).
-- **Rythme :** à définir avec l'employeur (typiquement 1 semaine école / 3 semaines entreprise ou équivalent).
-- **Durée :** 12 mois.
-- **Démarrage :** dès obtention du titre, soit courant 2026.
-
-### Géographie
-
-- **Localisation principale :** Normandie (Rouen / Dieppe / Le Havre).
-- **Télétravail :** ouvert au partiel ou total, équipement personnel adapté (poste fixe + portable).
-- **Déplacements ponctuels :** acceptés (permis B et A, 20 ans d'habitude des déplacements professionnels).
-
-### Profil d'entreprise cible
-
-- **Taille :** PME, scale-up, ou département d'un grand groupe — peu importe, ce qui compte est le rythme d'apprentissage.
-- **Secteur :** indifférent. Une appétence marquée pour les outils métier (B2B, industrie, contrôle qualité, gestion technique) à cause de mon expérience antérieure.
-- **Stack :** ouvert. La stack du projet (TypeScript / Next.js / Prisma / PostgreSQL) me va, mais je suis volontiers preneur pour découvrir du Go, du Rust, ou d'autres écosystèmes.
-
-### Disponibilité immédiate pour entretien
-
-Je peux me rendre disponible à tout moment sous 48 h pour un entretien (Visio ou présentiel).
+La formation CDA (Bac+3) à Zone01 Rouen Normandie est conçue sur 3 ans : 1 an d'école puis 2 ans en alternance. N'ayant pas trouvé de contrat d'apprentissage, je me suis replié sur le cursus 2 ans à temps plein (juin 2024 – juin 2026). À l'issue de cette certification, je cherche un contrat d'apprentissage pour poursuivre en **Bac+5 Chef de Projet, Architecture et Green IT** à Zone01 (juin 2026 – juin 2028).
 
 ---
 
@@ -149,32 +140,18 @@ Je peux me rendre disponible à tout moment sous 48 h pour un entretien (Visio o
 
 ### Parcours
 
-- **2024 → aujourd'hui** : Zone01 Rouen Normandie — Concepteur Développeur d'Applications (RNCP 37873)
-- **2010 → 2024** : SOCOTEC Équipements — Expert en vérifications générales périodiques et mise en service
+- **2024 → 2026** : Zone01 Rouen Normandie — Bac+3 Concepteur Développeur d'Applications (RNCP 37873) — formation 2 ans à temps plein
+- **2010 → 2024** : SOCOTEC Équipements — Expert en vérifications générales périodiques et mise en service (ascenseurs, levage, machines, EPI) · analyse technique · rapports de conformité · étalonnage et métrologie · responsable matériels · tutorat et accompagnement d'équipes sur outils et process
 - **2004 → 2010** : KONE Ascenseurs et Portes Automatiques — Technicien hautement qualifié, régleur et mise en service
 - **2003 → 2004** : Missions d'intérim — Manutentionnaire, technicien, régisseur technique
 - **2002 → 2003** : Lubrizol — Technicien en bureau d'études (alternance)
-- **2000 → 2002** : GPH — Technicien de maintenance (alternance)
+- **2000 → 2001** : GPH — Technicien de maintenance (alternance)
 
-### Diplômes
+### Formation
 
-- **2003** : BTS MAI (Mécanique et Automatismes Industriels)
-- **2000** : BAC PRO MSMA (Maintenance des Systèmes Mécaniques Automatisés)
-
-## Parcours
-
-- **2024 à aujourd'hui:** Zone01 Rouen Normandie - Concepteur Développeur d'Applications (RNCP 37873)
-- **2010 / 2024:** SOCOTEC Équipements - Expert en vérifications générales périodiques et mise en service
-- **2004 / 2010:** KONE Ascenseurs et Portes Automatiques - Technicien hautement qualifié, régleur et mise en service
-- **2003 / 2004:** Missions d'intérim diverses - Manutentionnaire, technicien, régisseur technique
-- **2002 / 2003:** Lubrizol - Technicien en bureau d'études en alternance
-- **2000 / 2002:** GPH - Technicien de maintenance en alternance
-
-## Formation
-
-- **RNCP:** 37873
-- **Objectif:** obtenir une certification de niveau 6 dans un parcours orienté développement d'application
-- **Diplômes antérieurs:** BTS MAI (2003), BAC PRO MSMA (2000)
+- **Bac+3 CDA RNCP 37873** : Zone01 Rouen Normandie, juin 2024 – juin 2026 (2 ans, temps plein)
+- **BTS MAI** (Mécanique et Automatismes Industriels) : 2001 – 2003
+- **BAC PRO MSMA** (Maintenance des Systèmes Mécaniques Automatisés) : 2001
 
 ## Compétences Techniques
 
@@ -197,9 +174,9 @@ Je peux me rendre disponible à tout moment sous 48 h pour un entretien (Visio o
 
 ## Centres d'Intérêt
 
-- Musique
+- Musique (production et pratique de divers instruments)
 - Jeux vidéo
-- Sport: handball et trail
+- Sport (Handball / Trail)
 - Sociologie et culture
 - Astronomie
 

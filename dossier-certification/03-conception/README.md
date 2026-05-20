@@ -17,7 +17,7 @@ Cette section documente la conception complète du réseau social `social-networ
 
 La conception s'appuie sur les issues GitHub du projet Social Network. Les lots fonctionnels ont été organisés autour des sujets suivis dans le dépôt: authentification, follow, chat, notifications, groupes, événements, settings, i18n et DevOps.
 
-### 1⃣ [Pages et Wireframes](./pages.md)
+### 1. [Pages et Wireframes](./pages.md)
 
 - Accueil (Home/Feed)
 - Authentification (Login/Register/Onboarding)
@@ -32,7 +32,7 @@ La conception s'appuie sur les issues GitHub du projet Social Network. Les lots 
 - Design System (couleurs, typo, composants)
 - Architecture page et data flow
 
-### 2⃣ [Dictionnaire de Données](./donnees.md)
+### 2. [Dictionnaire de Données](./donnees.md)
 
 - **18 Modèles documentés:**
   - User, Post, Comment, Reaction, Story
@@ -44,7 +44,7 @@ La conception s'appuie sur les issues GitHub du projet Social Network. Les lots 
 - **Enums:** Réaction types, statuts invitation, etc.
 - **MCD/MLD Diagrammes:** Modèles conceptuels et logiques
 
-### 3⃣ [User Stories](./user-stories.md)
+### 3. [User Stories](./user-stories.md)
 
 - **38 User Stories** organisées par rôle:
   -  Utilisateur classique (38 stories)
@@ -55,7 +55,7 @@ La conception s'appuie sur les issues GitHub du projet Social Network. Les lots 
   - Phase 3 Polish (1 semaine)
 - **Acceptance Criteria:** Front/Back/DevOps
 
-### 4⃣ [Diagrammes UML Complets](./diagrammes-uml.md)
+### 4. [Diagrammes UML Complets](./diagrammes-uml.md)
 
 - **MCD** en DBML (import dbdiagram.io)
 - **MLD** détaillé en DBML

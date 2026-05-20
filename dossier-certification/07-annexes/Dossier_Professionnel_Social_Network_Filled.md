@@ -8,7 +8,7 @@
 - Adresse : Rouen, France
 - Titre professionnel visé : Concepteur Développeur d'Applications (RNCP 37873)
 - Modalité d'accès : Parcours de formation - Zone01 Rouen Normandie
-- Période : 2024 - 2025
+- Période : mai 2025 – juin 2026
 
 ## Présentation du dossier
 
@@ -72,7 +72,7 @@ J’ai mis en place les routes API publiques et privées dans Next.js App Router
 
 - Projet Social Network, formation RNCP 37873
 - Objectif : sécuriser l’accès utilisateur et protéger les données personnelles
-- Période d’exercice : 2024 - 2025
+- Période d’exercice : mai 2025 – juin 2026
 
 5. Informations complémentaires :
 

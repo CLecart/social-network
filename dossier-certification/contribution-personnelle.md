@@ -37,7 +37,7 @@ git shortlog -sn
 
 ## Contribution par domaine
 
-### 1⃣ Système de réactions universel (posts, stories, commentaires)
+### 1. Système de réactions universel (posts, stories, commentaires)
 
 **Périmètre :** fonctionnalité métier complète. Conception du modèle, schémas Zod, queries Prisma, composants UI, intégration temps réel, contraintes d'unicité côté DB.
 
@@ -67,7 +67,7 @@ git shortlog -sn
 
 ---
 
-### 2⃣ Design system et thème (palette, dark mode, layout)
+### 2. Design system et thème (palette, dark mode, layout)
 
 **Périmètre :** mise en place de l'identité visuelle du projet — palette dark, theme provider, cohérence des composants.
 
@@ -90,7 +90,7 @@ git shortlog -sn
 
 ---
 
-### 3⃣ Création de posts (dialog responsive, médias multiples)
+### 3. Création de posts (dialog responsive, médias multiples)
 
 **Périmètre :** composant dialog pour créer un post avec gif / photo / vidéo / emojis, prévisualisation médias, upload Cloudinary.
 
@@ -113,7 +113,7 @@ git shortlog -sn
 
 ---
 
-### 4⃣ Stories (timer, background dominant, likes)
+### 4. Stories (timer, background dominant, likes)
 
 **Commits clés :**
 
@@ -128,7 +128,7 @@ git shortlog -sn
 
 ---
 
-### 5⃣ Chat (bulles, emoji picker, layout)
+### 5. Chat (bulles, emoji picker, layout)
 
 **Commits clés :**
 
@@ -142,7 +142,7 @@ git shortlog -sn
 
 ---
 
-### 6⃣ Recherche stylée avec filtres
+### 6. Recherche stylée avec filtres
 
 **Commits clés :**
 
@@ -154,7 +154,7 @@ git shortlog -sn
 
 ---
 
-### 7⃣ Commentaires (rework UX)
+### 7. Commentaires (rework UX)
 
 **Commits clés :**
 
@@ -168,7 +168,7 @@ git shortlog -sn
 
 ---
 
-### 8⃣ Profil et navigation
+### 8. Profil et navigation
 
 **Commits clés :**
 
@@ -182,7 +182,7 @@ git shortlog -sn
 
 ---
 
-### 9⃣ Sécurité et authentification (fix cookie JWT)
+### 9. Sécurité et authentification (fix cookie JWT)
 
 **Commits clés :**
 
@@ -208,7 +208,7 @@ git shortlog -sn
 
 ---
 
-### 1⃣1⃣ Dossier de certification (intégralité)
+### 1.1. Dossier de certification (intégralité)
 
 **Le dossier `dossier-certification/` est réalisé à 100 % par Christophe.** C'est lui qui a posé la structure, rédigé toutes les sections, créé les diagrammes UML, et organisé les preuves GitHub.
 
