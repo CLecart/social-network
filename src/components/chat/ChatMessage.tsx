@@ -100,10 +100,10 @@ export function ChatMessage({ message, currentUserId }: ChatMessageProps) {
     return (
       <div className="flex flex-col gap-1 mb-6">
         <div className="flex justify-center">
-          <div className=" bg-[var(--bgLevel1)] border-2 border-[var(--detailMinimal)]  rounded-xl p-4 max-w-md mx-4 shadow-sm">
+          <div className=" bg-(--bgLevel1) border-2 border-(--detailMinimal)  rounded-xl p-4 max-w-md mx-4 shadow-sm">
             {/* Event icon and sender */}
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 bg-[var(--bgLevel2)] p-2 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-(--bgLevel2) p-2 rounded-full flex items-center justify-center">
                 <span className="text-sm"><CalendarFold /></span>
               </div>
               <div className="flex items-center gap-2">
@@ -116,14 +116,14 @@ export function ChatMessage({ message, currentUserId }: ChatMessageProps) {
                     {message.sender.username?.[0]?.toUpperCase() || "U"}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-sm font-medium text-[var(--textNeutral)]">
+                <span className="text-sm font-medium text-(--textNeutral)">
                   {message.sender.username}
                 </span>
               </div>
             </div>
 
             {/* Event content */}
-            <div className="text-base text-[var(--textNeutral)] space-y-2">
+            <div className="text-base text-(--textNeutral) space-y-2">
               {parsedContent.map((part, idx) => {
                 if (part.type === "text") {
                   // Check for markdown-style bold text — sanitized with DOMPurify to prevent XSS
@@ -201,8 +201,8 @@ export function ChatMessage({ message, currentUserId }: ChatMessageProps) {
 
         <div
           className={`relative inline-block px-4 py-2 rounded-2xl ${isFromCurrentUser
-            ? "bg-[var(--pink20)] text-[var(--white10)] rounded-br-md"
-            : "bg-[var(--white)] text-[var(--grey80)] rounded-bl-md"
+            ? "bg-(--pink20) text-(--white10) rounded-br-md"
+            : "bg-(--white) text-(--grey80) rounded-bl-md"
             }`}
           style={{ maxWidth: "70vw", wordBreak: "break-word" }}
         >
@@ -245,7 +245,7 @@ export function ChatMessage({ message, currentUserId }: ChatMessageProps) {
               border-l-11 border-l-transparent
               border-r-11 border-r-transparent
               border-t-11
-              ${isFromCurrentUser ? "border-t-[var(--pink20)]" : "border-t-[var(--white)]"}
+              ${isFromCurrentUser ? "border-t-(--pink20)" : "border-t-(--white)"}
             `}
           />
         </div>
