@@ -29,6 +29,11 @@ yarn-error.log*
 # vercel
 .vercel
 
+# dossier certification — fichiers générés (PDF, HTML)
+dossier-certification/*.pdf
+dossier-certification/*.html
+dossier-certification/.~lock.*
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
