@@ -45,4 +45,4 @@ commit-msg.txt
 /scripts
 
 #Vscode
-.vscode
+.vscode/coverage-ui
