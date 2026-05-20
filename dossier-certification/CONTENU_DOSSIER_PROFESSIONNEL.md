@@ -47,7 +47,7 @@ J'ai travaillé au sein d'une équipe de 6 développeurs dans le cadre de la for
 
 - Nom de l'entreprise / organisme : Zone01 Rouen Normandie
 - Chantier / service : Projet Social Network — module Authentification & Sécurité
-- Période d'exercice : Du janvier 2024 au mai 2026
+- Période d'exercice : Du janvier 2024 au juin 2026
 
 **5. Informations complémentaires :**
 
@@ -79,7 +79,7 @@ En équipe de 6 développeurs, avec revues de code mutuelles via GitHub Pull Req
 
 - Nom de l'entreprise / organisme : Zone01 Rouen Normandie
 - Chantier / service : Projet Social Network — couche API & sécurité des données
-- Période d'exercice : Du mars 2024 au mai 2026
+- Période d'exercice : Du mars 2024 au juin 2026
 
 **5. Informations complémentaires :**
 
@@ -114,7 +114,7 @@ En équipe de 6 développeurs. La modélisation des données a été une étape 
 
 - Nom de l'entreprise / organisme : Zone01 Rouen Normandie
 - Chantier / service : Projet Social Network — architecture & modélisation
-- Période d'exercice : Du janvier 2024 au mai 2026
+- Période d'exercice : Du janvier 2024 au juin 2026
 
 **5. Informations complémentaires :**
 
@@ -148,7 +148,7 @@ En équipe de 6 développeurs. J'ai travaillé en binôme sur la partie temps r�
 
 - Nom de l'entreprise / organisme : Zone01 Rouen Normandie
 - Chantier / service : Projet Social Network — fonctionnalités temps réel
-- Période d'exercice : Du juin 2024 au mai 2026
+- Période d'exercice : Du juin 2024 au juin 2026
 
 **5. Informations complémentaires :**
 
@@ -184,7 +184,7 @@ En équipe de 6 développeurs. La partie DevOps a été menée en collaboration,
 
 - Nom de l'entreprise / organisme : Zone01 Rouen Normandie
 - Chantier / service : Projet Social Network — infrastructure & CI/CD
-- Période d'exercice : Du septembre 2024 au mai 2026
+- Période d'exercice : Du septembre 2024 au juin 2026
 
 **5. Informations complémentaires :**
 
@@ -217,7 +217,7 @@ En équipe de 6 développeurs, avec une répartition des responsabilités sur la
 
 - Nom de l'entreprise / organisme : Zone01 Rouen Normandie
 - Chantier / service : Projet Social Network — mise en production
-- Période d'exercice : Du novembre 2024 au mai 2026
+- Période d'exercice : Du novembre 2024 au juin 2026
 
 **5. Informations complémentaires :**
 

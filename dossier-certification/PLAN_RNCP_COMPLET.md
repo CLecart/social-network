@@ -4,7 +4,7 @@
 **Titre visé :** Concepteur Développeur d'Applications (CDA) — Niveau 6  
 **Établissement :** Zone01 Rouen Normandie  
 **Projet support :** Social Network (dépôt `arocchet/social-network`)  
-**Date :** Mai 2026
+**Date :** Juin 2026
 
 > Ce document présente la couverture complète du référentiel RNCP 37873 par le projet Social Network, avec les preuves techniques associées à chaque compétence.
 
