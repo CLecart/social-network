@@ -225,6 +225,101 @@ L'utilisation de Neon (PostgreSQL serverless) avec une URL directe (`DIRECT_URL`
 
 ---
 
+## Documents illustrant la pratique professionnelle
+
+> Les documents ci-dessous sont classés par activité-type et par exemple. Ils constituent les preuves de réalisation à joindre au dossier professionnel. Tous les fichiers de code sont issus du dépôt `https://github.com/arocchet/social-network`.
+
+---
+
+### Activité-type 1 — Développer une application sécurisée
+
+#### Exemple n° 1 — Authentification JWT, cookies HTTP-only, sessions Redis
+
+| Type | Document | Lien / Chemin |
+|---|---|---|
+| Extrait de code | Signature et vérification du JWT | `src/lib/jwt/signJwt.ts` · `src/lib/jwt/verifyJwt.ts` |
+| Extrait de code | Hachage et comparaison bcrypt (cost 12) | `src/lib/security/hash.ts` |
+| Extrait de code | Middleware Next.js — protection de toutes les routes privées | `src/middleware.ts` |
+| Extrait de code | Route de connexion — génération JWT + cookie HTTP-only | `src/app/api/public/auth/login/route.ts` |
+| Extrait de code | Route OAuth Google — state anti-CSRF | `src/app/api/public/auth/redirect/google/route.ts` |
+| Capture d'écran | Maquette page de connexion (design système, champs validés) | `07-annexes/Mockups_Login.png` |
+| Preuve GitHub | Issue #66 — OAuth Google authentication | https://github.com/arocchet/social-network/issues/66 |
+| Preuve GitHub | PR #118 — stabilisation Docker/Neon/Prisma/Redis | https://github.com/arocchet/social-network/pull/118 |
+| Documentation | Analyse sécurité OWASP complète | `04-developpement/securite-rgpd.md` |
+
+#### Exemple n° 2 — Validation Zod et protection des routes API
+
+| Type | Document | Lien / Chemin |
+|---|---|---|
+| Extrait de code | Schémas Zod partagés (posts, users, reactions, comments) | `src/lib/schemas/` |
+| Extrait de code | Middleware — injection header `x-user-id` pour contrôle d'accès | `src/middleware.ts` |
+| Extrait de code | Exemple d'endpoint protégé avec validation Zod | `src/app/api/private/post/route.ts` |
+| Extrait de code | Helpers de réponse API standardisés (400, 401, 403, 500) | `src/lib/server/api/response.ts` |
+| Preuve GitHub | Commits Christophe Lecart — validation et sécurisation API | `contribution-personnelle.md` (hashs vérifiables) |
+| Documentation | Stratégie de validation et audit RGPD | `04-developpement/securite-rgpd.md` |
+
+---
+
+### Activité-type 2 — Concevoir et développer une application sécurisée organisée en couches
+
+#### Exemple n° 1 — Architecture full-stack en couches et schéma de données Prisma
+
+| Type | Document | Lien / Chemin |
+|---|---|---|
+| Extrait de code | Schéma Prisma complet — 18 modèles, relations, enums, contraintes d'unicité | `prisma/schema.prisma` |
+| Extrait de code | Migrations versionnées | `prisma/migrations/` |
+| Diagramme | MCD — Modèle Conceptuel de Données (entités et cardinalités) | `03-conception/diagrammes-uml.md` §MCD |
+| Diagramme | MLD — Modèle Logique (clés étrangères, types logiques) | `03-conception/diagrammes-uml.md` §MLD |
+| Diagramme | MPD — Modèle Physique PostgreSQL (DDL, index, contraintes) | `03-conception/diagrammes-uml.md` §MPD |
+| Diagramme | Diagramme de classes simplifié (soutenance) | `07-annexes/diagrams/classes-simplifie.mmd` |
+| Diagramme | Diagramme de cas d'utilisation (soutenance) | `07-annexes/diagrams/use-case-simplifie.mmd` |
+| Capture d'écran | Maquette Feed principal — architecture composants React | `07-annexes/Mockups_Home_Feed.png` |
+| Capture d'écran | Maquette Profil utilisateur | `07-annexes/Mockups_User.png` |
+| Capture d'écran | Maquette Création de post | `07-annexes/Mockups_Create_Post.png` |
+| Preuve GitHub | Issue #13 — Follow/Friendship system | https://github.com/arocchet/social-network/issues/13 |
+| Preuve GitHub | Issue #24 — Groups & Events | https://github.com/arocchet/social-network/issues/24 |
+| Preuve GitHub | Issue #37 — Chat system | https://github.com/arocchet/social-network/issues/37 |
+
+#### Exemple n° 2 — Messagerie et notifications temps réel (SSE + Upstash Redis)
+
+| Type | Document | Lien / Chemin |
+|---|---|---|
+| Extrait de code | Endpoint SSE `/chat/listen` — polling Redis, déduplication, cleanup | `src/app/api/private/chat/listen/route.ts` |
+| Extrait de code | Envoi de message — persistance Prisma + écriture Redis | `src/app/api/private/chat/send/route.ts` |
+| Extrait de code | Client Redis Upstash (REST, serverless-compatible) | `src/lib/server/websocket/redis.ts` |
+| Extrait de code | Hook React SSE côté client | `src/hooks/use-real-time-chat.ts` |
+| Preuve GitHub | Issue #37 — Chat system (SSE + Redis) | https://github.com/arocchet/social-network/issues/37 |
+| Preuve GitHub | Issue #39 — Notifications temps réel | https://github.com/arocchet/social-network/issues/39 |
+| Documentation | Justification du choix SSE vs WebSocket (contrainte serverless) | `04-developpement/veille-technique.md` §1.1 |
+
+---
+
+### Activité-type 3 — Préparer le déploiement d'une application sécurisée
+
+#### Exemple n° 1 — Containerisation Docker et pipeline CI/CD GitHub Actions
+
+| Type | Document | Lien / Chemin |
+|---|---|---|
+| Extrait de code | Dockerfile multi-stage (builder Bun + runner slim) | `Dockerfile` |
+| Extrait de code | docker-compose.yml — profils dev/prod, services app + db | `docker-compose.yml` |
+| Extrait de code | Pipeline GitHub Actions (lint + test + build) | `.github/workflows/ci.yml` |
+| Preuve GitHub | Issue #40 — DevOps / Docker / CI | https://github.com/arocchet/social-network/issues/40 |
+| Preuve GitHub | Issue #45 — CI lint/test/build/push | https://github.com/arocchet/social-network/issues/45 |
+| Preuve GitHub | PR #118 — stabilisation complète de la chaîne de déploiement | https://github.com/arocchet/social-network/pull/118 |
+| Documentation | Documentation déploiement complète | `05-deploiement/README.md` |
+
+#### Exemple n° 2 — Déploiement production Vercel + PostgreSQL Neon + migrations Prisma
+
+| Type | Document | Lien / Chemin |
+|---|---|---|
+| Extrait de code | Variables d'environnement documentées | `.env.exemple` |
+| Extrait de code | Migrations Prisma versionnées | `prisma/migrations/` |
+| Documentation | Procédure de déploiement, variables d'env, rollback Vercel | `05-deploiement/README.md` |
+| Preuve GitHub | Issue #46 — Seed script / données de démonstration | https://github.com/arocchet/social-network/issues/46 |
+| Preuve GitHub | PR #118 — stabilisation Docker/Neon/Prisma/Redis | https://github.com/arocchet/social-network/pull/118 |
+
+---
+
 ## Tableau des titres, diplômes et attestations
 
 | Intitulé | Autorité / Organisme | Date |
