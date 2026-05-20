@@ -6,13 +6,13 @@ Rassembler les éléments de référence qui soutiennent le dossier: configurati
 
 ---
 
-## 📚 Ressources du Projet
+##  Ressources du Projet
 
 ### Code Source
 
 - Repository: https://github.com/arocchet/social-network
 
-### 🔎 Preuves GitHub
+###  Preuves GitHub
 
 Liens directs vers les issues et PRs utilisées comme preuves dans le dossier:
 
@@ -42,7 +42,7 @@ Liens directs vers les issues et PRs utilisées comme preuves dans le dossier:
 
 ---
 
-## ⚙️ Configuration d'Environnement
+##  Configuration d'Environnement
 
 ### .env.example
 
@@ -85,7 +85,7 @@ FALLBACK_COVER_URL=https://example.com/cover.png
 
 ---
 
-## 🧪 Tests
+##  Tests
 
 ### Tests disponibles
 
@@ -116,7 +116,7 @@ describe("POST /api/auth/login", () => {
 
 ---
 
-## 📊 Diagrammes Synthétiques
+##  Diagrammes Synthétiques
 
 ### Architecture Générale
 
@@ -150,7 +150,7 @@ sequenceDiagram
 
 ---
 
-## 🔗 Ressources Utilisées
+##  Ressources Utilisées
 
 ### Documentation Officielle
 
@@ -175,7 +175,7 @@ sequenceDiagram
 
 ---
 
-## 📋 Checklist de Remise
+##  Checklist de Remise
 
 - [x] Structure du dossier complète.
 - [x] Conception documentée.

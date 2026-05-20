@@ -25,7 +25,7 @@ Depuis 2024, je suis en formation à Zone01 Rouen Normandie sur le projet Social
 
 ---
 
-## 📑 Structure du Dossier
+##  Structure du Dossier
 
 ```
 00-presentation/          → Présentation du candidat
@@ -40,11 +40,11 @@ Depuis 2024, je suis en formation à Zone01 Rouen Normandie sur le projet Social
 
 ---
 
-## 🔎 Preuves GitHub
+##  Preuves GitHub
 
 Les preuves (issues et PRs) utilisées pour documenter les choix et réalisations sont réunies dans les annexes et les sections `03-conception` / `04-developpement` (ex. issues #13, #24, PR #118). Voir [07-annexes](07-annexes/README.md) pour les liens directs.
 
-## 🎯 Prochaines Étapes
+##  Prochaines Étapes
 
 - [x] **Conception** → Wireframes, maquettes, user stories et modélisation
 - [x] **Développement** → Architecture, API, authentification et temps réel
@@ -52,11 +52,11 @@ Les preuves (issues et PRs) utilisées pour documenter les choix et réalisation
 - [x] **Bilan** → Retour d'expérience, métriques et axes d'amélioration
 - [x] **Annexes** → Configuration, tests, ressources et preuves techniques
 
-## ✅ État du Dossier
+##  État du Dossier
 
 Ce dossier présente mon projet Social Network pour mon examen de certification RNCP 37873. Chaque section décrit mon travail, mes choix techniques et les preuves liées au dépôt.
 
-## 🧭 Lecture Recommandée
+##  Lecture Recommandée
 
 1. Commencer par [00-presentation](00-presentation/README.md) pour le profil candidat.
 2. Lire [01-introduction](01-introduction/README.md) pour le contexte.

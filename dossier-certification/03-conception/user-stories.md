@@ -1,12 +1,12 @@
-# 📋 User Stories & Cas d'Usage
+#  User Stories & Cas d'Usage
 
-## 🎯 Vue d'Ensemble
+##  Vue d'Ensemble
 
 Nous décrivons ci-dessous les user stories que nous avons rédigées et priorisées pour le projet. Le texte est rédigé à la première personne du pluriel pour refléter notre travail d'équipe et permettre d'indexer facilement chaque story sur les issues/PRs correspondantes du dépôt GitHub.
 
 ---
 
-## 🔎 Preuves & Mapping GitHub
+##  Preuves & Mapping GitHub
 
 Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocchet/social-network` :
 
@@ -26,9 +26,9 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-## 👤 Utilisateur Classique (Regular User)
+##  Utilisateur Classique (Regular User)
 
-### ✅ Authentification & Profil
+###  Authentification & Profil
 
 #### US001: Créer un compte
 
@@ -96,7 +96,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-### 📱 Posts & Contenu
+###  Posts & Contenu
 
 #### US007: Créer un post
 
@@ -127,7 +127,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 #### US009: Liker un post
 
 - **As a** utilisateur
-- **I want to** liker un post en cliquant sur l'icône ❤️
+- **I want to** liker un post en cliquant sur l'icône 
 - **So that** j'exprime mon appréciation
 - **Acceptance Criteria:**
   - [ ] Toggle like/unlike
@@ -181,7 +181,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-### 🎬 Stories
+###  Stories
 
 #### US014: Créer une story
 
@@ -218,7 +218,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-### 👥 Amitié & Suivi
+###  Amitié & Suivi
 
 #### US017: Suivre un utilisateur
 
@@ -266,7 +266,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-### 💬 Messagerie
+###  Messagerie
 
 #### US021: Envoyer un message direct
 
@@ -305,7 +305,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-### 🔍 Recherche
+###  Recherche
 
 #### US024: Rechercher des utilisateurs
 
@@ -330,7 +330,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-### 🔔 Notifications
+###  Notifications
 
 #### US026: Recevoir notifications
 
@@ -354,7 +354,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-### 👥 Groupes (Communities)
+###  Groupes (Communities)
 
 #### US028: Créer un groupe
 
@@ -415,7 +415,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-### 📅 Événements (Events)
+###  Événements (Events)
 
 #### US033: Créer un événement
 
@@ -452,7 +452,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-### 🎬 Reels (Vidéos)
+###  Reels (Vidéos)
 
 #### US036: Partager une vidéo
 
@@ -495,18 +495,18 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 | User Story | Priorité  | Estimation   |
 | ---------- | --------- | ------------ |
-| US001      | ✅ HIGH   | 2 jours      |
-| US002      | ✅ HIGH   | 1 jour       |
-| US003      | ✅ HIGH   | 2 jours      |
-| US004      | ✅ HIGH   | 1 jour       |
-| US005      | ✅ HIGH   | 2 jours      |
-| US007      | ✅ HIGH   | 3 jours      |
-| US008      | ✅ HIGH   | 2 jours      |
-| US009      | ✅ HIGH   | 1 jour       |
-| US011      | ✅ HIGH   | 2 jours      |
-| US021      | ✅ HIGH   | 3 jours      |
-| US024      | ✅ MEDIUM | 2 jours      |
-| US026      | ✅ MEDIUM | 2 jours      |
+| US001      |  HIGH   | 2 jours      |
+| US002      |  HIGH   | 1 jour       |
+| US003      |  HIGH   | 2 jours      |
+| US004      |  HIGH   | 1 jour       |
+| US005      |  HIGH   | 2 jours      |
+| US007      |  HIGH   | 3 jours      |
+| US008      |  HIGH   | 2 jours      |
+| US009      |  HIGH   | 1 jour       |
+| US011      |  HIGH   | 2 jours      |
+| US021      |  HIGH   | 3 jours      |
+| US024      |  MEDIUM | 2 jours      |
+| US026      |  MEDIUM | 2 jours      |
 | **Total**  |           | **25 jours** |
 
 ### Phase 2: Features (SHOULD HAVE) - 2 semaines
@@ -519,36 +519,36 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-## ✅ Acceptance Criteria Summary
+##  Acceptance Criteria Summary
 
 **Front-End:**
 
-- ✅ Responsive design (mobile, tablet, desktop)
-- ✅ Theme switcher (light/dark)
-- ✅ Loading states + error handling
-- ✅ Infinite scroll pagination
-- ✅ Real-time updates (SSE / Redis)
-- ✅ Image optimization (Cloudinary)
-- ✅ SEO optimization (meta tags)
-- ✅ Accessibility (WCAG 2.1 AA)
+-  Responsive design (mobile, tablet, desktop)
+-  Theme switcher (light/dark)
+-  Loading states + error handling
+-  Infinite scroll pagination
+-  Real-time updates (SSE / Redis)
+-  Image optimization (Cloudinary)
+-  SEO optimization (meta tags)
+-  Accessibility (WCAG 2.1 AA)
 
 **Back-End:**
 
-- ✅ JWT authentication
-- ✅ Input validation + sanitization
-- ✅ Error logging
-- ✅ Database indexes
+-  JWT authentication
+-  Input validation + sanitization
+-  Error logging
+-  Database indexes
 
 **DevOps:**
 
-- ✅ Docker containerization
-- ✅ CI/CD pipeline (GitHub Actions)
+-  Docker containerization
+-  CI/CD pipeline (GitHub Actions)
 
 ---
 
-## 📝 Prochaines Étapes
+##  Prochaines Étapes
 
-1. ✅ User stories écrites
+1.  User stories écrites
 2. [ ] Wireframes créés pour le projet
 3. [ ] Prototype Figma du projet
 4. [ ] Validation avec l'équipe

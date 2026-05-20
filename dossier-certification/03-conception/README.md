@@ -1,6 +1,6 @@
 # 03 - Conception
 
-## 📋 Résumé
+##  Résumé
 
 Cette section documente la conception complète du réseau social `social-network`:
 
@@ -11,13 +11,13 @@ Cette section documente la conception complète du réseau social `social-networ
 
 ---
 
-## 📚 Documents du Projet
+##  Documents du Projet
 
 ### Pilotage du travail
 
 La conception s'appuie sur les issues GitHub du projet Social Network. Les lots fonctionnels ont été organisés autour des sujets suivis dans le dépôt: authentification, follow, chat, notifications, groupes, événements, settings, i18n et DevOps.
 
-### 1️⃣ [Pages et Wireframes](./pages.md)
+### 1⃣ [Pages et Wireframes](./pages.md)
 
 - Accueil (Home/Feed)
 - Authentification (Login/Register/Onboarding)
@@ -32,7 +32,7 @@ La conception s'appuie sur les issues GitHub du projet Social Network. Les lots 
 - Design System (couleurs, typo, composants)
 - Architecture page et data flow
 
-### 2️⃣ [Dictionnaire de Données](./donnees.md)
+### 2⃣ [Dictionnaire de Données](./donnees.md)
 
 - **18 Modèles documentés:**
   - User, Post, Comment, Reaction, Story
@@ -44,10 +44,10 @@ La conception s'appuie sur les issues GitHub du projet Social Network. Les lots 
 - **Enums:** Réaction types, statuts invitation, etc.
 - **MCD/MLD Diagrammes:** Modèles conceptuels et logiques
 
-### 3️⃣ [User Stories](./user-stories.md)
+### 3⃣ [User Stories](./user-stories.md)
 
 - **38 User Stories** organisées par rôle:
-  - 👤 Utilisateur classique (38 stories)
+  -  Utilisateur classique (38 stories)
 - **Priorités & Estimations:** HIGH/MEDIUM/LOW
 - **Phases de développement:**
   - Phase 1 MVP (25 jours)
@@ -55,7 +55,7 @@ La conception s'appuie sur les issues GitHub du projet Social Network. Les lots 
   - Phase 3 Polish (1 semaine)
 - **Acceptance Criteria:** Front/Back/DevOps
 
-### 4️⃣ [Diagrammes UML Complets](./diagrammes-uml.md)
+### 4⃣ [Diagrammes UML Complets](./diagrammes-uml.md)
 
 - **MCD** en DBML (import dbdiagram.io)
 - **MLD** détaillé en DBML
@@ -64,47 +64,47 @@ La conception s'appuie sur les issues GitHub du projet Social Network. Les lots 
 
 ---
 
-## 🎯 Fonctionnalités Clés
+##  Fonctionnalités Clés
 
-### 📱 Réseautage Social
+###  Réseautage Social
 
-- ✅ Posts (texte + images + vidéos)
-- ✅ Followers/Following + Amitié
-- ✅ Likes/Comments/Reactions
-- ✅ Stories (24h ephemeral)
-- ✅ Reels (vertical short videos)
+-  Posts (texte + images + vidéos)
+-  Followers/Following + Amitié
+-  Likes/Comments/Reactions
+-  Stories (24h ephemeral)
+-  Reels (vertical short videos)
 
-### 💬 Communication
+###  Communication
 
-- ✅ Direct Messages (1-to-1)
-- ✅ Group Chat
-- ✅ Typing Indicator + Presence
-- ✅ Message Status (SENT/DELIVERED/READ)
+-  Direct Messages (1-to-1)
+-  Group Chat
+-  Typing Indicator + Presence
+-  Message Status (SENT/DELIVERED/READ)
 
-### 👥 Groupes & Événements
+###  Groupes & Événements
 
-- ✅ Create/Join Groups
-- ✅ Group Invitations
-- ✅ Events Calendar
-- ✅ RSVP Management
+-  Create/Join Groups
+-  Group Invitations
+-  Events Calendar
+-  RSVP Management
 
-### 🔍 Discovery
+###  Discovery
 
-- ✅ User Search
-- ✅ Post Search
-- ✅ Search History
-- ✅ Recent Activity
+-  User Search
+-  Post Search
+-  Search History
+-  Recent Activity
 
-### ⚙️ Personalization
+###  Personalization
 
-- ✅ Theme Toggle (Light/Dark)
-- ✅ Language (EN/FR)
-- ✅ Notification Settings
-- ✅ Privacy Controls
+-  Theme Toggle (Light/Dark)
+-  Language (EN/FR)
+-  Notification Settings
+-  Privacy Controls
 
 ---
 
-## 🗄️ Architecture de Données
+##  Architecture de Données
 
 ### Modèles Principaux
 
@@ -138,28 +138,28 @@ User ←→ Post ←→ Comment ←→ Reaction
 
 ---
 
-## 📐 Pages Implémentées
+##  Pages Implémentées
 
 | Page              | Route               | Rôle                     | Statut |
 | ----------------- | ------------------- | ------------------------ | ------ |
-| **Feed**          | `/`                 | Affichage posts          | ✅     |
-| **Login**         | `/login`            | Authentification         | ✅     |
-| **Register**      | `/register`         | Inscription              | ✅     |
-| **Onboarding**    | `/onboarding`       | Complétude profil        | ✅     |
-| **Profil**        | `/profile/[userId]` | Voir profil utilisateur  | ✅     |
-| **Chat (List)**   | `/chat`             | Liste conversations      | ✅     |
-| **Chat (Direct)** | `/chat/[id]`        | Message 1-to-1           | ✅     |
-| **Reels**         | `/reels`            | Short videos             | ✅     |
-| **Search**        | `/search`           | Rechercher contenu       | ✅     |
-| **Groupes**       | `/groups`           | Lister groupes           | ✅     |
-| **Groupe Detail** | `/groups/[id]`      | Détail groupe + chat     | ✅     |
-| **Événements**    | `/events`           | Calendar événements      | ✅     |
-| **Paramètres**    | `/settings`         | Préférences user         | ✅     |
-| **Invitations**   | `/invitations`      | Demandes d'amitié/groupe | ✅     |
+| **Feed**          | `/`                 | Affichage posts          |      |
+| **Login**         | `/login`            | Authentification         |      |
+| **Register**      | `/register`         | Inscription              |      |
+| **Onboarding**    | `/onboarding`       | Complétude profil        |      |
+| **Profil**        | `/profile/[userId]` | Voir profil utilisateur  |      |
+| **Chat (List)**   | `/chat`             | Liste conversations      |      |
+| **Chat (Direct)** | `/chat/[id]`        | Message 1-to-1           |      |
+| **Reels**         | `/reels`            | Short videos             |      |
+| **Search**        | `/search`           | Rechercher contenu       |      |
+| **Groupes**       | `/groups`           | Lister groupes           |      |
+| **Groupe Detail** | `/groups/[id]`      | Détail groupe + chat     |      |
+| **Événements**    | `/events`           | Calendar événements      |      |
+| **Paramètres**    | `/settings`         | Préférences user         |      |
+| **Invitations**   | `/invitations`      | Demandes d'amitié/groupe |      |
 
 ---
 
-## 🎨 Design System
+##  Design System
 
 ### Palette Couleurs (Thème Dark)
 
@@ -211,7 +211,7 @@ User ←→ Post ←→ Comment ←→ Reaction
 
 ---
 
-## 🔄 Data Flow
+##  Data Flow
 
 ```
 User Interaction
@@ -237,7 +237,7 @@ Re-render Component
 
 ---
 
-## 📊 Diagrammes
+##  Diagrammes
 
 ### MCD - Modèle Conceptuel de Données
 
@@ -253,7 +253,7 @@ Montre le schéma de base de données normalisé.
 
 ---
 
-## 📋 Wireframes & Maquettes
+##  Wireframes & Maquettes
 
 Les wireframes et maquettes haute-fidélité du projet sont disponibles dans [07-annexes](../07-annexes/) :
 
@@ -272,7 +272,7 @@ Les wireframes et maquettes haute-fidélité du projet sont disponibles dans [07
 
 ---
 
-## ✅ Checklist Conception
+##  Checklist Conception
 
 - [x] Pages principales documentées (14 routes)
 - [x] Dictionnaire de données complet (18 modèles Prisma)
@@ -286,7 +286,7 @@ Les wireframes et maquettes haute-fidélité du projet sont disponibles dans [07
 
 ---
 
-## 📝 Fichiers Liés
+##  Fichiers Liés
 
 - **Introduction:** [01-introduction/README.md](../01-introduction/README.md)
 - **Cahier des charges:** [02-cahier-des-charges/README.md](../02-cahier-des-charges/README.md)

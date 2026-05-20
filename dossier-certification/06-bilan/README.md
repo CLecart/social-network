@@ -6,7 +6,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ---
 
-## 📊 Retour d'Expérience
+##  Retour d'Expérience
 
 ### Défis Techniques Rencontrés
 
@@ -61,61 +61,61 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ---
 
-## ✅ Accomplissements Mesurables
+##  Accomplissements Mesurables
 
 ### Livrables du Projet
 
 | Élément                 | Nombre     | Statut                                 |
 | ----------------------- | ---------- | -------------------------------------- |
-| Modèles Prisma          | 18         | ✅ Complets et documentés              |
-| Endpoints API           | 60+        | ✅ Spécifications complètes (api-spec.md)      |
-| Pages principales       | 14         | ✅ Routes implémentées                         |
-| Composants React        | 110+       | ✅ Design system + composants métier           |
-| Hooks personnalisés     | 30+        | ✅ Logique UI découplée                        |
-| User stories            | 38+        | ✅ Rôles, priorités, critères d'acceptation    |
-| Événements temps réel   | 4 familles | ✅ Chat, notifications, typing, statuts        |
-| Migrations DB           | 2+         | ✅ Structure versionnée                        |
-| Lignes de documentation | 4000+      | ✅ Dossier et code                             |
-| Tests d'intégration     | Auth       | ✅ Inscription + connexion vérifiées           |
+| Modèles Prisma          | 18         |  Complets et documentés              |
+| Endpoints API           | 60+        |  Spécifications complètes (api-spec.md)      |
+| Pages principales       | 14         |  Routes implémentées                         |
+| Composants React        | 110+       |  Design system + composants métier           |
+| Hooks personnalisés     | 30+        |  Logique UI découplée                        |
+| User stories            | 38+        |  Rôles, priorités, critères d'acceptation    |
+| Événements temps réel   | 4 familles |  Chat, notifications, typing, statuts        |
+| Migrations DB           | 2+         |  Structure versionnée                        |
+| Lignes de documentation | 4000+      |  Dossier et code                             |
+| Tests d'intégration     | Auth       |  Inscription + connexion vérifiées           |
 
 ### Résultats Obtenus
 
-✅ **Architecture**
+ **Architecture**
 
 - Séparation claire client/serveur/data
 - TypeScript full-stack pour la sécurité
 - Middleware pour l'authentification centralisée
 - API RESTful avec validation (Zod)
 
-✅ **Authentification & Sécurité**
+ **Authentification & Sécurité**
 
 - JWT avec jose (HS256)
 - Hachage bcrypt des mots de passe
 - Cookies HTTP-only pour les sessions
 - Protection des routes privées
 
-✅ **Base de Données**
+ **Base de Données**
 
 - 18 modèles Prisma normalisés
 - Relations complexes (amitié, notifications, groupes)
 - Migrations versionnées
 - Contraintes d'unicité pour éviter les duplicatas
 
-✅ **Temps Réel**
+ **Temps Réel**
 
 - Messages avec statut (SENT → DELIVERED → READ)
 - Notifications en temps réel via Redis
 - Typing indicator avec timeout
 - Polling SSE pour haute disponibilité
 
-✅ **Déploiement**
+ **Déploiement**
 
 - Dockerfile multi-stage optimisé
 - docker-compose avec PostgreSQL + Redis
 - Variables d'environnement sécurisées
 - Pipeline CI/CD documenté
 
-✅ **Documentation**
+ **Documentation**
 
 - Dossier de certification 60+ pages
 - Preuves GitHub reliées (13 issues/PRs)
@@ -132,39 +132,39 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ### Points à Améliorer (Phase Suivante)
 
-- ⚠️ **Tests** : Augmenter la couverture au-delà de l'authentification (routes, composants).
-- ⚠️ **Performance** : Lighthouse audit, optimisation d'images, compression.
-- ⚠️ **Monitoring** : Intégrer Sentry pour suivi des erreurs en production.
-- ⚠️ **Load tests** : Vérifier la scalabilité sous charge (Redis pub/sub, connexions DB).
-- ⚠️ **RGPD** : Formaliser les droits d'accès/suppression des données personnelles.
+-  **Tests** : Augmenter la couverture au-delà de l'authentification (routes, composants).
+-  **Performance** : Lighthouse audit, optimisation d'images, compression.
+-  **Monitoring** : Intégrer Sentry pour suivi des erreurs en production.
+-  **Load tests** : Vérifier la scalabilité sous charge (Redis pub/sub, connexions DB).
+-  **RGPD** : Formaliser les droits d'accès/suppression des données personnelles.
 
 ---
 
-## 💡 Compétences Validées (RNCP 37873)
+##  Compétences Validées (RNCP 37873)
 
 ### Bloc 1 : Développer une application sécurisée
 
-- ✅ Authentification JWT sécurisée (jose + bcrypt)
-- ✅ Validation des entrées (Zod schemas)
-- ✅ Protection des routes (middleware + check userId)
-- ✅ Hachage des mots de passe (bcrypt, salt 12)
-- ✅ Cookies HTTP-only pour la session
+-  Authentification JWT sécurisée (jose + bcrypt)
+-  Validation des entrées (Zod schemas)
+-  Protection des routes (middleware + check userId)
+-  Hachage des mots de passe (bcrypt, salt 12)
+-  Cookies HTTP-only pour la session
 
 ### Bloc 2 : Concevoir une application organisée en couches
 
-- ✅ Séparation client/serveur/data
-- ✅ Composants React réutilisables
-- ✅ Hooks personnalisés pour la logique métier
-- ✅ Prisma ORM pour l'accès aux données
-- ✅ API Routes pour la couche métier
+-  Séparation client/serveur/data
+-  Composants React réutilisables
+-  Hooks personnalisés pour la logique métier
+-  Prisma ORM pour l'accès aux données
+-  API Routes pour la couche métier
 
 ### Bloc 3 : Préparer le déploiement sécurisé
 
-- ✅ Dockerfile multi-stage optimisé
-- ✅ docker-compose avec services
-- ✅ Variables d'environnement versionnées
-- ✅ Migrations Prisma automatisées
-- ✅ CI/CD avec GitHub Actions
+-  Dockerfile multi-stage optimisé
+-  docker-compose avec services
+-  Variables d'environnement versionnées
+-  Migrations Prisma automatisées
+-  CI/CD avec GitHub Actions
 
 ### Compétences Techniques Consolidées
 
@@ -188,7 +188,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ---
 
-## 🚀 Améliorations Futures
+##  Améliorations Futures
 
 ### Court Terme
 
@@ -210,7 +210,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ---
 
-## 📈 Métriques du Projet
+##  Métriques du Projet
 
 | Indicateur               | Valeur                 |
 | ------------------------ | ---------------------- |
@@ -227,7 +227,7 @@ Ces métriques servent à montrer que le projet est suffisamment complet pour mo
 
 ---
 
-## 🎓 Conclusion
+##  Conclusion
 
 Ce projet m'a permis de concevoir et documenter une application full-stack réaliste, avec des choix techniques justifiés et une architecture exploitable en production.
 

@@ -1,4 +1,4 @@
-# 🔬 Veille technique et recherche personnelle
+#  Veille technique et recherche personnelle
 
 ## Objectif
 
@@ -26,10 +26,10 @@ L'approche est concrète : pour chaque domaine exploré, je détaille **pourquoi
 
 | Option | Pour | Contre | Verdict |
 |---|---|---|---|
-| Socket.io + Redis pub/sub | Latence très basse, bidirectionnel | Incompatible serverless Vercel, ops complexes | ❌ |
-| WebSocket natif | Standard, bidirectionnel | Idem (incompatible Vercel) | ❌ |
-| **Server-Sent Events + Upstash Redis polling** | Compatible serverless, unidirectionnel suffit pour push | Polling = latence ~1 s | ✅ retenu |
-| Long polling brut | Trivial | Doublonne SSE en moins propre | ❌ |
+| Socket.io + Redis pub/sub | Latence très basse, bidirectionnel | Incompatible serverless Vercel, ops complexes |  |
+| WebSocket natif | Standard, bidirectionnel | Idem (incompatible Vercel) |  |
+| **Server-Sent Events + Upstash Redis polling** | Compatible serverless, unidirectionnel suffit pour push | Polling = latence ~1 s |  retenu |
+| Long polling brut | Trivial | Doublonne SSE en moins propre |  |
 
 → Implémentation détaillée dans [04-developpement/README.md § Temps réel](./README.md#temps-réel-server-sent-events--upstash-redis).
 

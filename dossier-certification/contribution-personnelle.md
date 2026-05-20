@@ -1,4 +1,4 @@
-# 🙋 Contribution personnelle de Christophe Lecart
+#  Contribution personnelle de Christophe Lecart
 
 ## Pourquoi ce document
 
@@ -8,7 +8,7 @@ Pour anticiper la question légitime du jury — **« qu'est-ce que VOUS avez fa
 
 ---
 
-## 📊 Vue d'ensemble
+##  Vue d'ensemble
 
 **57 commits** sous les identités `Christophe Lecart` (6) + `CLecart` (10) + `clecart` (41), ce qui fait de Christophe le **2ᵉ contributeur** sur 6.
 
@@ -35,9 +35,9 @@ git shortlog -sn
 
 ---
 
-## 🧩 Contribution par domaine
+##  Contribution par domaine
 
-### 1️⃣ Système de réactions universel (posts, stories, commentaires)
+### 1⃣ Système de réactions universel (posts, stories, commentaires)
 
 **Périmètre :** fonctionnalité métier complète. Conception du modèle, schémas Zod, queries Prisma, composants UI, intégration temps réel, contraintes d'unicité côté DB.
 
@@ -45,7 +45,7 @@ git shortlog -sn
 
 | Hash | Date | Message |
 |---|---|---|
-| `158d8ee` | 2025-07-08 | ✨ feat: Universal likes system implementation - Part 1 |
+| `158d8ee` | 2025-07-08 |  feat: Universal likes system implementation - Part 1 |
 | `b140030` | 2025-07-08 | add likesCaches.ts |
 | `bd56f13` | 2025-07-09 | Reactions tracking par contentId/storyId/commentId dans useEffect |
 | `98ba457` | 2025-07-10 | Remplacement likeCache par useState reactions + isLiked + likesCount |
@@ -67,7 +67,7 @@ git shortlog -sn
 
 ---
 
-### 2️⃣ Design system et thème (palette, dark mode, layout)
+### 2⃣ Design system et thème (palette, dark mode, layout)
 
 **Périmètre :** mise en place de l'identité visuelle du projet — palette dark, theme provider, cohérence des composants.
 
@@ -90,7 +90,7 @@ git shortlog -sn
 
 ---
 
-### 3️⃣ Création de posts (dialog responsive, médias multiples)
+### 3⃣ Création de posts (dialog responsive, médias multiples)
 
 **Périmètre :** composant dialog pour créer un post avec gif / photo / vidéo / emojis, prévisualisation médias, upload Cloudinary.
 
@@ -113,7 +113,7 @@ git shortlog -sn
 
 ---
 
-### 4️⃣ Stories (timer, background dominant, likes)
+### 4⃣ Stories (timer, background dominant, likes)
 
 **Commits clés :**
 
@@ -121,14 +121,14 @@ git shortlog -sn
 |---|---|---|
 | `313d1d8` | 2025-06-02 | feat: auto-detect background color and resize image for stories |
 | `cc5e56a` | 2025-06-03 | fix: resolve story timer skipping issues with dominant color background |
-| `14c3c33` | 2025-07-07 | ✨ feat: Implement story likes system and remove GIF from post creation |
+| `14c3c33` | 2025-07-07 |  feat: Implement story likes system and remove GIF from post creation |
 | `7ede4dd` | 2025-06-24 | create api endpoint for reaction stories |
 
 **Compétences couvertes :** C2 + C3.
 
 ---
 
-### 5️⃣ Chat (bulles, emoji picker, layout)
+### 5⃣ Chat (bulles, emoji picker, layout)
 
 **Commits clés :**
 
@@ -142,7 +142,7 @@ git shortlog -sn
 
 ---
 
-### 6️⃣ Recherche stylée avec filtres
+### 6⃣ Recherche stylée avec filtres
 
 **Commits clés :**
 
@@ -154,7 +154,7 @@ git shortlog -sn
 
 ---
 
-### 7️⃣ Commentaires (rework UX)
+### 7⃣ Commentaires (rework UX)
 
 **Commits clés :**
 
@@ -168,7 +168,7 @@ git shortlog -sn
 
 ---
 
-### 8️⃣ Profil et navigation
+### 8⃣ Profil et navigation
 
 **Commits clés :**
 
@@ -182,7 +182,7 @@ git shortlog -sn
 
 ---
 
-### 9️⃣ Sécurité et authentification (fix cookie JWT)
+### 9⃣ Sécurité et authentification (fix cookie JWT)
 
 **Commits clés :**
 
@@ -194,7 +194,7 @@ git shortlog -sn
 
 ---
 
-### 🔟 DevOps et stabilisation (Prisma, dépendances)
+###  DevOps et stabilisation (Prisma, dépendances)
 
 **Commits clés :**
 
@@ -208,7 +208,7 @@ git shortlog -sn
 
 ---
 
-### 1️⃣1️⃣ Dossier de certification (intégralité)
+### 1⃣1⃣ Dossier de certification (intégralité)
 
 **Le dossier `dossier-certification/` est réalisé à 100 % par Christophe.** C'est lui qui a posé la structure, rédigé toutes les sections, créé les diagrammes UML, et organisé les preuves GitHub.
 
@@ -228,33 +228,33 @@ git shortlog -sn
 
 ---
 
-## 🎯 Synthèse — couverture personnelle des 11 compétences
+##  Synthèse — couverture personnelle des 11 compétences
 
 | # | Bloc | Compétence | Contribution Christophe |
 |---|---|---|---|
-| 1 | B1 | Installer / configurer l'environnement | ⚠️ Contribution équipe, j'ai participé aux migrations Prisma + résolution conflits deps |
-| 2 | B1 | Développer des interfaces utilisateur | ✅ **Forte** : design system, theme, créations de posts, chat, profil, recherche, commentaires |
-| 3 | B1 | Développer des composants métier | ✅ **Très forte** : système de réactions universel (cœur métier) + posts + stories |
-| 4 | B1 | Contribuer à la gestion d'un projet | ✅ **Forte** : organisation du dossier de certification, structuration du suivi |
-| 5 | B2 | Analyser les besoins et maquetter | ✅ Forte (rédaction user stories + relecture maquettes) |
-| 6 | B2 | Définir l'architecture | ⚠️ Contribution équipe sur l'archi, **forte** sur la rédaction (UML, diagrammes radial) |
-| 7 | B2 | Concevoir une BDD relationnelle | ✅ **Forte** : conception du modèle Reaction avec contraintes uniques, alignement Prisma↔dossier |
-| 8 | B2 | Composants d'accès aux données | ✅ **Forte** : queries Prisma pour reactions/posts/stories |
-| 9 | B3 | Plans de tests | ⚠️ Partiel équipe |
-| 10 | B3 | Préparer/documenter le déploiement | ✅ **Forte** : intégralité de la section 05-deploiement du dossier |
-| 11 | B3 | Mise en production DevOps | ⚠️ Contribution équipe, **forte** sur la documentation du flow |
+| 1 | B1 | Installer / configurer l'environnement |  Contribution équipe, j'ai participé aux migrations Prisma + résolution conflits deps |
+| 2 | B1 | Développer des interfaces utilisateur |  **Forte** : design system, theme, créations de posts, chat, profil, recherche, commentaires |
+| 3 | B1 | Développer des composants métier |  **Très forte** : système de réactions universel (cœur métier) + posts + stories |
+| 4 | B1 | Contribuer à la gestion d'un projet |  **Forte** : organisation du dossier de certification, structuration du suivi |
+| 5 | B2 | Analyser les besoins et maquetter |  Forte (rédaction user stories + relecture maquettes) |
+| 6 | B2 | Définir l'architecture |  Contribution équipe sur l'archi, **forte** sur la rédaction (UML, diagrammes radial) |
+| 7 | B2 | Concevoir une BDD relationnelle |  **Forte** : conception du modèle Reaction avec contraintes uniques, alignement Prisma↔dossier |
+| 8 | B2 | Composants d'accès aux données |  **Forte** : queries Prisma pour reactions/posts/stories |
+| 9 | B3 | Plans de tests |  Partiel équipe |
+| 10 | B3 | Préparer/documenter le déploiement |  **Forte** : intégralité de la section 05-deploiement du dossier |
+| 11 | B3 | Mise en production DevOps |  Contribution équipe, **forte** sur la documentation du flow |
 
 **Lecture honnête :** Christophe a une **contribution forte sur 7 des 11 compétences**, et une contribution équipe sur les 4 autres (qu'il peut néanmoins expliquer car il en a rédigé la documentation).
 
 ---
 
-## 🗣️ Phrase d'ancrage pour la soutenance
+##  Phrase d'ancrage pour la soutenance
 
 > « Le projet est porté par une équipe de 6 personnes. Je suis le 2ᵉ contributeur avec 57 commits, principalement sur le système de réactions universel (posts/stories/commentaires), la création de posts multi-médias, le design system, et l'intégralité de ce dossier de certification que vous lisez. Je peux pointer sur GitHub n'importe quel commit ou fichier dont je parle. »
 
 ---
 
-## 🔗 Liens directs vérifiables
+##  Liens directs vérifiables
 
 - Repo : [arocchet/social-network](https://github.com/arocchet/social-network)
 - Liste des commits Christophe :

@@ -14,7 +14,7 @@ Candidat : **Christophe Lecart**
 | Prénom | Christophe |
 | Adresse | 76510 Notre-Dame d'Aliermont |
 | Titre professionnel visé | Concepteur Développeur d'Applications |
-| Modalité d'accès | ☒ Parcours de formation |
+| Modalité d'accès |  Parcours de formation |
 
 ---
 

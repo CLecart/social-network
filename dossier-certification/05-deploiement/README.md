@@ -6,7 +6,7 @@ Documenter la chaîne de déploiement du projet, du poste de développement jusq
 
 ---
 
-## 🔎 Preuves & Mapping GitHub
+##  Preuves & Mapping GitHub
 
 Les éléments de déploiement et d'intégration continue sont documentés dans les tickets et PRs suivants:
 
@@ -15,7 +15,7 @@ Les éléments de déploiement et d'intégration continue sont documentés dans 
 - Seed script / demo data (utilisé pour tests locaux): https://github.com/arocchet/social-network/issues/46
 - PR stabilisation (Docker/Neon/Prisma/Redis): https://github.com/arocchet/social-network/pull/118
 
-## 🐳 Docker et Containerisation
+##  Docker et Containerisation
 
 ### Services principaux
 
@@ -91,7 +91,7 @@ Points importants:
 
 ---
 
-## 📦 Bases de Données
+##  Bases de Données
 
 ### PostgreSQL sur Neon
 
@@ -109,7 +109,7 @@ Redis sert à trois usages:
 
 ---
 
-## 🚀 Mise en Production
+##  Mise en Production
 
 ### Vercel
 
@@ -150,7 +150,7 @@ REDIRECT_URL=...
 
 ---
 
-## 🔄 CI/CD
+##  CI/CD
 
 ### GitHub Actions
 
@@ -187,7 +187,7 @@ jobs:
 
 ---
 
-## 📊 Monitoring et Exploitation
+##  Monitoring et Exploitation
 
 ### Observabilité
 
@@ -206,7 +206,7 @@ vercel rollback
 
 ---
 
-## ✅ Checklist de Déploiement
+##  Checklist de Déploiement
 
 - [x] Dockerfile défini à la racine.
 - [x] docker-compose.yml pour l'environnement local.

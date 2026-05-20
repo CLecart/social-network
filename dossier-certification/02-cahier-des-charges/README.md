@@ -1,6 +1,6 @@
 # 02 - Cahier des Charges
 
-## 📋 Objectifs Principaux
+##  Objectifs Principaux
 
 Le projet Social Network est réalisé en équipe dans le cadre de la formation Zone01 Rouen Normandie. Le cahier des charges ci-dessous synthétise les fonctionnalités réellement suivies dans le dépôt GitHub du projet, sous forme d'issues et de PR, puis les contraintes de mise en oeuvre qui structurent le développement.
 
@@ -25,13 +25,13 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 
 ### Fonctionnalités Essentielles
 
-#### 👤 Gestion des Utilisateurs
+####  Gestion des Utilisateurs
 
 - Inscription et authentification (email/password + Google OAuth)
 - Gestion de profil (avatar, bannière, bio, visibilité PUBLIC/PRIVATE)
 - Système de suivi (followers/following + demandes d'amitié)
 
-#### 📝 Publication et Interaction
+####  Publication et Interaction
 
 - Création de posts/articles
 - Commentaires et réponses
@@ -39,13 +39,13 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 - Partage de contenu
 - Gestion de la visibilité des publications
 
-#### 💬 Communication
+####  Communication
 
 - Système de messagerie privée
 - Notifications en temps réel
 - Groupes/Communautés
 
-#### 🔍 Découverte
+####  Découverte
 
 - Recherche et filtrage (users, posts, groupes)
 - Historique de recherche
@@ -53,27 +53,27 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 
 ---
 
-## ⚙️ Contraintes Techniques
+##  Contraintes Techniques
 
-### 🔒 Sécurité
+###  Sécurité
 
 - Authentification JWT/OAuth
 - Validation des données
 - Chiffrement des mots de passe (bcrypt)
 - Contraintes de réactions: un utilisateur ne peut pas multiplier une même réaction sur un même contenu
 
-### 📈 Scalabilité
+###  Scalabilité
 
 - Cache Redis
 - Base de données PostgreSQL
 - CDN pour assets
 
-### 🖥️ Compatibilité
+###  Compatibilité
 
 - Support navigateurs modernes (Chrome, Firefox, Safari, Edge)
 - Responsive design (mobile/tablet/desktop)
 
-### 🚀 Performance
+###  Performance
 
 - Optimisation images (Next.js Image)
 - Code splitting automatique
@@ -82,20 +82,20 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 
 ---
 
-## 📊 User Stories
+##  User Stories
 
 | Utilisateur | Action         | Priorité | Critères d'acceptation     |
 | ----------- | -------------- | -------- | -------------------------- |
-| Visiteur    | S'inscrire     | ⭐⭐⭐   | Email validé, compte créé  |
-| Utilisateur | Se connecter   | ⭐⭐⭐   | Session JWT créée          |
-| Utilisateur | Créer un post  | ⭐⭐⭐   | Post visible immédiatement |
-| Utilisateur | Commenter      | ⭐⭐⭐   | Commentaire visible        |
-| Utilisateur | Liker/Réagir   | ⭐⭐     | Compteur mis à jour        |
-| Utilisateur | Suivre un user | ⭐⭐     | Feed personnalisé          |
+| Visiteur    | S'inscrire     |    | Email validé, compte créé  |
+| Utilisateur | Se connecter   |    | Session JWT créée          |
+| Utilisateur | Créer un post  |    | Post visible immédiatement |
+| Utilisateur | Commenter      |    | Commentaire visible        |
+| Utilisateur | Liker/Réagir   |      | Compteur mis à jour        |
+| Utilisateur | Suivre un user |      | Feed personnalisé          |
 
 ---
 
-## 🎯 Objectifs de Qualité
+##  Objectifs de Qualité
 
 | Indicateur              | Cible     | Approche retenue                          |
 | ----------------------- | --------- | ----------------------------------------- |
@@ -107,7 +107,7 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 
 ---
 
-## 📅 Timeline
+##  Timeline
 
 | Phase         | Durée    | Statut                            |
 | ------------- | -------- | --------------------------------- |
