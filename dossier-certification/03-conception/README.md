@@ -257,31 +257,31 @@ Montre le schéma de base de données normalisé.
 
 ### Wireframes basse-fidélité
 
-![Connexion — wireframe](../07-annexes/Wireframe_login.png){width=100%}
+![Connexion — wireframe](../07-annexes/Wireframe_login.png)
 
-![Feed principal — wireframe](../07-annexes/Wireframe_Home_Feed.png){width=100%}
+![Feed principal — wireframe](../07-annexes/Wireframe_Home_Feed.png)
 
-![Profil utilisateur — wireframe](../07-annexes/Wireframe_User_Profile.png){width=100%}
+![Profil utilisateur — wireframe](../07-annexes/Wireframe_User_Profile.png)
 
-![Visionneuse de stories — wireframe](../07-annexes/Wireframe_Story_Viewer.png){width=100%}
+![Visionneuse de stories — wireframe](../07-annexes/Wireframe_Story_Viewer.png)
 
-![Paramètres — wireframe](../07-annexes/Wireframe_Settings.png){width=100%}
+![Paramètres — wireframe](../07-annexes/Wireframe_Settings.png)
 
-![Création de post — wireframe](../07-annexes/Wireframe_Create_Post.png){width=100%}
+![Création de post — wireframe](../07-annexes/Wireframe_Create_Post.png)
 
 ### Maquettes haute-fidélité
 
-![Connexion — maquette](../07-annexes/Mockups_Login.png){width=100%}
+![Connexion — maquette](../07-annexes/Mockups_Login.png)
 
-![Feed principal — maquette](../07-annexes/Mockups_Home_Feed.png){width=100%}
+![Feed principal — maquette](../07-annexes/Mockups_Home_Feed.png)
 
-![Profil utilisateur — maquette](../07-annexes/Mockups_User.png){width=100%}
+![Profil utilisateur — maquette](../07-annexes/Mockups_User.png)
 
-![Visionneuse de stories — maquette](../07-annexes/Mockups_Story_Viewer.png){width=100%}
+![Visionneuse de stories — maquette](../07-annexes/Mockups_Story_Viewer.png)
 
-![Paramètres — maquette](../07-annexes/Mockups_Settings.png){width=100%}
+![Paramètres — maquette](../07-annexes/Mockups_Settings.png)
 
-![Création de post — maquette](../07-annexes/Mockups_Create_Post.png){width=100%}
+![Création de post — maquette](../07-annexes/Mockups_Create_Post.png)
 
 ---
 

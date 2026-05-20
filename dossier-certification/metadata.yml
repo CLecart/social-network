@@ -27,6 +27,9 @@ classoption: oneside
 # Couleurs liens — palette dark Konekt
 header-includes:
   - \usepackage{xcolor}
+  - \usepackage{float}
+  - \usepackage{graphicx}
+  - \setkeys{Gin}{width=\linewidth,height=0.78\textheight,keepaspectratio}
   - \definecolor{konektpurple}{HTML}{D283FF}
   - \definecolor{konektlavender}{HTML}{8187DC}
   - \definecolor{konektteal}{HTML}{88D4AB}
