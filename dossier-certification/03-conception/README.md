@@ -255,20 +255,33 @@ Montre le schéma de base de données normalisé.
 
 ## Wireframes & Maquettes
 
-Les wireframes et maquettes haute-fidélité du projet sont disponibles dans [07-annexes](../07-annexes/) :
+### Wireframes basse-fidélité
 
-- `Wireframe_login.png` — Écran de connexion
-- `Wireframe_Home_Feed.png` — Feed principal
-- `Wireframe_User_Profile.png` — Profil utilisateur
-- `Wireframe_Story_Viewer.png` — Visionneuse de stories
-- `Wireframe_Settings.png` — Paramètres
-- `Wireframe_Create_Post.png` — Création de post
-- `Mockups_Login.png` — Maquette connexion haute-fidélité
-- `Mockups_Home_Feed.png` — Maquette feed haute-fidélité
-- `Mockups_User.png` — Maquette profil haute-fidélité
-- `Mockups_Story_Viewer.png` — Maquette stories haute-fidélité
-- `Mockups_Settings.png` — Maquette paramètres haute-fidélité
-- `Mockups_Create_Post.png` — Maquette création post haute-fidélité
+![Connexion — wireframe](../07-annexes/Wireframe_login.png)
+
+![Feed principal — wireframe](../07-annexes/Wireframe_Home_Feed.png)
+
+![Profil utilisateur — wireframe](../07-annexes/Wireframe_User_Profile.png)
+
+![Visionneuse de stories — wireframe](../07-annexes/Wireframe_Story_Viewer.png)
+
+![Paramètres — wireframe](../07-annexes/Wireframe_Settings.png)
+
+![Création de post — wireframe](../07-annexes/Wireframe_Create_Post.png)
+
+### Maquettes haute-fidélité
+
+![Connexion — maquette](../07-annexes/Mockups_Login.png)
+
+![Feed principal — maquette](../07-annexes/Mockups_Home_Feed.png)
+
+![Profil utilisateur — maquette](../07-annexes/Mockups_User.png)
+
+![Visionneuse de stories — maquette](../07-annexes/Mockups_Story_Viewer.png)
+
+![Paramètres — maquette](../07-annexes/Mockups_Settings.png)
+
+![Création de post — maquette](../07-annexes/Mockups_Create_Post.png)
 
 ---
 
