@@ -1,4 +1,4 @@
-#  Veille technique et recherche personnelle
+# Veille technique et recherche personnelle
 
 ## Objectif
 

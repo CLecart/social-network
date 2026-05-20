@@ -138,7 +138,7 @@ J'ai développé le système de messagerie instantanée et de notifications en t
 - Prisma ORM pour la persistance durable des messages (`Message`, `GroupMessage`)
 - Next.js 15 App Router pour les route handlers SSE
 - TypeScript pour le typage des payloads SSE
-- Issue GitHub [#37 chat system](https://github.com/arocchet/social-network/issues/37) et [#39 notifications](https://github.com/arocchet/social-network/issues/39)
+- Issue GitHub [#37 chat system]([Issue #37](https://github.com/arocchet/social-network/issues/37)) et [#39 notifications]([Issue #39](https://github.com/arocchet/social-network/issues/39))
 
 **3. Avec qui avez-vous travaillé ?**
 
@@ -227,7 +227,7 @@ L'utilisation de Neon (PostgreSQL serverless) avec une URL directe (`DIRECT_URL`
 
 ## Documents illustrant la pratique professionnelle
 
-> Les documents ci-dessous sont classés par activité-type et par exemple. Ils constituent les preuves de réalisation à joindre au dossier professionnel. Tous les fichiers de code sont issus du dépôt `https://github.com/arocchet/social-network`.
+> Les documents ci-dessous sont classés par activité-type et par exemple. Ils constituent les preuves de réalisation à joindre au dossier professionnel. Tous les fichiers de code sont issus du dépôt `[arocchet/social-network](https://github.com/arocchet/social-network)`.
 
 ---
 
@@ -243,8 +243,8 @@ L'utilisation de Neon (PostgreSQL serverless) avec une URL directe (`DIRECT_URL`
 | Extrait de code | Route de connexion — génération JWT + cookie HTTP-only | `src/app/api/public/auth/login/route.ts` |
 | Extrait de code | Route OAuth Google — state anti-CSRF | `src/app/api/public/auth/redirect/google/route.ts` |
 | Capture d'écran | Maquette page de connexion (design système, champs validés) | `07-annexes/Mockups_Login.png` |
-| Preuve GitHub | Issue #66 — OAuth Google authentication | https://github.com/arocchet/social-network/issues/66 |
-| Preuve GitHub | PR #118 — stabilisation Docker/Neon/Prisma/Redis | https://github.com/arocchet/social-network/pull/118 |
+| Preuve GitHub | Issue #66 — OAuth Google authentication | [Issue #66](https://github.com/arocchet/social-network/issues/66) |
+| Preuve GitHub | PR #118 — stabilisation Docker/Neon/Prisma/Redis | [PR #118](https://github.com/arocchet/social-network/pull/118) |
 | Documentation | Analyse sécurité OWASP complète | `04-developpement/securite-rgpd.md` |
 
 #### Exemple n° 2 — Validation Zod et protection des routes API
@@ -276,9 +276,9 @@ L'utilisation de Neon (PostgreSQL serverless) avec une URL directe (`DIRECT_URL`
 | Capture d'écran | Maquette Feed principal — architecture composants React | `07-annexes/Mockups_Home_Feed.png` |
 | Capture d'écran | Maquette Profil utilisateur | `07-annexes/Mockups_User.png` |
 | Capture d'écran | Maquette Création de post | `07-annexes/Mockups_Create_Post.png` |
-| Preuve GitHub | Issue #13 — Follow/Friendship system | https://github.com/arocchet/social-network/issues/13 |
-| Preuve GitHub | Issue #24 — Groups & Events | https://github.com/arocchet/social-network/issues/24 |
-| Preuve GitHub | Issue #37 — Chat system | https://github.com/arocchet/social-network/issues/37 |
+| Preuve GitHub | Issue #13 — Follow/Friendship system | [Issue #13](https://github.com/arocchet/social-network/issues/13) |
+| Preuve GitHub | Issue #24 — Groups & Events | [Issue #24](https://github.com/arocchet/social-network/issues/24) |
+| Preuve GitHub | Issue #37 — Chat system | [Issue #37](https://github.com/arocchet/social-network/issues/37) |
 
 #### Exemple n° 2 — Messagerie et notifications temps réel (SSE + Upstash Redis)
 
@@ -288,8 +288,8 @@ L'utilisation de Neon (PostgreSQL serverless) avec une URL directe (`DIRECT_URL`
 | Extrait de code | Envoi de message — persistance Prisma + écriture Redis | `src/app/api/private/chat/send/route.ts` |
 | Extrait de code | Client Redis Upstash (REST, serverless-compatible) | `src/lib/server/websocket/redis.ts` |
 | Extrait de code | Hook React SSE côté client | `src/hooks/use-real-time-chat.ts` |
-| Preuve GitHub | Issue #37 — Chat system (SSE + Redis) | https://github.com/arocchet/social-network/issues/37 |
-| Preuve GitHub | Issue #39 — Notifications temps réel | https://github.com/arocchet/social-network/issues/39 |
+| Preuve GitHub | Issue #37 — Chat system (SSE + Redis) | [Issue #37](https://github.com/arocchet/social-network/issues/37) |
+| Preuve GitHub | Issue #39 — Notifications temps réel | [Issue #39](https://github.com/arocchet/social-network/issues/39) |
 | Documentation | Justification du choix SSE vs WebSocket (contrainte serverless) | `04-developpement/veille-technique.md` §1.1 |
 
 ---
@@ -303,9 +303,9 @@ L'utilisation de Neon (PostgreSQL serverless) avec une URL directe (`DIRECT_URL`
 | Extrait de code | Dockerfile multi-stage (builder Bun + runner slim) | `Dockerfile` |
 | Extrait de code | docker-compose.yml — profils dev/prod, services app + db | `docker-compose.yml` |
 | Extrait de code | Pipeline GitHub Actions (lint + test + build) | `.github/workflows/ci.yml` |
-| Preuve GitHub | Issue #40 — DevOps / Docker / CI | https://github.com/arocchet/social-network/issues/40 |
-| Preuve GitHub | Issue #45 — CI lint/test/build/push | https://github.com/arocchet/social-network/issues/45 |
-| Preuve GitHub | PR #118 — stabilisation complète de la chaîne de déploiement | https://github.com/arocchet/social-network/pull/118 |
+| Preuve GitHub | Issue #40 — DevOps / Docker / CI | [Issue #40](https://github.com/arocchet/social-network/issues/40) |
+| Preuve GitHub | Issue #45 — CI lint/test/build/push | [Issue #45](https://github.com/arocchet/social-network/issues/45) |
+| Preuve GitHub | PR #118 — stabilisation complète de la chaîne de déploiement | [PR #118](https://github.com/arocchet/social-network/pull/118) |
 | Documentation | Documentation déploiement complète | `05-deploiement/README.md` |
 
 #### Exemple n° 2 — Déploiement production Vercel + PostgreSQL Neon + migrations Prisma
@@ -315,8 +315,8 @@ L'utilisation de Neon (PostgreSQL serverless) avec une URL directe (`DIRECT_URL`
 | Extrait de code | Variables d'environnement documentées | `.env.exemple` |
 | Extrait de code | Migrations Prisma versionnées | `prisma/migrations/` |
 | Documentation | Procédure de déploiement, variables d'env, rollback Vercel | `05-deploiement/README.md` |
-| Preuve GitHub | Issue #46 — Seed script / données de démonstration | https://github.com/arocchet/social-network/issues/46 |
-| Preuve GitHub | PR #118 — stabilisation Docker/Neon/Prisma/Redis | https://github.com/arocchet/social-network/pull/118 |
+| Preuve GitHub | Issue #46 — Seed script / données de démonstration | [Issue #46](https://github.com/arocchet/social-network/issues/46) |
+| Preuve GitHub | PR #118 — stabilisation Docker/Neon/Prisma/Redis | [PR #118](https://github.com/arocchet/social-network/pull/118) |
 
 ---
 
@@ -340,4 +340,4 @@ Signature :
 
 ---
 
-*Dépôt GitHub du projet : https://github.com/arocchet/social-network*
+*Dépôt GitHub du projet : [arocchet/social-network](https://github.com/arocchet/social-network)*

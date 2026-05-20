@@ -2,13 +2,13 @@
 
 ## Contexte et Objectif
 
-###  Problématique
+### Problématique
 
 Le projet Social Network a pour objectif de concevoir une application web sociale moderne permettant à des utilisateurs de publier du contenu, interagir avec leur réseau, échanger en temps réel et organiser leurs échanges autour de groupes, d'événements et de notifications.
 
 Dans le cadre de la formation Zone01 Rouen Normandie, ce projet sert de support principal pour démontrer la maîtrise d'un développement full stack structuré, sécurisé et maintenable, en environnement collaboratif.
 
-###  Solution Proposée
+### Solution Proposée
 
 Plateforme de réseau social permettant:
 
@@ -20,11 +20,11 @@ Plateforme de réseau social permettant:
 
 ---
 
-##  Informations Projet
+## Informations Projet
 
 **Titre:** Social Network  
 **Type:** Application web full-stack
-**Repository:** https://github.com/arocchet/social-network
+**Repository:** [arocchet/social-network](https://github.com/arocchet/social-network)
 **Stack Technologique:**
 
 - Frontend: Next.js 15, React 19, TypeScript, Tailwind CSS
@@ -37,7 +37,7 @@ Plateforme de réseau social permettant:
 
 ---
 
-##  Équipe et Contexte
+## Équipe et Contexte
 
 - **Responsable:** Christophe Lecart (reconversion, 20+ ans expérience en ingénierie/conformité)
 - **Cadre:** Formation Zone01 Rouen Normandie (approche pratique en équipe)
@@ -57,7 +57,7 @@ Le projet a démarré avec une base fonctionnelle incomplète. Ma contribution a
 
 ---
 
-##  Sommaire du Dossier
+## Sommaire du Dossier
 
 1. **Introduction** - Contexte et objectifs
 2. **Cahier des Charges** - Spécifications fonctionnelles
@@ -69,7 +69,7 @@ Le projet a démarré avec une base fonctionnelle incomplète. Ma contribution a
 
 ---
 
-##  Critères de Réussite
+## Critères de Réussite
 
 - [x] Authentification sécurisée (JWT + Google OAuth, cookies HTTP-only)
 - [x] Gestion des utilisateurs (profil, avatar, bannière, visibilité)

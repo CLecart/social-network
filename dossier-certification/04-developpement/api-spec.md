@@ -1,4 +1,4 @@
-#  API Specification
+# API Specification
 
 ## Vue d'Ensemble
 
@@ -29,7 +29,7 @@ Tous les endpoints requièrent une authentification JWT via cookie HTTP-only (sa
 
 ---
 
-##  Authentification
+## Authentification
 
 ### POST /api/auth/login
 
@@ -139,7 +139,7 @@ Déconnexion utilisateur.
 
 ---
 
-##  Utilisateurs
+## Utilisateurs
 
 ### GET /api/user/me
 
@@ -273,7 +273,7 @@ Récupère le profil public de l'utilisateur connecté.
 
 ---
 
-##  Posts
+## Posts
 
 ### GET /api/private/post
 
@@ -353,7 +353,7 @@ visibility: "PUBLIC"
 
 ---
 
-##  Stories
+## Stories
 
 ### GET /api/private/stories
 
@@ -426,7 +426,7 @@ visibility: "PUBLIC"
 
 ---
 
-##  Messages & Conversations
+## Messages & Conversations
 
 ### GET /api/private/messages
 
@@ -509,7 +509,7 @@ Liste toutes les conversations de l'utilisateur.
 
 ---
 
-##  Groupes
+## Groupes
 
 ### GET /api/private/groups
 
@@ -597,7 +597,7 @@ Crée un nouveau groupe.
 
 ---
 
-##  Événements
+## Événements
 
 ### GET /api/private/events
 
@@ -697,7 +697,7 @@ Crée un nouvel événement.
 
 ---
 
-##  Amitié
+## Amitié
 
 ### GET /api/private/friend-requests
 
@@ -776,7 +776,7 @@ Crée une demande d'amitié ou annule une relation existante.
 
 ---
 
-##  Recherche
+## Recherche
 
 ### GET /api/private/search
 
@@ -824,7 +824,7 @@ Recherche utilisateurs et posts.
 
 ---
 
-##  Invitations
+## Invitations
 
 ### GET /api/private/invitations
 
@@ -861,7 +861,7 @@ Récupère les invitations de groupe en attente.
 
 ---
 
-##  Temps Réel (SSE / Redis)
+## Temps Réel (SSE / Redis)
 
 ### Événements Temps Réel (SSE / Redis)
 
@@ -946,7 +946,7 @@ Statut en ligne/hors ligne.
 
 ---
 
-##  Résumé Endpoints
+## Résumé Endpoints
 
 | Verb | Endpoint                       | Description          | Auth |
 | ---- | ------------------------------ | -------------------- | ---- |
@@ -974,7 +974,7 @@ Statut en ligne/hors ligne.
 
 ---
 
-##  Validation & Erreurs
+## Validation & Erreurs
 
 - Tous les endpoints valident les données entrantes (Zod schemas).
 - Les erreurs de validation retournent 400 avec détails des champs.
@@ -984,7 +984,7 @@ Statut en ligne/hors ligne.
 
 ---
 
-##  Implémentation
+## Implémentation
 
 - **Stack:** Next.js API Routes + Prisma + PostgreSQL
 - **Auth:** JWT + Redis sessions

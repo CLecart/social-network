@@ -10,7 +10,7 @@
 
 ---
 
-##  Structure du Référentiel RNCP 37873
+## Structure du Référentiel RNCP 37873
 
 Le titre CDA est organisé en **3 blocs de compétences** couvrant **11 compétences professionnelles** :
 
@@ -22,7 +22,7 @@ Le titre CDA est organisé en **3 blocs de compétences** couvrant **11 compéte
 
 ---
 
-##  Bloc 1 — Développer une application sécurisée (BC01)
+## Bloc 1 — Développer une application sécurisée (BC01)
 
 ### C1 — Installer et configurer son environnement de travail
 
@@ -36,7 +36,7 @@ Le titre CDA est organisé en **3 blocs de compétences** couvrant **11 compéte
 | IDE et outils              | VS Code, extensions TypeScript/Prisma, ESLint intégré             |
 | Versioning                 | Git + GitHub, branches feature/fix, 100+ commits tracés           |
 
-**Références GitHub :** [Issue #40 — DevOps/Docker/CI](https://github.com/arocchet/social-network/issues/40)
+**Références GitHub :** [Issue #40 — DevOps/Docker/CI]([Issue #40](https://github.com/arocchet/social-network/issues/40))
 
 ---
 
@@ -100,11 +100,11 @@ Le titre CDA est organisé en **3 blocs de compétences** couvrant **11 compéte
 | Gestion des branches     | Branches feature/, fix/, docs/ séparées                            |
 | Collaboration            | Revues de code, coordination inter-équipe sur issues communes      |
 
-**Références :** [Issue #13](https://github.com/arocchet/social-network/issues/13), [Issue #24](https://github.com/arocchet/social-network/issues/24), [PR #118](https://github.com/arocchet/social-network/pull/118)
+**Références :** [Issue #13]([Issue #13](https://github.com/arocchet/social-network/issues/13)), [Issue #24]([Issue #24](https://github.com/arocchet/social-network/issues/24)), [PR #118]([PR #118](https://github.com/arocchet/social-network/pull/118))
 
 ---
 
-##  Bloc 2 — Concevoir et développer une application sécurisée organisée en couches (BC02)
+## Bloc 2 — Concevoir et développer une application sécurisée organisée en couches (BC02)
 
 ### C5 — Analyser les besoins et maquetter une application
 
@@ -206,7 +206,7 @@ Le titre CDA est organisé en **3 blocs de compétences** couvrant **11 compéte
 
 ---
 
-##  Bloc 3 — Préparer le déploiement d'une application sécurisée (BC03)
+## Bloc 3 — Préparer le déploiement d'une application sécurisée (BC03)
 
 ### C9 — Préparer et exécuter les plans de tests d'une application
 
@@ -277,11 +277,11 @@ git push origin main  # → déclenche CI → build → deploy automatique
 | Observabilité               | Vercel Analytics, logs structurés serveur, health endpoint  |
 | Sécurité secrets            | Variables d'environnement injectées, aucun secret committé  |
 
-**Référence :** [Issue #45 — CI lint/test/build/push](https://github.com/arocchet/social-network/issues/45), [PR #118](https://github.com/arocchet/social-network/pull/118)
+**Référence :** [Issue #45 — CI lint/test/build/push]([Issue #45](https://github.com/arocchet/social-network/issues/45)), [PR #118]([PR #118](https://github.com/arocchet/social-network/pull/118))
 
 ---
 
-##  Tableau de Synthèse — Couverture RNCP 37873
+## Tableau de Synthèse — Couverture RNCP 37873
 
 | Compétence RNCP                                       | Statut | Preuves principales                                     |
 | ----------------------------------------------------- | ------ | ------------------------------------------------------- |
@@ -308,7 +308,7 @@ git push origin main  # → déclenche CI → build → deploy automatique
 
 ---
 
-##  Correspondance Dossier → Blocs RNCP
+## Correspondance Dossier → Blocs RNCP
 
 | Section du dossier               | Bloc(s) RNCP couverts |
 | -------------------------------- | --------------------- |

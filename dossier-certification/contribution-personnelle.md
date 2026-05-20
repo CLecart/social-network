@@ -1,14 +1,14 @@
-#  Contribution personnelle de Christophe Lecart
+# Contribution personnelle de Christophe Lecart
 
 ## Pourquoi ce document
 
-Le projet Social Network est **réalisé en équipe** (6 contributeurs) sur le repo [`arocchet/social-network`](https://github.com/arocchet/social-network). Le repo central appartient à un membre de l'équipe (Adrien Roc, alias `arocchet`), pas au candidat.
+Le projet Social Network est **réalisé en équipe** (6 contributeurs) sur le repo [`arocchet/social-network`]([arocchet/social-network](https://github.com/arocchet/social-network)). Le repo central appartient à un membre de l'équipe (Adrien Roc, alias `arocchet`), pas au candidat.
 
 Pour anticiper la question légitime du jury — **« qu'est-ce que VOUS avez fait dans cette équipe ? »** — ce document détaille la contribution personnelle de Christophe Lecart par domaine, avec hashs de commits vérifiables sur le dépôt.
 
 ---
 
-##  Vue d'ensemble
+## Vue d'ensemble
 
 **57 commits** sous les identités `Christophe Lecart` (6) + `CLecart` (10) + `clecart` (41), ce qui fait de Christophe le **2ᵉ contributeur** sur 6.
 
@@ -35,7 +35,7 @@ git shortlog -sn
 
 ---
 
-##  Contribution par domaine
+## Contribution par domaine
 
 ### 1⃣ Système de réactions universel (posts, stories, commentaires)
 
@@ -194,7 +194,7 @@ git shortlog -sn
 
 ---
 
-###  DevOps et stabilisation (Prisma, dépendances)
+### DevOps et stabilisation (Prisma, dépendances)
 
 **Commits clés :**
 
@@ -228,7 +228,7 @@ git shortlog -sn
 
 ---
 
-##  Synthèse — couverture personnelle des 11 compétences
+## Synthèse — couverture personnelle des 11 compétences
 
 | # | Bloc | Compétence | Contribution Christophe |
 |---|---|---|---|
@@ -248,15 +248,15 @@ git shortlog -sn
 
 ---
 
-##  Phrase d'ancrage pour la soutenance
+## Phrase d'ancrage pour la soutenance
 
 > « Le projet est porté par une équipe de 6 personnes. Je suis le 2ᵉ contributeur avec 57 commits, principalement sur le système de réactions universel (posts/stories/commentaires), la création de posts multi-médias, le design system, et l'intégralité de ce dossier de certification que vous lisez. Je peux pointer sur GitHub n'importe quel commit ou fichier dont je parle. »
 
 ---
 
-##  Liens directs vérifiables
+## Liens directs vérifiables
 
-- Repo : [arocchet/social-network](https://github.com/arocchet/social-network)
+- Repo : [arocchet/social-network]([arocchet/social-network](https://github.com/arocchet/social-network))
 - Liste des commits Christophe :
   ```
   git log --author="Christophe Lecart" --pretty=format:"%h %s"

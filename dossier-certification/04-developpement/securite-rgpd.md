@@ -1,4 +1,4 @@
-#  Sécurité et conformité RGPD
+# Sécurité et conformité RGPD
 
 ## Objectif
 
@@ -237,7 +237,7 @@ Tous les champs sauf `email` sont **optionnels** dans le schéma Prisma. L'inscr
 
 Priorisé par impact / facilité d'implémentation.
 
-###  Critique — avant mise en production
+### Critique — avant mise en production
 
 | # | Action | Effort | Bénéfice |
 |---|---|---|---|
@@ -247,7 +247,7 @@ Priorisé par impact / facilité d'implémentation.
 | 4 | **Headers de sécurité** dans `next.config.ts` (CSP, X-Frame-Options, Referrer-Policy, X-Content-Type-Options) | 0,5 j | Couvre clickjacking, MIME sniffing, fuite Referer |
 | 5 | **Pages Mentions légales + Politique de confidentialité** | 0,5 j | Obligation légale UE |
 
-###  Important — sous 1 mois post-prod
+### Important — sous 1 mois post-prod
 
 | # | Action | Effort | Bénéfice |
 |---|---|---|---|
@@ -257,7 +257,7 @@ Priorisé par impact / facilité d'implémentation.
 | 9 | **Validation MIME / taille upload** côté serveur avant Cloudinary | 0,5 j | Anti-abus stockage |
 | 10 | **Refresh tokens** + rotation, révocation en cas de logout | 2 j | Sécurité session avancée |
 
-###  Bonus — confort exploitation
+### Bonus — confort exploitation
 
 | # | Action | Effort | Bénéfice |
 |---|---|---|---|

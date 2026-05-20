@@ -6,7 +6,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ---
 
-##  Retour d'Expérience
+## Retour d'Expérience
 
 ### Défis Techniques Rencontrés
 
@@ -61,7 +61,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ---
 
-##  Accomplissements Mesurables
+## Accomplissements Mesurables
 
 ### Livrables du Projet
 
@@ -140,7 +140,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ---
 
-##  Compétences Validées (RNCP 37873)
+## Compétences Validées (RNCP 37873)
 
 ### Bloc 1 : Développer une application sécurisée
 
@@ -188,7 +188,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ---
 
-##  Améliorations Futures
+## Améliorations Futures
 
 ### Court Terme
 
@@ -210,7 +210,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ---
 
-##  Métriques du Projet
+## Métriques du Projet
 
 | Indicateur               | Valeur                 |
 | ------------------------ | ---------------------- |
@@ -227,7 +227,7 @@ Ces métriques servent à montrer que le projet est suffisamment complet pour mo
 
 ---
 
-##  Conclusion
+## Conclusion
 
 Ce projet m'a permis de concevoir et documenter une application full-stack réaliste, avec des choix techniques justifiés et une architecture exploitable en production.
 

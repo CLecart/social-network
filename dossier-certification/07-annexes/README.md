@@ -6,29 +6,29 @@ Rassembler les éléments de référence qui soutiennent le dossier: configurati
 
 ---
 
-##  Ressources du Projet
+## Ressources du Projet
 
 ### Code Source
 
-- Repository: https://github.com/arocchet/social-network
+- Repository: [arocchet/social-network](https://github.com/arocchet/social-network)
 
-###  Preuves GitHub
+### Preuves GitHub
 
 Liens directs vers les issues et PRs utilisées comme preuves dans le dossier:
 
-- Follow / friendship: https://github.com/arocchet/social-network/issues/13
-- Groups & Events: https://github.com/arocchet/social-network/issues/24
-- Group feed: https://github.com/arocchet/social-network/issues/30
-- Chat system: https://github.com/arocchet/social-network/issues/37
-- Notifications: https://github.com/arocchet/social-network/issues/39
-- DevOps / Docker / CI: https://github.com/arocchet/social-network/issues/40
-- CI pipeline: https://github.com/arocchet/social-network/issues/45
-- Seed script: https://github.com/arocchet/social-network/issues/46
-- Mark notification as read: https://github.com/arocchet/social-network/issues/51
-- OAuth (Google): https://github.com/arocchet/social-network/issues/66
-- Internationalization: https://github.com/arocchet/social-network/issues/76
-- Settings: https://github.com/arocchet/social-network/issues/111
-- PR stabilisation (Docker/Neon/Prisma/Redis): https://github.com/arocchet/social-network/pull/118
+- [Follow / friendship]([Issue #13](https://github.com/arocchet/social-network/issues/13))
+- [Groups & Events]([Issue #24](https://github.com/arocchet/social-network/issues/24))
+- [Group feed]([Issue #30](https://github.com/arocchet/social-network/issues/30))
+- [Chat system]([Issue #37](https://github.com/arocchet/social-network/issues/37))
+- [Notifications]([Issue #39](https://github.com/arocchet/social-network/issues/39))
+- [DevOps / Docker / CI]([Issue #40](https://github.com/arocchet/social-network/issues/40))
+- [CI pipeline]([Issue #45](https://github.com/arocchet/social-network/issues/45))
+- [Seed script]([Issue #46](https://github.com/arocchet/social-network/issues/46))
+- [Mark notification as read]([Issue #51](https://github.com/arocchet/social-network/issues/51))
+- [OAuth (Google)]([Issue #66](https://github.com/arocchet/social-network/issues/66))
+- [Internationalization]([Issue #76](https://github.com/arocchet/social-network/issues/76))
+- [Settings]([Issue #111](https://github.com/arocchet/social-network/issues/111))
+- [PR stabilisation (Docker/Neon/Prisma/Redis)]([PR #118](https://github.com/arocchet/social-network/pull/118))
 
 ### Fichiers utiles
 
@@ -42,7 +42,7 @@ Liens directs vers les issues et PRs utilisées comme preuves dans le dossier:
 
 ---
 
-##  Configuration d'Environnement
+## Configuration d'Environnement
 
 ### .env.example
 
@@ -85,7 +85,7 @@ FALLBACK_COVER_URL=https://example.com/cover.png
 
 ---
 
-##  Tests
+## Tests
 
 ### Tests disponibles
 
@@ -116,7 +116,7 @@ describe("POST /api/auth/login", () => {
 
 ---
 
-##  Diagrammes Synthétiques
+## Diagrammes Synthétiques
 
 ### Architecture Générale
 
@@ -150,7 +150,7 @@ sequenceDiagram
 
 ---
 
-##  Ressources Utilisées
+## Ressources Utilisées
 
 ### Documentation Officielle
 
@@ -175,7 +175,7 @@ sequenceDiagram
 
 ---
 
-##  Checklist de Remise
+## Checklist de Remise
 
 - [x] Structure du dossier complète.
 - [x] Conception documentée.

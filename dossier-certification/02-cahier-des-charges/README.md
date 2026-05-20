@@ -1,6 +1,6 @@
 # 02 - Cahier des Charges
 
-##  Objectifs Principaux
+## Objectifs Principaux
 
 Le projet Social Network est réalisé en équipe dans le cadre de la formation Zone01 Rouen Normandie. Le cahier des charges ci-dessous synthétise les fonctionnalités réellement suivies dans le dépôt GitHub du projet, sous forme d'issues et de PR, puis les contraintes de mise en oeuvre qui structurent le développement.
 
@@ -8,30 +8,30 @@ Le projet Social Network est réalisé en équipe dans le cadre de la formation 
 
 Le travail a été découpé en tickets GitHub pour suivre le développement en équipe. Les sujets visibles dans le dépôt couvrent notamment:
 
-- Follow System: https://github.com/arocchet/social-network/issues/13
-- Groups & Events: https://github.com/arocchet/social-network/issues/24
-- Group feed — Posts & comments inside group: https://github.com/arocchet/social-network/issues/30
-- Chat System: https://github.com/arocchet/social-network/issues/37
-- Notifications: https://github.com/arocchet/social-network/issues/39
-- DevOps: Docker, CI/CD: https://github.com/arocchet/social-network/issues/40
-- CI — Lint, test, build, push image: https://github.com/arocchet/social-network/issues/45
-- Seed script — Demo data: https://github.com/arocchet/social-network/issues/46
-- PATCH /notifications/:id/read — Mark as read: https://github.com/arocchet/social-network/issues/51
-- OAuth (Google) authentication: https://github.com/arocchet/social-network/issues/66
-- Internationalization: https://github.com/arocchet/social-network/issues/76
-- Settings: https://github.com/arocchet/social-network/issues/111
+- [Follow System]([Issue #13](https://github.com/arocchet/social-network/issues/13))
+- [Groups & Events]([Issue #24](https://github.com/arocchet/social-network/issues/24))
+- [Group feed — Posts & comments inside group]([Issue #30](https://github.com/arocchet/social-network/issues/30))
+- [Chat System]([Issue #37](https://github.com/arocchet/social-network/issues/37))
+- [Notifications]([Issue #39](https://github.com/arocchet/social-network/issues/39))
+- [DevOps: Docker, CI/CD]([Issue #40](https://github.com/arocchet/social-network/issues/40))
+- [CI — Lint, test, build, push image]([Issue #45](https://github.com/arocchet/social-network/issues/45))
+- [Seed script — Demo data]([Issue #46](https://github.com/arocchet/social-network/issues/46))
+- [PATCH /notifications/:id/read — Mark as read]([Issue #51](https://github.com/arocchet/social-network/issues/51))
+- [OAuth (Google) authentication]([Issue #66](https://github.com/arocchet/social-network/issues/66))
+- [Internationalization]([Issue #76](https://github.com/arocchet/social-network/issues/76))
+- [Settings]([Issue #111](https://github.com/arocchet/social-network/issues/111))
 
-La stabilisation du build et du déploiement a ensuite été consolidée par la PR: https://github.com/arocchet/social-network/pull/118
+La stabilisation du build et du déploiement a ensuite été consolidée par la PR: [PR #118](https://github.com/arocchet/social-network/pull/118)
 
 ### Fonctionnalités Essentielles
 
-####  Gestion des Utilisateurs
+#### Gestion des Utilisateurs
 
 - Inscription et authentification (email/password + Google OAuth)
 - Gestion de profil (avatar, bannière, bio, visibilité PUBLIC/PRIVATE)
 - Système de suivi (followers/following + demandes d'amitié)
 
-####  Publication et Interaction
+#### Publication et Interaction
 
 - Création de posts/articles
 - Commentaires et réponses
@@ -39,13 +39,13 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 - Partage de contenu
 - Gestion de la visibilité des publications
 
-####  Communication
+#### Communication
 
 - Système de messagerie privée
 - Notifications en temps réel
 - Groupes/Communautés
 
-####  Découverte
+#### Découverte
 
 - Recherche et filtrage (users, posts, groupes)
 - Historique de recherche
@@ -53,27 +53,27 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 
 ---
 
-##  Contraintes Techniques
+## Contraintes Techniques
 
-###  Sécurité
+### Sécurité
 
 - Authentification JWT/OAuth
 - Validation des données
 - Chiffrement des mots de passe (bcrypt)
 - Contraintes de réactions: un utilisateur ne peut pas multiplier une même réaction sur un même contenu
 
-###  Scalabilité
+### Scalabilité
 
 - Cache Redis
 - Base de données PostgreSQL
 - CDN pour assets
 
-###  Compatibilité
+### Compatibilité
 
 - Support navigateurs modernes (Chrome, Firefox, Safari, Edge)
 - Responsive design (mobile/tablet/desktop)
 
-###  Performance
+### Performance
 
 - Optimisation images (Next.js Image)
 - Code splitting automatique
@@ -82,7 +82,7 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 
 ---
 
-##  User Stories
+## User Stories
 
 | Utilisateur | Action         | Priorité | Critères d'acceptation     |
 | ----------- | -------------- | -------- | -------------------------- |
@@ -95,7 +95,7 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 
 ---
 
-##  Objectifs de Qualité
+## Objectifs de Qualité
 
 | Indicateur              | Cible     | Approche retenue                          |
 | ----------------------- | --------- | ----------------------------------------- |
@@ -107,7 +107,7 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 
 ---
 
-##  Timeline
+## Timeline
 
 | Phase         | Durée    | Statut                            |
 | ------------- | -------- | --------------------------------- |

@@ -1,4 +1,4 @@
-#  Stratégie de tests
+# Stratégie de tests
 
 ## Objectif
 
@@ -85,7 +85,7 @@ bun run test
 
 ## 3. Plan d'extension (par priorité)
 
-###  Critique — à implémenter rapidement
+### Critique — à implémenter rapidement
 
 #### 3.1 Tests d'intégration API sur les routes sensibles
 
@@ -122,7 +122,7 @@ describe('CredentialsLoginSchema', () => {
 });
 ```
 
-###  Important — sous 1 mois
+### Important — sous 1 mois
 
 #### 3.3 Tests unitaires UI (React Testing Library)
 
@@ -146,7 +146,7 @@ Parcours critiques utilisateur :
 
 Playwright permet de mocker les services externes (Cloudinary, Google OAuth) en interceptant les requêtes.
 
-###  Bonus
+### Bonus
 
 #### 3.5 Tests de sécurité
 

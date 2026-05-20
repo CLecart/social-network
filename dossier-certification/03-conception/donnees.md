@@ -1,12 +1,12 @@
-#  Modélisation de Données
+# Modélisation de Données
 
-##  Dictionnaire de Données
+## Dictionnaire de Données
 
 Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: User
+## Model: User
 
 **Description:** Entité centrale représentant un utilisateur du réseau social
 
@@ -45,11 +45,13 @@ Analysé depuis `prisma/schema.prisma`
 - `groupMembers`: GroupMember[] - Adhésion groupes
 - `groupMessages`: GroupMessage[] - Messages groupe
 - `eventsCreated`: Event[] - Événements créés
+- `conversationMembers`: ConversationMember[] - Membres de conversations
 - `userSettings`: UserSettings - Préférences
+- `accounts`: Account[] - Comptes OAuth (Google)
 
 ---
 
-##  Model: Post
+## Model: Post
 
 **Description:** Contenu publié sur le feed (texte, images, vidéos)
 
@@ -77,7 +79,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: Comment
+## Model: Comment
 
 **Description:** Commentaire sur un post
 
@@ -99,7 +101,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: Reaction
+## Model: Reaction
 
 **Description:** Réactions sur posts, stories, ou commentaires (Like, Love, Wow, etc.)
 
@@ -134,7 +136,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: Message
+## Model: Message
 
 **Description:** Messages directs 1-to-1 entre utilisateurs
 
@@ -163,7 +165,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: Friendship
+## Model: Friendship
 
 **Description:** Relations d'amitié entre utilisateurs
 
@@ -192,7 +194,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: Story
+## Model: Story
 
 **Description:** Stories temporaires (24h généralement)
 
@@ -214,7 +216,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: Conversation
+## Model: Conversation
 
 **Description:** Conversation (groupe ou DM wrapper)
 
@@ -240,7 +242,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: ConversationMember
+## Model: ConversationMember
 
 **Description:** Membre d'une conversation
 
@@ -266,7 +268,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: GroupMessage
+## Model: GroupMessage
 
 **Description:** Message de groupe
 
@@ -293,7 +295,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: GroupInvitation
+## Model: GroupInvitation
 
 **Description:** Invitation à un groupe
 
@@ -320,7 +322,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: GroupJoinRequest
+## Model: GroupJoinRequest
 
 **Description:** Demande d'adhésion à un groupe
 
@@ -345,7 +347,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: GroupMember
+## Model: GroupMember
 
 **Description:** Membre d'un groupe (adhésion confirmée)
 
@@ -369,7 +371,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: Event
+## Model: Event
 
 **Description:** Événement créé dans un groupe
 
@@ -394,7 +396,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: Rsvp
+## Model: Rsvp
 
 **Description:** Réponse à un événement
 
@@ -423,7 +425,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: UserSettings
+## Model: UserSettings
 
 **Description:** Préférences utilisateur
 
@@ -444,7 +446,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: Notification
+## Model: Notification
 
 **Description:** Notification utilisateur
 
@@ -469,7 +471,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  Model: Account
+## Model: Account
 
 **Description:** Comptes OAuth
 
@@ -499,7 +501,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  MCD - Modèle Conceptuel de Données
+## MCD - Modèle Conceptuel de Données
 
 ```
 ┌─────────────────┐
@@ -590,7 +592,7 @@ Analysé depuis `prisma/schema.prisma`
 
 ---
 
-##  MLD - Modèle Logique de Données
+## MLD - Modèle Logique de Données
 
 ```sql
 User (id, firstName, lastName, password, email, birthDate, username, biography, avatar, bannerId, avatarId, visibility)
@@ -615,7 +617,7 @@ Notification (id, userId-FK, type, message, isRead, createdAt)
 
 ---
 
-##  Cardinalités Principales
+## Cardinalités Principales
 
 | Relation                    | Type | Description                           |
 | --------------------------- | ---- | ------------------------------------- |
@@ -633,7 +635,7 @@ Notification (id, userId-FK, type, message, isRead, createdAt)
 
 ---
 
-##  Checklist Modélisation
+## Checklist Modélisation
 
 - [x] Dictionnaire de données complet
 - [x] Relations documentées
@@ -642,11 +644,11 @@ Notification (id, userId-FK, type, message, isRead, createdAt)
 - [x] MCD diagramme
 - [x] MLD relations
 - [x] Cardinalités définies
-- [ ] Tests de cohérence
+- [x] Tests de cohérence (contraintes vérifiées via Prisma validate)
 
 ---
 
-##  Code Complet des Diagrammes (MCD / MLD / MPD)
+## Code Complet des Diagrammes (MCD / MLD / MPD)
 
 Pour la soutenance, les versions détaillées et directement réutilisables des diagrammes sont disponibles ici:
 

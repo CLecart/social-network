@@ -1,6 +1,6 @@
 # 03 - Conception
 
-##  Résumé
+## Résumé
 
 Cette section documente la conception complète du réseau social `social-network`:
 
@@ -11,7 +11,7 @@ Cette section documente la conception complète du réseau social `social-networ
 
 ---
 
-##  Documents du Projet
+## Documents du Projet
 
 ### Pilotage du travail
 
@@ -64,9 +64,9 @@ La conception s'appuie sur les issues GitHub du projet Social Network. Les lots 
 
 ---
 
-##  Fonctionnalités Clés
+## Fonctionnalités Clés
 
-###  Réseautage Social
+### Réseautage Social
 
 -  Posts (texte + images + vidéos)
 -  Followers/Following + Amitié
@@ -74,28 +74,28 @@ La conception s'appuie sur les issues GitHub du projet Social Network. Les lots 
 -  Stories (24h ephemeral)
 -  Reels (vertical short videos)
 
-###  Communication
+### Communication
 
 -  Direct Messages (1-to-1)
 -  Group Chat
 -  Typing Indicator + Presence
 -  Message Status (SENT/DELIVERED/READ)
 
-###  Groupes & Événements
+### Groupes & Événements
 
 -  Create/Join Groups
 -  Group Invitations
 -  Events Calendar
 -  RSVP Management
 
-###  Discovery
+### Discovery
 
 -  User Search
 -  Post Search
 -  Search History
 -  Recent Activity
 
-###  Personalization
+### Personalization
 
 -  Theme Toggle (Light/Dark)
 -  Language (EN/FR)
@@ -104,7 +104,7 @@ La conception s'appuie sur les issues GitHub du projet Social Network. Les lots 
 
 ---
 
-##  Architecture de Données
+## Architecture de Données
 
 ### Modèles Principaux
 
@@ -138,7 +138,7 @@ User ←→ Post ←→ Comment ←→ Reaction
 
 ---
 
-##  Pages Implémentées
+## Pages Implémentées
 
 | Page              | Route               | Rôle                     | Statut |
 | ----------------- | ------------------- | ------------------------ | ------ |
@@ -159,7 +159,7 @@ User ←→ Post ←→ Comment ←→ Reaction
 
 ---
 
-##  Design System
+## Design System
 
 ### Palette Couleurs (Thème Dark)
 
@@ -211,7 +211,7 @@ User ←→ Post ←→ Comment ←→ Reaction
 
 ---
 
-##  Data Flow
+## Data Flow
 
 ```
 User Interaction
@@ -237,7 +237,7 @@ Re-render Component
 
 ---
 
-##  Diagrammes
+## Diagrammes
 
 ### MCD - Modèle Conceptuel de Données
 
@@ -253,7 +253,7 @@ Montre le schéma de base de données normalisé.
 
 ---
 
-##  Wireframes & Maquettes
+## Wireframes & Maquettes
 
 Les wireframes et maquettes haute-fidélité du projet sont disponibles dans [07-annexes](../07-annexes/) :
 
@@ -272,7 +272,7 @@ Les wireframes et maquettes haute-fidélité du projet sont disponibles dans [07
 
 ---
 
-##  Checklist Conception
+## Checklist Conception
 
 - [x] Pages principales documentées (14 routes)
 - [x] Dictionnaire de données complet (18 modèles Prisma)
@@ -286,7 +286,7 @@ Les wireframes et maquettes haute-fidélité du projet sont disponibles dans [07
 
 ---
 
-##  Fichiers Liés
+## Fichiers Liés
 
 - **Introduction:** [01-introduction/README.md](../01-introduction/README.md)
 - **Cahier des charges:** [02-cahier-des-charges/README.md](../02-cahier-des-charges/README.md)

@@ -1,34 +1,34 @@
-#  User Stories & Cas d'Usage
+# User Stories & Cas d'Usage
 
-##  Vue d'Ensemble
+## Vue d'Ensemble
 
 Nous décrivons ci-dessous les user stories que nous avons rédigées et priorisées pour le projet. Le texte est rédigé à la première personne du pluriel pour refléter notre travail d'équipe et permettre d'indexer facilement chaque story sur les issues/PRs correspondantes du dépôt GitHub.
 
 ---
 
-##  Preuves & Mapping GitHub
+## Preuves & Mapping GitHub
 
 Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocchet/social-network` :
 
-- Follow / friendship: https://github.com/arocchet/social-network/issues/13
-- Groups & Events: https://github.com/arocchet/social-network/issues/24
-- Group feed (posts in groups): https://github.com/arocchet/social-network/issues/30
-- Chat system: https://github.com/arocchet/social-network/issues/37
-- Notifications: https://github.com/arocchet/social-network/issues/39
-- DevOps / Docker / CI: https://github.com/arocchet/social-network/issues/40
-- CI pipeline (lint/test/build): https://github.com/arocchet/social-network/issues/45
-- Seed script / demo data: https://github.com/arocchet/social-network/issues/46
-- Mark notification as read: https://github.com/arocchet/social-network/issues/51
-- OAuth (Google): https://github.com/arocchet/social-network/issues/66
-- Internationalization (i18n): https://github.com/arocchet/social-network/issues/76
-- Settings: https://github.com/arocchet/social-network/issues/111
-- PR stabilisation (Docker/Neon/Prisma/Redis): https://github.com/arocchet/social-network/pull/118
+- [Follow / friendship]([Issue #13](https://github.com/arocchet/social-network/issues/13))
+- [Groups & Events]([Issue #24](https://github.com/arocchet/social-network/issues/24))
+- [Group feed (posts in groups)]([Issue #30](https://github.com/arocchet/social-network/issues/30))
+- [Chat system]([Issue #37](https://github.com/arocchet/social-network/issues/37))
+- [Notifications]([Issue #39](https://github.com/arocchet/social-network/issues/39))
+- [DevOps / Docker / CI]([Issue #40](https://github.com/arocchet/social-network/issues/40))
+- [CI pipeline (lint/test/build)]([Issue #45](https://github.com/arocchet/social-network/issues/45))
+- [Seed script / demo data]([Issue #46](https://github.com/arocchet/social-network/issues/46))
+- [Mark notification as read]([Issue #51](https://github.com/arocchet/social-network/issues/51))
+- [OAuth (Google)]([Issue #66](https://github.com/arocchet/social-network/issues/66))
+- [Internationalization (i18n)]([Issue #76](https://github.com/arocchet/social-network/issues/76))
+- [Settings]([Issue #111](https://github.com/arocchet/social-network/issues/111))
+- [PR stabilisation (Docker/Neon/Prisma/Redis)]([PR #118](https://github.com/arocchet/social-network/pull/118))
 
 ---
 
-##  Utilisateur Classique (Regular User)
+## Utilisateur Classique (Regular User)
 
-###  Authentification & Profil
+### Authentification & Profil
 
 #### US001: Créer un compte
 
@@ -96,7 +96,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-###  Posts & Contenu
+### Posts & Contenu
 
 #### US007: Créer un post
 
@@ -181,7 +181,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-###  Stories
+### Stories
 
 #### US014: Créer une story
 
@@ -218,7 +218,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-###  Amitié & Suivi
+### Amitié & Suivi
 
 #### US017: Suivre un utilisateur
 
@@ -266,7 +266,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-###  Messagerie
+### Messagerie
 
 #### US021: Envoyer un message direct
 
@@ -305,7 +305,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-###  Recherche
+### Recherche
 
 #### US024: Rechercher des utilisateurs
 
@@ -330,7 +330,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-###  Notifications
+### Notifications
 
 #### US026: Recevoir notifications
 
@@ -354,7 +354,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-###  Groupes (Communities)
+### Groupes (Communities)
 
 #### US028: Créer un groupe
 
@@ -415,7 +415,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-###  Événements (Events)
+### Événements (Events)
 
 #### US033: Créer un événement
 
@@ -452,7 +452,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-###  Reels (Vidéos)
+### Reels (Vidéos)
 
 #### US036: Partager une vidéo
 
@@ -519,7 +519,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-##  Acceptance Criteria Summary
+## Acceptance Criteria Summary
 
 **Front-End:**
 
@@ -546,7 +546,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 
 ---
 
-##  Prochaines Étapes
+## Prochaines Étapes
 
 1.  User stories écrites
 2. [ ] Wireframes créés pour le projet

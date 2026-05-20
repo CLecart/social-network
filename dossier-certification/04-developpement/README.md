@@ -4,15 +4,15 @@
 
 Documenter l'architecture applicative, les endpoints API, l'authentification, le temps réel et la stratégie de tests/CI.
 
-###  Preuves & Mapping GitHub
+### Preuves & Mapping GitHub
 
 Les éléments techniques présentés ici sont issus des tickets et PRs du dépôt `arocchet/social-network` (références utiles pour le jury et la revue):
 
-- PR stabilisation (Docker/Neon/Prisma/Redis): https://github.com/arocchet/social-network/pull/118
-- DevOps / Docker / CI: https://github.com/arocchet/social-network/issues/40
-- Socket/chat system: https://github.com/arocchet/social-network/issues/37
-- Notifications & endpoints: https://github.com/arocchet/social-network/issues/39
-- Database / Prisma migrations: https://github.com/arocchet/social-network/issues/45
+- [PR stabilisation (Docker/Neon/Prisma/Redis)]([PR #118](https://github.com/arocchet/social-network/pull/118))
+- [DevOps / Docker / CI]([Issue #40](https://github.com/arocchet/social-network/issues/40))
+- [Socket/chat system]([Issue #37](https://github.com/arocchet/social-network/issues/37))
+- [Notifications & endpoints]([Issue #39](https://github.com/arocchet/social-network/issues/39))
+- [Database / Prisma migrations]([Issue #45](https://github.com/arocchet/social-network/issues/45))
 
 Le socle technique a été stabilisé sur la base de ces sujets GitHub.
 
@@ -139,7 +139,7 @@ Pattern recommandé:
 
 ---
 
-##  Endpoints API
+## Endpoints API
 
 **Documentation Complète:** [api-spec.md](./api-spec.md)
 
@@ -199,7 +199,7 @@ Pattern recommandé:
 
 ---
 
-##  Implémentation - Code Samples
+## Implémentation - Code Samples
 
 ### Authentification (Middleware)
 
@@ -313,7 +313,7 @@ export async function GET(req: NextRequest) {
 
 ---
 
-##  Tests & CI/CD
+## Tests & CI/CD
 
 ### Tests
 
@@ -370,7 +370,7 @@ jobs:
 
 ---
 
-##  Structure de Code
+## Structure de Code
 
 ### Directories Clés
 
@@ -421,7 +421,7 @@ src/
 
 ---
 
-##  Checklist Implémentation
+## Checklist Implémentation
 
 - [x] Auth (JWT + HTTP-only cookies + middleware)
 - [x] API routes (60+ endpoints documentés)
