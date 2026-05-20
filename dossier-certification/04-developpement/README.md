@@ -25,23 +25,23 @@ Le socle technique a été stabilisé sur la base de ces sujets GitHub.
 ```mermaid
 graph LR
   subgraph Client
-    Browser[Next.js (App Router)\nSSR/CSR Hybrid]
+    Browser["Next.js App Router - SSR/CSR"]
   end
 
   subgraph CDN
-    Vercel[Vercel / Edge CDN]
+    Vercel["Vercel / Edge CDN"]
   end
 
   subgraph Backend
-    NextAPI[Next.js API Routes / App Router Server Actions]
-    SSE[SSE Endpoints / Polling]
-    Redis[Upstash Redis (cache, real-time, sessions)]
-    Prisma[Prisma Client]
+    NextAPI["Next.js API Routes"]
+    SSE["SSE Endpoints / Polling"]
+    Redis["Upstash Redis"]
+    Prisma["Prisma Client"]
   end
 
   subgraph Infra
-    Postgres[(PostgreSQL - Neon)]
-    Storage[(Cloudinary - media storage)]
+    Postgres[("PostgreSQL - Neon")]
+    Storage[("Cloudinary - media")]
   end
 
   Browser --> Vercel
@@ -63,39 +63,39 @@ graph LR
 ```mermaid
 sequenceDiagram
   participant B as Browser
-  participant N as Next.js API
+  participant N as NextJS API
   participant P as Prisma
   participant R as Redis
 
-  B->>N: POST /api/auth/login {email,password}
+  B->>N: POST /api/auth/login
   N->>P: SELECT user WHERE email
   P-->>N: user row
-  N->>N: verify password, create JWT
-  N->>R: store session (uuid -> userId)
-  N-->>B: set-cookie HttpOnly JWT; 200 OK
+  N->>N: verify password + create JWT
+  N->>R: store session uuid to userId
+  N-->>B: set-cookie HttpOnly JWT, 200 OK
 ```
 
 ### Real-time Messaging Sequence (SSE + Redis Polling)
 
 ```mermaid
 sequenceDiagram
-  participant U1 as User A (Browser)
+  participant U1 as User A
   participant SSE as SSE Endpoint
-  participant API as Next.js API
+  participant API as NextJS API
   participant R as Redis
   participant DB as Postgres
 
-  U1->>API: POST /api/private/chat/send {to, message}
-  API->>DB: INSERT message (SENT status)
+  U1->>API: POST /api/private/chat/send
+  API->>DB: INSERT message SENT
   DB-->>API: saved message
-  API->>R: SET message (60s TTL) + SET status
-  API-->>U1: ack {status: SENT}
-  U2->>SSE: GET /api/private/chat/listen (polling)
-  SSE->>R: GET message keys for U2
+  API->>R: SET message TTL 60s
+  API-->>U1: ack SENT
+  U1->>SSE: GET /api/private/chat/listen
+  SSE->>R: GET message keys
   R-->>SSE: message data
-  SSE-->>U2: emit message {status: SENT}
-  U2->>API: mark as read
-  API->>DB: UPDATE deliveredAt, readAt
+  SSE-->>U1: emit message SENT
+  U1->>API: mark as read
+  API->>DB: UPDATE deliveredAt readAt
 ```
 
 ### Schéma ER (Simplifié)
