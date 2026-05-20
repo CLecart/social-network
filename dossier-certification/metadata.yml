@@ -13,29 +13,27 @@ titlepage-color: "1A191C"
 titlepage-text-color: "FFFFFF"
 titlepage-rule-color: "D283FF"
 titlepage-rule-height: 4
-titlepage-logo: ""
 
 # Table des matières
 toc-own-page: true
 toc-title: "Sommaire"
 
-# En-tête / pied de page
-header-left: "Dossier RNCP 37873 — Christophe Lecart"
-header-right: "Zone01 Rouen Normandie"
-header-color: "222024"
-footer-left: "Social Network — CDA Niveau 6"
-footer-right: "\\thepage"
+# Pas d'en-tête ni pied de page répétitif
+disable-header-and-footer: true
 
 book: false
 classoption: oneside
 
-# Couleurs liens — définies via header-includes puis référencées
+# Couleurs liens — palette dark Konekt
 header-includes:
   - \usepackage{xcolor}
   - \definecolor{konektpurple}{HTML}{D283FF}
   - \definecolor{konektlavender}{HTML}{8187DC}
   - \definecolor{konektteal}{HTML}{88D4AB}
   - \definecolor{konektdark}{HTML}{1A191C}
+  - \renewcommand{\labelitemi}{\textbullet}
+  - \renewcommand{\labelitemii}{\textendash}
+  - \renewcommand{\labelitemiii}{\textperiodcentered}
 
 colorlinks: true
 linkcolor: "konektlavender"
@@ -48,9 +46,9 @@ listings: true
 listings-no-page-break: true
 
 # Mise en page
-geometry: "left=2.5cm,right=2.5cm,top=3cm,bottom=3cm"
+geometry: "left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm"
 fontsize: 11pt
-mainfont: "DejaVu Serif"
-sansfont: "DejaVu Sans"
-monofont: "DejaVu Sans Mono"
+mainfont: "Linux Libertine O"
+sansfont: "TeX Gyre Heros"
+monofont: "TeX Gyre Cursor"
 ---

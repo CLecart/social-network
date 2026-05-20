@@ -44,6 +44,7 @@ pandoc \
   --toc-depth=3 \
   --number-sections \
   --metadata-file "$SCRIPT_DIR/metadata.yml" \
+  --lua-filter "$SCRIPT_DIR/pagebreak.lua" \
   --filter mermaid-filter \
   --filter pandoc-latex-environment \
   --highlight-style tango \
