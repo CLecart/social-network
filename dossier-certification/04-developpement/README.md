@@ -412,6 +412,53 @@ src/
 └── middleware.ts          # Auth middleware
 ```
 
+### Composants d'accès aux données — Prisma (C8)
+
+Les queries Prisma sont isolées dans `src/lib/db/queries/` — séparation stricte entre logique métier et accès données.
+
+**Exemple 1 — Upsert réaction avec contrôle de visibilité** (`src/lib/db/queries/reaction/updatedReaction.ts`) :
+
+```typescript
+export async function updatedReaction(userId: string, data: CreateReaction): Promise<void> {
+  // Vérification d'accès avant toute écriture
+  if (isPost) {
+    const canSee = await canUserSeePost(data.mediaId, userId);
+    if (!canSee) throw new Error("Post not found or access denied");
+  }
+
+  // Upsert atomique : crée ou met à jour la réaction
+  await db.reaction.upsert({
+    where: { userId_postId: { userId, postId: data.mediaId } },
+    update: { type: data.type },
+    create: { userId, type: data.type, postId: data.mediaId },
+  });
+}
+```
+
+**Exemple 2 — Création commentaire avec select typé** (`src/lib/db/queries/comment/createCommentInDb.ts`) :
+
+```typescript
+const commentSelect = {
+  id: true,
+  datetime: true,
+  message: true,
+  user: { select: { id: true, username: true, avatar: true } },
+} as const;
+
+// Prisma.CommentGetPayload garantit le typage exact du retour
+type SelectedComment = Prisma.CommentGetPayload<{ select: typeof commentSelect }>;
+
+export async function createCommentInDb(params: Params): Promise<Comment> {
+  const created: SelectedComment = await db.comment.create({
+    data: { postId: params.postId, message: params.content, userId: params.userId },
+    select: commentSelect,
+  });
+  return CommentSchema.parse({ ...created, datetime: created.datetime.toISOString() });
+}
+```
+
+Le pattern `select` constant + `GetPayload` évite les over-fetching et garantit le typage TypeScript de bout en bout. Chaque query valide son résultat via un schéma Zod avant de le retourner.
+
 ### Validation & Error Handling
 
 - **Schemas:** Zod + TypeScript interfaces in `src/lib/schemas/`

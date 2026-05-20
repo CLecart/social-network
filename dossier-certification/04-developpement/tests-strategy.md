@@ -37,9 +37,9 @@ L'approche est **honnête** : le projet a un test d'intégration backend fonctio
 | Support ES modules |  | `node --experimental-vm-modules` dans le script `bun run test` |
 | Mock Prisma |  | Connexion DB de test isolée |
 | Test d'intégration auth/register |  | `__tests__/integrations/authentification.test.ts` |
-| Tests unitaires UI |  | À implémenter |
+| Tests unitaires UI |  | `__tests__/ui/button.test.tsx` — 5 tests RTL, 100% statements/lines |
 | Tests E2E |  | À implémenter |
-| Couverture chiffrée (`--coverage`) |  | À mesurer |
+| Couverture chiffrée (`--coverage`) |  | Button : 100% stmts, 100% funcs, 100% lines, 50% branch (variant conditionnel) |
 | CI : tests bloquants |  | Configurés dans le workflow GitHub Actions mais lint actuellement en `ignoreDuringBuilds: true` |
 
 ### 2.2 Test existant — extrait

@@ -80,14 +80,51 @@ volumes:
 
 ### Dockerfile
 
-Le Dockerfile racine suit une logique simple: installer les dépendances, builder l'application puis démarrer le serveur Next.js.
+Architecture **multi-stage** : l'étape `builder` compile l'application, l'étape `runner` ne contient que le strict nécessaire pour la production — image finale allégée.
 
-Points importants:
+```dockerfile
+# ── Stage 1 : build ──────────────────────────────────────────────────────────
+FROM oven/bun:1 AS builder
+WORKDIR /app
 
-- installation des dépendances avec lockfile;
-- génération Prisma avant le build;
-- image légère pour la production;
-- exposition du port 3000.
+# OpenSSL requis par les engines Prisma
+RUN apt-get update -y && apt-get install -y --no-install-recommends openssl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY package.json bun.lock ./
+RUN bun install          # installe toutes les dépendances (y compris devDependencies)
+
+COPY . .
+RUN bunx prisma generate  # génère le client Prisma typé
+RUN bun run build         # compile Next.js en standalone
+
+# ── Stage 2 : runner ─────────────────────────────────────────────────────────
+FROM oven/bun:1 AS runner
+WORKDIR /app
+
+RUN apt-get update -y && apt-get install -y --no-install-recommends openssl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copie uniquement ce qui est nécessaire à l'exécution
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next        ./.next
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/public       ./public
+COPY --from=builder /app/prisma       ./prisma
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+EXPOSE 3000
+
+# Au démarrage : applique les migrations Prisma puis lance Next.js
+CMD ["sh", "-c", "bunx prisma migrate deploy && bun run start"]
+```
+
+Points clés :
+- **`prisma generate`** avant le build : génère le client TypeScript Prisma
+- **`prisma migrate deploy`** au démarrage : applique les migrations sans recréer le schéma
+- **OpenSSL** installé aux deux stages : requis par les engines Prisma natifs
+- **Port 3000** exposé, injecté comme variable d'environnement dans docker-compose
 
 ---
 

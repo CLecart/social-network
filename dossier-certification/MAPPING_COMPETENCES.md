@@ -130,7 +130,7 @@ Le projet est porté par une équipe (`arocchet/social-network`) ; **Christophe 
 | Élément | Localisation |
 |---|---|
 | Repo GitHub structuré | [arocchet/social-network]([arocchet/social-network](https://github.com/arocchet/social-network)) |
-| Issues GitHub par fonctionnalité (12 issues majeures) | Section « Preuves GitHub » dans [02-cahier-des-charges](./02-cahier-des-charges/README.md) |
+| Issues GitHub par fonctionnalité (13 issues et PRs majeurs) | Section « Preuves GitHub » dans [02-cahier-des-charges](./02-cahier-des-charges/README.md) |
 | PR de stabilisation | [PR #118]([PR #118](https://github.com/arocchet/social-network/pull/118)) (Docker/Neon/Prisma/Redis) |
 | Branches feature → merge | Historique `git log` |
 | 43 user stories priorisées | [03-conception/user-stories.md](./03-conception/user-stories.md) |

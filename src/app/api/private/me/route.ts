@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { respondSuccess, respondError } from "@/lib/server/api/response";
 import { ValidationError } from "@/lib/utils/validation";
 import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { db } from "@/lib/db";
 
 
 export async function GET(req: NextRequest) {
@@ -77,6 +78,29 @@ export async function PUT(req: NextRequest) {
 
         return NextResponse.json(
             respondError(err instanceof Error ? err.message : "Unexpected error"),
+            { status: 500 }
+        );
+    }
+}
+
+// RGPD — Droit à l'oubli (Art. 17 RGPD) : suppression complète du compte et de toutes les données associées
+export async function DELETE(req: NextRequest) {
+    const userId = await getUserIdFromRequest(req);
+    if (!userId) {
+        return NextResponse.json(respondError("Non authentifié"), { status: 401 });
+    }
+
+    try {
+        // Suppression en cascade via les contraintes Prisma (onDelete: Cascade sur toutes les relations User)
+        await db.user.delete({ where: { id: userId } });
+
+        const res = NextResponse.json(respondSuccess(null, "Compte supprimé définitivement"));
+        res.cookies.delete("authToken");
+        return res;
+    } catch (err) {
+        console.error("Account deletion error:", err);
+        return NextResponse.json(
+            respondError(err instanceof Error ? err.message : "Erreur lors de la suppression"),
             { status: 500 }
         );
     }

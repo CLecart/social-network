@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MessageStatusIcons } from "@/components/ui/message-status-icons";
 import { formatDistanceToNow } from "date-fns";
 import { CalendarFold } from "lucide-react";
+import DOMPurify from "dompurify";
 
 function isImageUrl(url: string): boolean {
   return /\.(jpg|jpeg|png|gif|webp)$/i.test(url) ||
@@ -125,8 +126,9 @@ export function ChatMessage({ message, currentUserId }: ChatMessageProps) {
             <div className="text-base text-[var(--textNeutral)] space-y-2">
               {parsedContent.map((part, idx) => {
                 if (part.type === "text") {
-                  // Check for markdown-style bold text
-                  const content = part.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                  // Check for markdown-style bold text — sanitized with DOMPurify to prevent XSS
+                  const bold = part.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                  const content = DOMPurify.sanitize(bold, { ALLOWED_TAGS: ['strong', 'em', 'br'], ALLOWED_ATTR: [] });
                   return (
                     <div
                       key={idx}
