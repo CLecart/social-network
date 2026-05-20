@@ -14,7 +14,13 @@ export async function checkRateLimit(req: NextRequest): Promise<NextResponse | n
     ?? req.headers.get("x-real-ip")
     ?? "anonymous";
 
-  const { success, limit, remaining, reset } = await ratelimit.limit(ip);
+  let success: boolean, limit: number, remaining: number, reset: number;
+  try {
+    ({ success, limit, remaining, reset } = await ratelimit.limit(ip));
+  } catch {
+    // Redis not configured (local dev) — fail open
+    return null;
+  }
 
   if (!success) {
     return NextResponse.json(
