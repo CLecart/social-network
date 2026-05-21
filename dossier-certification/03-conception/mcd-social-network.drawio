@@ -4,31 +4,31 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="e_user" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;UTILISATEUR&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;#id&lt;/u&gt;&lt;br&gt;email&lt;br&gt;username&lt;br&gt;password&lt;br&gt;birthDate&lt;br&gt;visibility" vertex="1">
+        <mxCell id="e_user" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;UTILISATEUR&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;email&lt;br&gt;username&lt;br&gt;password&lt;br&gt;birthDate&lt;br&gt;visibility" vertex="1">
           <mxGeometry height="145" width="160" x="400" y="300" as="geometry" />
         </mxCell>
-        <mxCell id="e_post" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;PUBLICATION&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;#id&lt;/u&gt;&lt;br&gt;message&lt;br&gt;datetime&lt;br&gt;image&lt;br&gt;visibility" vertex="1">
+        <mxCell id="e_post" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;PUBLICATION&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;message&lt;br&gt;datetime&lt;br&gt;image&lt;br&gt;visibility" vertex="1">
           <mxGeometry height="125" width="155" x="10" y="160" as="geometry" />
         </mxCell>
-        <mxCell id="e_comment" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;COMMENTAIRE&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;#id&lt;/u&gt;&lt;br&gt;content&lt;br&gt;datetime" vertex="1">
+        <mxCell id="e_comment" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;COMMENTAIRE&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;content&lt;br&gt;datetime" vertex="1">
           <mxGeometry height="100" width="155" x="-60" y="414" as="geometry" />
         </mxCell>
-        <mxCell id="e_msg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;MESSAGE&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;#id&lt;/u&gt;&lt;br&gt;message&lt;br&gt;timestamp&lt;br&gt;status" vertex="1">
+        <mxCell id="e_msg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;MESSAGE&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;message&lt;br&gt;timestamp&lt;br&gt;status" vertex="1">
           <mxGeometry height="115" width="155" x="800" y="250" as="geometry" />
         </mxCell>
-        <mxCell id="e_event" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;EVENEMENT&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;#id&lt;/u&gt;&lt;br&gt;title&lt;br&gt;description&lt;br&gt;date&lt;br&gt;location" vertex="1">
+        <mxCell id="e_event" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;EVENEMENT&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;title&lt;br&gt;description&lt;br&gt;date&lt;br&gt;location" vertex="1">
           <mxGeometry height="125" width="155" x="400" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="e_conv" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;CONVERSATION&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;#id&lt;/u&gt;&lt;br&gt;title&lt;br&gt;isGroup&lt;br&gt;createdAt" vertex="1">
+        <mxCell id="e_conv" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;CONVERSATION&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;title&lt;br&gt;isGroup&lt;br&gt;createdAt" vertex="1">
           <mxGeometry height="115" width="155" x="750" y="430" as="geometry" />
         </mxCell>
-        <mxCell id="e_notif" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;NOTIFICATION&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;#id&lt;/u&gt;&lt;br&gt;type&lt;br&gt;message&lt;br&gt;read&lt;br&gt;createdAt" vertex="1">
+        <mxCell id="e_notif" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;NOTIFICATION&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;type&lt;br&gt;message&lt;br&gt;read&lt;br&gt;createdAt" vertex="1">
           <mxGeometry height="120" width="155" x="610" y="600" as="geometry" />
         </mxCell>
-        <mxCell id="e_story" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;STORY&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;#id&lt;/u&gt;&lt;br&gt;content&lt;br&gt;image&lt;br&gt;visibility&lt;br&gt;expiresAt" vertex="1">
-          <mxGeometry height="120" width="155" x="-260" y="130" as="geometry" />
+        <mxCell id="e_story" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;STORY&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;content&lt;br&gt;image&lt;br&gt;visibility&lt;br&gt;expiresAt" vertex="1">
+          <mxGeometry height="150" width="205" x="-310" y="100" as="geometry" />
         </mxCell>
-        <mxCell id="e_reaction" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;REACTION&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;#id&lt;/u&gt;&lt;br&gt;type" vertex="1">
+        <mxCell id="e_reaction" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;REACTION&lt;/b&gt;&lt;hr/&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;type" vertex="1">
           <mxGeometry height="80" width="155" x="-230" y="560" as="geometry" />
         </mxCell>
         <mxCell id="r_publie_story" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="&lt;b&gt;PUBLIE&lt;/b&gt;" vertex="1">
