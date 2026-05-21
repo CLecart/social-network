@@ -5,8 +5,10 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Button } from "@/components/ui/button";
 import { Plus, X, ImagePlus, Globe, Users, Lock } from "lucide-react";
 import { toast } from "sonner";
@@ -74,7 +76,7 @@ const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated }) => {
   };
 
   // Drag & drop
-  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+  const handleDrop = (e: DragEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
@@ -82,7 +84,7 @@ const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated }) => {
     }
   };
 
-  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (e: DragEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
   };
@@ -179,7 +181,6 @@ const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated }) => {
   };
 
   return (
-    // TODO : Ajouter un Dialog title
     <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
       <DialogTrigger asChild>
         <button className="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white hover:bg-blue-600 transition-colors">
@@ -187,17 +188,18 @@ const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated }) => {
         </button>
       </DialogTrigger>
 
-      <DialogContent className="p-0 w-full sm:max-h-[min(840px,90vh)] sm:max-w-2xl [&>button:last-child]:top-3.5 [&>button:last-child]:z-[60] bg-[var(--bgLevel1)] rounded-xl">
+      <DialogContent className="p-0 w-full sm:max-h-[min(840px,90vh)] sm:max-w-2xl [&>button:last-child]:top-3.5 [&>button:last-child]:z-60 bg-(--bgLevel1) rounded-xl">
+        <VisuallyHidden><DialogTitle>Créer une story</DialogTitle></VisuallyHidden>
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b bg-[var(--bgLevel1)] rounded-t-xl">
+          <div className="flex items-center justify-between p-4 border-b bg-(--bgLevel1) rounded-t-xl">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold">
+              <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold">
                 U
               </div>
               <div>
                 <p className="font-medium text-sm">Créer une story</p>
-                <p className="text-xs text-[var(--textNeutral)]">
+                <p className="text-xs text-(--textNeutral)">
                   Visible 24h • {getVisibilityLabel(visibility)}
                 </p>
               </div>
@@ -206,21 +208,21 @@ const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated }) => {
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto bg-[var(--bgLevel1)] p-4">
+          <div className="flex-1 overflow-y-auto bg-(--bgLevel1) p-4">
             {mediaFile ? (
-              <div className="max-w-[400px] mx-auto">
+              <div className="max-w-100 mx-auto">
                 <div className="relative rounded-lg overflow-hidden bg-black">
                   {mediaFile.type === "image" ? (
                     <img
                       src={mediaFile.previewUrl}
                       alt="Story preview"
-                      className="w-full max-h-[500px] object-contain"
+                      className="w-full max-h-125 object-contain"
                     />
                   ) : (
                     <video
                       src={mediaFile.previewUrl}
                       controls
-                      className="w-full max-h-[500px] object-contain"
+                      className="w-full max-h-125 object-contain"
                     />
                   )}
                   <button
@@ -232,29 +234,30 @@ const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated }) => {
                 </div>
               </div>
             ) : (
-              <div
+              <button
+                type="button"
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
                 onClick={openFileDialog}
-                className="border-2 border-dashed border-[var(--detailMinimal)] bg-[var(--bgLevel2)] rounded-lg p-12 text-center hover:border-[var(--detailNeutralAlt)] transition-colors cursor-pointer select-none"
+                className="w-full border-2 border-dashed border-(--detailMinimal) bg-(--bgLevel2) rounded-lg p-12 text-center hover:border-(--detailNeutralAlt) transition-colors cursor-pointer select-none"
               >
                 <div className="space-y-4">
-                  <div className="w-20 h-20 mx-auto bg-[var(--bgLevel1)] rounded-full flex items-center justify-center">
-                    <ImagePlus className="w-10 h-10 text-[var(--textNeutral)]" />
+                  <div className="w-20 h-20 mx-auto bg-(--bgLevel1) rounded-full flex items-center justify-center">
+                    <ImagePlus className="w-10 h-10 text-(--textNeutral)" />
                   </div>
                   <div>
                     <p className="text-lg font-medium mb-2">
                       Ajouter une photo ou vidéo
                     </p>
-                    <p className="text-sm text-[var(--textNeutral)]">
+                    <p className="text-sm text-(--textNeutral)">
                       Glissez-déposez ou cliquez pour sélectionner
                     </p>
-                    <p className="text-xs text-[var(--textNeutral)] mt-2">
+                    <p className="text-xs text-(--textNeutral) mt-2">
                       Taille max : 50 Mo
                     </p>
                   </div>
                 </div>
-              </div>
+              </button>
             )}
 
             <input
@@ -267,13 +270,14 @@ const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated }) => {
           </div>
 
           {/* Footer */}
-          <div className="p-4 border-t bg-[var(--bgLevel1)] rounded-b-xl">
+          <div className="p-4 border-t bg-(--bgLevel1) rounded-b-xl">
             {/* Sélecteur de visibilité */}
             <div className="mb-3">
-              <label className="block text-sm font-medium text-[var(--textNeutral)] mb-2">
+              <label htmlFor="visibility-select" className="block text-sm font-medium text-(--textNeutral) mb-2">
                 Qui peut voir cette story ?
               </label>
               <VisibilitySelect
+                id="visibility-select"
                 value={visibility}
                 onChange={setVisibility}
               />
@@ -284,13 +288,13 @@ const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated }) => {
               <Button
                 variant="outline"
                 onClick={() => setIsDialogOpen(false)}
-                className="flex-1 border-[var(--detailMinimal)] hover:bg-[var(--bgLevel2)]"
+                className="flex-1 border-(--detailMinimal) hover:bg-(--bgLevel2)"
                 disabled={isUploading}
               >
                 Annuler
               </Button>
               <button
-                className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium py-2.5 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-linear-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium py-2.5 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!mediaFile || isUploading}
                 onClick={handleStorySubmit}
               >
