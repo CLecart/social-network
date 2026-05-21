@@ -2,9 +2,13 @@ import { register } from "@/lib/db/queries/user/registerUser"
 import { signJwt } from "@/lib/jwt/signJwt"
 import { mapRegisterFormToInput } from "@/lib/parsers/formParsers"
 import { handleUploads } from "@/lib/uploads/imageUploads"
+import { checkRateLimit } from "@/lib/security/ratelimit"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
+    const rateLimitResponse = await checkRateLimit(req);
+    if (rateLimitResponse) return rateLimitResponse;
+
     try {
         const formData = await req.formData()
         const userData = await mapRegisterFormToInput(formData)

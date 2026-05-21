@@ -4,13 +4,13 @@
 **Titre visé :** Concepteur Développeur d'Applications (CDA) — Niveau 6  
 **Établissement :** Zone01 Rouen Normandie  
 **Projet support :** Social Network (dépôt `arocchet/social-network`)  
-**Date :** Mai 2026
+**Date :** Juin 2026
 
 > Ce document présente la couverture complète du référentiel RNCP 37873 par le projet Social Network, avec les preuves techniques associées à chaque compétence.
 
 ---
 
-## 📐 Structure du Référentiel RNCP 37873
+## Structure du Référentiel RNCP 37873
 
 Le titre CDA est organisé en **3 blocs de compétences** couvrant **11 compétences professionnelles** :
 
@@ -22,7 +22,7 @@ Le titre CDA est organisé en **3 blocs de compétences** couvrant **11 compéte
 
 ---
 
-## 🔷 Bloc 1 — Développer une application sécurisée (BC01)
+## Bloc 1 — Développer une application sécurisée (BC01)
 
 ### C1 — Installer et configurer son environnement de travail
 
@@ -36,7 +36,7 @@ Le titre CDA est organisé en **3 blocs de compétences** couvrant **11 compéte
 | IDE et outils              | VS Code, extensions TypeScript/Prisma, ESLint intégré             |
 | Versioning                 | Git + GitHub, branches feature/fix, 100+ commits tracés           |
 
-**Références GitHub :** [Issue #40 — DevOps/Docker/CI](https://github.com/arocchet/social-network/issues/40)
+**Références GitHub :** [Issue #40 — DevOps/Docker/CI]([Issue #40](https://github.com/arocchet/social-network/issues/40))
 
 ---
 
@@ -109,11 +109,11 @@ Le titre CDA est organisé en **3 blocs de compétences** couvrant **11 compéte
 | Gestion des branches     | Branches feature/, fix/, docs/ séparées                            |
 | Collaboration            | Revues de code, coordination inter-équipe sur issues communes      |
 
-**Références :** [Issue #13](https://github.com/arocchet/social-network/issues/13), [Issue #24](https://github.com/arocchet/social-network/issues/24), [PR #118](https://github.com/arocchet/social-network/pull/118)
+**Références :** [Issue #13]([Issue #13](https://github.com/arocchet/social-network/issues/13)), [Issue #24]([Issue #24](https://github.com/arocchet/social-network/issues/24)), [PR #118]([PR #118](https://github.com/arocchet/social-network/pull/118))
 
 ---
 
-## 🔷 Bloc 2 — Concevoir et développer une application sécurisée organisée en couches (BC02)
+## Bloc 2 — Concevoir et développer une application sécurisée organisée en couches (BC02)
 
 ### C5 — Analyser les besoins et maquetter une application
 
@@ -215,7 +215,7 @@ Le titre CDA est organisé en **3 blocs de compétences** couvrant **11 compéte
 
 ---
 
-## 🔷 Bloc 3 — Préparer le déploiement d'une application sécurisée (BC03)
+## Bloc 3 — Préparer le déploiement d'une application sécurisée (BC03)
 
 ### C9 — Préparer et exécuter les plans de tests d'une application
 
@@ -233,14 +233,14 @@ Le titre CDA est organisé en **3 blocs de compétences** couvrant **11 compéte
 
 | Scenario                | Entrée                     | Résultat attendu          | Statut |
 | ----------------------- | -------------------------- | ------------------------- | ------ |
-| Inscription             | Email unique + mot de passe | Compte créé, JWT renvoyé  | ✅     |
-| Connexion valide        | Email/password corrects    | Token JWT en cookie       | ✅     |
-| Connexion invalide      | Mauvais mot de passe       | Erreur 401                | ✅     |
-| Création de post        | Texte + image              | Post visible dans le feed | ✅     |
-| Follow utilisateur      | User A → User B            | Relation créée            | ✅     |
-| Envoi message           | Texte vers conversation    | Message persisté + Redis  | ✅     |
-| Réaction sur post       | Type LIKE                  | Compteur mis à jour       | ✅     |
-| RSVP événement          | YES/NO/MAYBE               | Réponse enregistrée       | ✅     |
+| Inscription             | Email unique + mot de passe | Compte créé, JWT renvoyé  |      |
+| Connexion valide        | Email/password corrects    | Token JWT en cookie       |      |
+| Connexion invalide      | Mauvais mot de passe       | Erreur 401                |      |
+| Création de post        | Texte + image              | Post visible dans le feed |      |
+| Follow utilisateur      | User A → User B            | Relation créée            |      |
+| Envoi message           | Texte vers conversation    | Message persisté + Redis  |      |
+| Réaction sur post       | Type LIKE                  | Compteur mis à jour       |      |
+| RSVP événement          | YES/NO/MAYBE               | Réponse enregistrée       |      |
 
 ---
 
@@ -303,25 +303,25 @@ git push origin main  # → déclenche CI → build → deploy automatique
 | Observabilité               | Vercel Analytics, logs structurés serveur, health endpoint  |
 | Sécurité secrets            | Variables d'environnement injectées, aucun secret committé  |
 
-**Référence :** [Issue #45 — CI lint/test/build/push](https://github.com/arocchet/social-network/issues/45), [PR #118](https://github.com/arocchet/social-network/pull/118)
+**Référence :** [Issue #45 — CI lint/test/build/push]([Issue #45](https://github.com/arocchet/social-network/issues/45)), [PR #118]([PR #118](https://github.com/arocchet/social-network/pull/118))
 
 ---
 
-## 📊 Tableau de Synthèse — Couverture RNCP 37873
+## Tableau de Synthèse — Couverture RNCP 37873
 
 | Compétence RNCP                                       | Statut | Preuves principales                                     |
 | ----------------------------------------------------- | ------ | ------------------------------------------------------- |
-| C1 — Configurer l'environnement de travail            | ✅     | Docker, Node/Bun, Prisma, .env, ESLint                 |
-| C2 — Développer des interfaces utilisateur            | ✅     | 14 pages, 110+ composants, design system, responsive    |
-| C3 — Développer des composants métier                 | ✅     | 60+ endpoints, hooks, Zod, logique sociale complète     |
-| C4 — Contribuer à la gestion de projet                | ✅     | 13 issues, PR #118, documentation 60+ pages            |
-| C5 — Analyser les besoins et maquetter                | ✅     | Cahier des charges, 38+ user stories, wireframes/mockups |
-| C6 — Définir l'architecture logicielle               | ✅     | Architecture 3 couches, diagrammes Mermaid, justifications |
-| C7 — Concevoir une base de données relationnelle      | ✅     | 18 modèles, MCD/MLD/MPD, contraintes, migrations        |
-| C8 — Développer des composants d'accès aux données   | ✅     | Prisma ORM, Redis cache, pagination curseur, tests      |
-| C9 — Préparer et exécuter les plans de tests          | ✅     | Jest, tests intégration auth, jeux d'essai documentés   |
-| C10 — Préparer et documenter le déploiement           | ✅     | Dockerfile, docker-compose, CI/CD, variables env        |
-| C11 — Contribuer à la mise en production DevOps       | ✅     | GitHub Actions, Vercel CD, rollback, observabilité      |
+| C1 — Configurer l'environnement de travail            |      | Docker, Node/Bun, Prisma, .env, ESLint                 |
+| C2 — Développer des interfaces utilisateur            |      | 14 pages, 110+ composants, design system, responsive    |
+| C3 — Développer des composants métier                 |      | 60+ endpoints, hooks, Zod, logique sociale complète     |
+| C4 — Contribuer à la gestion de projet                |      | 13 issues, PR #118, documentation 60+ pages            |
+| C5 — Analyser les besoins et maquetter                |      | Cahier des charges, 38+ user stories, wireframes/mockups |
+| C6 — Définir l'architecture logicielle               |      | Architecture 3 couches, diagrammes Mermaid, justifications |
+| C7 — Concevoir une base de données relationnelle      |      | 18 modèles, MCD/MLD/MPD, contraintes, migrations        |
+| C8 — Développer des composants d'accès aux données   |      | Prisma ORM, Redis cache, pagination curseur, tests      |
+| C9 — Préparer et exécuter les plans de tests          |      | Jest, tests intégration auth, jeux d'essai documentés   |
+| C10 — Préparer et documenter le déploiement           |      | Dockerfile, docker-compose, CI/CD, variables env        |
+| C11 — Contribuer à la mise en production DevOps       |      | GitHub Actions, Vercel CD, rollback, observabilité      |
 
 **Compétences transversales :**
 
@@ -334,7 +334,7 @@ git push origin main  # → déclenche CI → build → deploy automatique
 
 ---
 
-## 📁 Correspondance Dossier → Blocs RNCP
+## Correspondance Dossier → Blocs RNCP
 
 | Section du dossier               | Bloc(s) RNCP couverts |
 | -------------------------------- | --------------------- |

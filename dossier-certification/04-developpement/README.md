@@ -4,15 +4,15 @@
 
 Documenter l'architecture applicative, les endpoints API, l'authentification, le temps réel et la stratégie de tests/CI.
 
-### 🔎 Preuves & Mapping GitHub
+### Preuves & Mapping GitHub
 
 Les éléments techniques présentés ici sont issus des tickets et PRs du dépôt `arocchet/social-network` (références utiles pour le jury et la revue):
 
-- PR stabilisation (Docker/Neon/Prisma/Redis): https://github.com/arocchet/social-network/pull/118
-- DevOps / Docker / CI: https://github.com/arocchet/social-network/issues/40
-- Socket/chat system: https://github.com/arocchet/social-network/issues/37
-- Notifications & endpoints: https://github.com/arocchet/social-network/issues/39
-- Database / Prisma migrations: https://github.com/arocchet/social-network/issues/45
+- [PR stabilisation (Docker/Neon/Prisma/Redis)]([PR #118](https://github.com/arocchet/social-network/pull/118))
+- [DevOps / Docker / CI]([Issue #40](https://github.com/arocchet/social-network/issues/40))
+- [Socket/chat system]([Issue #37](https://github.com/arocchet/social-network/issues/37))
+- [Notifications & endpoints]([Issue #39](https://github.com/arocchet/social-network/issues/39))
+- [Database / Prisma migrations]([Issue #45](https://github.com/arocchet/social-network/issues/45))
 
 Le socle technique a été stabilisé sur la base de ces sujets GitHub.
 
@@ -156,7 +156,7 @@ erDiagram
 
 ---
 
-## 📡 Endpoints API
+## Endpoints API
 
 **Documentation Complète:** [api-spec.md](./api-spec.md)
 
@@ -218,7 +218,7 @@ erDiagram
 
 ---
 
-## 🛠️ Implémentation - Code Samples
+## Implémentation - Code Samples
 
 ### Authentification (Middleware)
 
@@ -389,7 +389,7 @@ Côté envoi, `POST /api/private/chat/send` persiste le message via Prisma puis 
 
 ---
 
-## 🧪 Tests & CI/CD
+## Tests & CI/CD
 
 ### Tests
 
@@ -476,7 +476,7 @@ jobs:
 
 ---
 
-## 📚 Structure de Code
+## Structure de Code
 
 ### Directories Clés
 
@@ -518,6 +518,53 @@ src/
 └── middleware.ts          # Auth middleware
 ```
 
+### Composants d'accès aux données — Prisma (C8)
+
+Les queries Prisma sont isolées dans `src/lib/db/queries/` — séparation stricte entre logique métier et accès données.
+
+**Exemple 1 — Upsert réaction avec contrôle de visibilité** (`src/lib/db/queries/reaction/updatedReaction.ts`) :
+
+```typescript
+export async function updatedReaction(userId: string, data: CreateReaction): Promise<void> {
+  // Vérification d'accès avant toute écriture
+  if (isPost) {
+    const canSee = await canUserSeePost(data.mediaId, userId);
+    if (!canSee) throw new Error("Post not found or access denied");
+  }
+
+  // Upsert atomique : crée ou met à jour la réaction
+  await db.reaction.upsert({
+    where: { userId_postId: { userId, postId: data.mediaId } },
+    update: { type: data.type },
+    create: { userId, type: data.type, postId: data.mediaId },
+  });
+}
+```
+
+**Exemple 2 — Création commentaire avec select typé** (`src/lib/db/queries/comment/createCommentInDb.ts`) :
+
+```typescript
+const commentSelect = {
+  id: true,
+  datetime: true,
+  message: true,
+  user: { select: { id: true, username: true, avatar: true } },
+} as const;
+
+// Prisma.CommentGetPayload garantit le typage exact du retour
+type SelectedComment = Prisma.CommentGetPayload<{ select: typeof commentSelect }>;
+
+export async function createCommentInDb(params: Params): Promise<Comment> {
+  const created: SelectedComment = await db.comment.create({
+    data: { postId: params.postId, message: params.content, userId: params.userId },
+    select: commentSelect,
+  });
+  return CommentSchema.parse({ ...created, datetime: created.datetime.toISOString() });
+}
+```
+
+Le pattern `select` constant + `GetPayload` évite les over-fetching et garantit le typage TypeScript de bout en bout. Chaque query valide son résultat via un schéma Zod avant de le retourner.
+
 ### Validation & Error Handling
 
 - **Schemas:** Zod + TypeScript interfaces in `src/lib/schemas/`
@@ -527,7 +574,7 @@ src/
 
 ---
 
-## ✅ Checklist Implémentation
+## Checklist Implémentation
 
 - [x] Auth (JWT + HTTP-only cookies + middleware)
 - [x] API routes (60+ endpoints documentés)

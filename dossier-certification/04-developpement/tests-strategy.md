@@ -1,4 +1,4 @@
-# 🧪 Stratégie de tests
+# Stratégie de tests
 
 ## Objectif
 
@@ -32,15 +32,15 @@ L'approche est **honnête** : le projet a un test d'intégration backend fonctio
 
 | Élément | Statut | Localisation |
 |---|---|---|
-| Framework de test | ✅ | Jest 29 + `ts-jest` |
-| Configuration | ✅ | `jest.config.ts`, `jest.globalSetup.ts`, `jest.globalTeardown.ts` |
-| Support ES modules | ✅ | `node --experimental-vm-modules` dans le script `bun run test` |
-| Mock Prisma | ✅ | Connexion DB de test isolée |
-| Test d'intégration auth/register | ✅ | `__tests__/integrations/authentification.test.ts` |
-| Tests unitaires UI | ❌ | À implémenter |
-| Tests E2E | ❌ | À implémenter |
-| Couverture chiffrée (`--coverage`) | ❌ | À mesurer |
-| CI : tests bloquants | ⚠️ | Configurés dans le workflow GitHub Actions mais lint actuellement en `ignoreDuringBuilds: true` |
+| Framework de test |  | Jest 29 + `ts-jest` |
+| Configuration |  | `jest.config.ts`, `jest.globalSetup.ts`, `jest.globalTeardown.ts` |
+| Support ES modules |  | `node --experimental-vm-modules` dans le script `bun run test` |
+| Mock Prisma |  | Connexion DB de test isolée |
+| Test d'intégration auth/register |  | `__tests__/integrations/authentification.test.ts` |
+| Tests unitaires UI |  | `__tests__/ui/button.test.tsx` — 5 tests RTL, 100% statements/lines |
+| Tests E2E |  | À implémenter |
+| Couverture chiffrée (`--coverage`) |  | Button : 100% stmts, 100% funcs, 100% lines, 50% branch (variant conditionnel) |
+| CI : tests bloquants |  | Configurés dans le workflow GitHub Actions mais lint actuellement en `ignoreDuringBuilds: true` |
 
 ### 2.2 Test existant — extrait
 
@@ -85,7 +85,7 @@ bun run test
 
 ## 3. Plan d'extension (par priorité)
 
-### 🔴 Critique — à implémenter rapidement
+### Critique — à implémenter rapidement
 
 #### 3.1 Tests d'intégration API sur les routes sensibles
 
@@ -122,7 +122,7 @@ describe('CredentialsLoginSchema', () => {
 });
 ```
 
-### 🟠 Important — sous 1 mois
+### Important — sous 1 mois
 
 #### 3.3 Tests unitaires UI (React Testing Library)
 
@@ -146,7 +146,7 @@ Parcours critiques utilisateur :
 
 Playwright permet de mocker les services externes (Cloudinary, Google OAuth) en interceptant les requêtes.
 
-### 🟡 Bonus
+### Bonus
 
 #### 3.5 Tests de sécurité
 
@@ -186,58 +186,58 @@ Tableau récapitulatif des cas que les tests doivent couvrir, organisé par fonc
 
 | # | Composant | Entrée | Résultat attendu | Couvert |
 |---|---|---|---|---|
-| AU-01 | Login | email/password valides | 200 + cookie `authToken` + redirection feed | ⚠️ partiel (register) |
-| AU-02 | Login | password incorrect | 401, message générique « Invalid email or password » (pas de leak) | ❌ |
-| AU-03 | Login | email inexistant | 401 (même message, anti-énumération) | ❌ |
-| AU-04 | Register | données valides | 200 + utilisateur en DB + cookie | ✅ |
-| AU-05 | Register | email déjà pris | 400 + message clair | ❌ |
-| AU-06 | Register | password < 6 caractères | 400 (Zod) | ❌ |
-| AU-07 | Logout | cookie présent | 200 + cookie effacé | ❌ |
-| AU-08 | Middleware | requête sans `authToken` sur `/api/private/*` | 401 ou redirection `/login` | ❌ |
-| AU-09 | Middleware | requête avec `authToken` expiré | 401 + redirection | ❌ |
-| AU-10 | OAuth Google | redirect + callback avec `state` matchant | création/login user + cookie | ❌ |
-| AU-11 | OAuth Google | callback avec `state` non matchant | refus 401 (anti-CSRF) | ❌ |
+| AU-01 | Login | email/password valides | 200 + cookie `authToken` + redirection feed |  partiel (register) |
+| AU-02 | Login | password incorrect | 401, message générique « Invalid email or password » (pas de leak) |  |
+| AU-03 | Login | email inexistant | 401 (même message, anti-énumération) |  |
+| AU-04 | Register | données valides | 200 + utilisateur en DB + cookie |  |
+| AU-05 | Register | email déjà pris | 400 + message clair |  |
+| AU-06 | Register | password < 6 caractères | 400 (Zod) |  |
+| AU-07 | Logout | cookie présent | 200 + cookie effacé |  |
+| AU-08 | Middleware | requête sans `authToken` sur `/api/private/*` | 401 ou redirection `/login` |  |
+| AU-09 | Middleware | requête avec `authToken` expiré | 401 + redirection |  |
+| AU-10 | OAuth Google | redirect + callback avec `state` matchant | création/login user + cookie |  |
+| AU-11 | OAuth Google | callback avec `state` non matchant | refus 401 (anti-CSRF) |  |
 
 ### Posts et interactions
 
 | # | Composant | Entrée | Résultat attendu | Couvert |
 |---|---|---|---|---|
-| PO-01 | Créer post | texte + image | post visible immédiatement dans le feed | ❌ |
-| PO-02 | Créer post | non authentifié | 401 | ❌ |
-| PO-03 | Réagir | LIKE sur un post | reaction créée, compteur +1 | ❌ |
-| PO-04 | Réagir | LIKE deux fois sur le même post | contrainte unique → conflit ou idempotent | ❌ |
-| PO-05 | Commenter | texte | commentaire visible sous le post | ❌ |
+| PO-01 | Créer post | texte + image | post visible immédiatement dans le feed |  |
+| PO-02 | Créer post | non authentifié | 401 |  |
+| PO-03 | Réagir | LIKE sur un post | reaction créée, compteur +1 |  |
+| PO-04 | Réagir | LIKE deux fois sur le même post | contrainte unique → conflit ou idempotent |  |
+| PO-05 | Commenter | texte | commentaire visible sous le post |  |
 
 ### Messagerie temps réel
 
 | # | Composant | Entrée | Résultat attendu | Couvert |
 |---|---|---|---|---|
-| CH-01 | Envoyer DM | user A → user B (amis) | message persisté + clé Redis MAJ | ❌ |
-| CH-02 | Envoyer DM | user A → user B (B privé, pas amis) | 403 | ❌ |
-| CH-03 | Recevoir SSE | flux ouvert côté user B | nouveau message poussé < 2 s après envoi | ❌ |
-| CH-04 | Marquer comme lu | user B lit un message | `readAt` MAJ, status = READ | ❌ |
-| CH-05 | Typing indicator | A tape, B voit l'indicateur | indicateur affiché côté B | ❌ |
+| CH-01 | Envoyer DM | user A → user B (amis) | message persisté + clé Redis MAJ |  |
+| CH-02 | Envoyer DM | user A → user B (B privé, pas amis) | 403 |  |
+| CH-03 | Recevoir SSE | flux ouvert côté user B | nouveau message poussé < 2 s après envoi |  |
+| CH-04 | Marquer comme lu | user B lit un message | `readAt` MAJ, status = READ |  |
+| CH-05 | Typing indicator | A tape, B voit l'indicateur | indicateur affiché côté B |  |
 
 ### Groupes et événements
 
 | # | Composant | Entrée | Résultat attendu | Couvert |
 |---|---|---|---|---|
-| GR-01 | Créer groupe | owner crée avec titre | groupe créé, owner = membre | ❌ |
-| GR-02 | Inviter membre | owner invite user X | invitation PENDING en DB | ❌ |
-| GR-03 | Accepter invitation | user X accepte | GroupMember créé, GroupInvitation = ACCEPTED | ❌ |
-| GR-04 | Quitter groupe | membre normal | GroupMember supprimé | ❌ |
-| GR-05 | Créer événement | owner d'un groupe | Event créé, lié au groupe | ❌ |
-| GR-06 | RSVP | user répond YES | Rsvp créé, contrainte unique respectée | ❌ |
+| GR-01 | Créer groupe | owner crée avec titre | groupe créé, owner = membre |  |
+| GR-02 | Inviter membre | owner invite user X | invitation PENDING en DB |  |
+| GR-03 | Accepter invitation | user X accepte | GroupMember créé, GroupInvitation = ACCEPTED |  |
+| GR-04 | Quitter groupe | membre normal | GroupMember supprimé |  |
+| GR-05 | Créer événement | owner d'un groupe | Event créé, lié au groupe |  |
+| GR-06 | RSVP | user répond YES | Rsvp créé, contrainte unique respectée |  |
 
 ### Sécurité
 
 | # | Composant | Entrée | Résultat attendu | Couvert |
 |---|---|---|---|---|
-| SE-01 | SQLi | `' OR 1=1--` dans login email | Zod rejette ou Prisma traite comme string | ❌ |
-| SE-02 | XSS | `<script>` dans message chat | doit être échappé / sanitisé (vulnérabilité connue) | ❌ |
-| SE-03 | Path traversal | `..\..\` dans paramètres URL | ne donne pas accès à des ressources hors scope | ❌ |
-| SE-04 | Privilege escalation | user A appelle `PUT /api/private/me` pour user B | non possible (handlers utilisent `x-user-id`) | ❌ |
-| SE-05 | JWT tampering | modification du payload | `jwtVerify` échoue → redirection /login | ❌ |
+| SE-01 | SQLi | `' OR 1=1--` dans login email | Zod rejette ou Prisma traite comme string |  |
+| SE-02 | XSS | `<script>` dans message chat | doit être échappé / sanitisé (vulnérabilité connue) |  |
+| SE-03 | Path traversal | `..\..\` dans paramètres URL | ne donne pas accès à des ressources hors scope |  |
+| SE-04 | Privilege escalation | user A appelle `PUT /api/private/me` pour user B | non possible (handlers utilisent `x-user-id`) |  |
+| SE-05 | JWT tampering | modification du payload | `jwtVerify` échoue → redirection /login |  |
 
 ---
 

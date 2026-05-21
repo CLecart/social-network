@@ -6,7 +6,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ---
 
-## 📊 Retour d'Expérience
+## Retour d'Expérience
 
 ### Défis Techniques Rencontrés
 
@@ -62,22 +62,22 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ---
 
-## ✅ Accomplissements Mesurables
+## Accomplissements Mesurables
 
 ### Livrables du Projet
 
 | Élément                 | Nombre     | Statut                                 |
 | ----------------------- | ---------- | -------------------------------------- |
-| Modèles Prisma          | 18         | ✅ Complets et documentés              |
-| Endpoints API           | 60+        | ✅ Spécifications complètes (api-spec.md)      |
-| Pages principales       | 14         | ✅ Routes implémentées                         |
-| Composants React        | 110+       | ✅ Design system + composants métier           |
-| Hooks personnalisés     | 30+        | ✅ Logique UI découplée                        |
-| User stories            | 38+        | ✅ Rôles, priorités, critères d'acceptation    |
-| Événements temps réel   | 4 familles | ✅ Chat, notifications, typing, statuts        |
-| Migrations DB           | 2+         | ✅ Structure versionnée                        |
-| Lignes de documentation | 4000+      | ✅ Dossier et code                             |
-| Tests d'intégration     | Auth       | ✅ Inscription + connexion vérifiées           |
+| Modèles Prisma          | 18         |  Complets et documentés              |
+| Endpoints API           | 60+        |  Spécifications complètes (api-spec.md)      |
+| Pages principales       | 14         |  Routes implémentées                         |
+| Composants React        | 110+       |  Design system + composants métier           |
+| Hooks personnalisés     | 30+        |  Logique UI découplée                        |
+| User stories            | 38+        |  Rôles, priorités, critères d'acceptation    |
+| Événements temps réel   | 4 familles |  Chat, notifications, typing, statuts        |
+| Migrations DB           | 2+         |  Structure versionnée                        |
+| Lignes de documentation | 4000+      |  Dossier et code                             |
+| Tests d'intégration     | Auth       |  Inscription + connexion vérifiées           |
 
 ### Résultats Obtenus
 
@@ -90,42 +90,42 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 - **Temps réel via Server-Sent Events + Upstash Redis** documenté de bout en bout (endpoint `chat/listen`, clé Redis, ack côté API).
 - **Architecture complète** du projet formalisée pour revue jury.
 
-✅ **Architecture**
+**Architecture**
 
 - Séparation claire client/serveur/data
 - TypeScript full-stack pour la sécurité
 - Middleware pour l'authentification centralisée
 - API RESTful avec validation (Zod)
 
-✅ **Authentification & Sécurité**
+ **Authentification & Sécurité**
 
 - JWT avec jose (HS256)
 - Hachage bcrypt des mots de passe
 - Cookies HTTP-only pour les sessions
 - Protection des routes privées
 
-✅ **Base de Données**
+ **Base de Données**
 
 - 18 modèles Prisma normalisés
 - Relations complexes (amitié, notifications, groupes)
 - Migrations versionnées
 - Contraintes d'unicité pour éviter les duplicatas
 
-✅ **Temps Réel**
+ **Temps Réel**
 
 - Messages avec statut (SENT → DELIVERED → READ)
 - Notifications en temps réel via Upstash Redis
 - Typing indicator avec timeout
 - Polling SSE pour haute disponibilité (compatible serverless Vercel)
 
-✅ **Déploiement**
+ **Déploiement**
 
 - Dockerfile multi-stage optimisé
 - docker-compose avec PostgreSQL (Upstash Redis configuré via env vars)
 - Variables d'environnement sécurisées
 - Pipeline CI/CD documenté
 
-✅ **Documentation**
+ **Documentation**
 
 - Dossier de certification 60+ pages
 - Preuves GitHub reliées (13 issues/PRs)
@@ -142,46 +142,46 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ### Points à Améliorer (Phase Suivante)
 
-- ⚠️ **Tests** : Augmenter la couverture au-delà de l'authentification (routes sensibles, composants).
-- ⚠️ **Performance** : Lighthouse audit, optimisation d'images, compression — relevés réels à compléter.
-- ⚠️ **Monitoring** : Intégrer Sentry pour suivi des erreurs en production, formaliser supervision et alertes.
-- ⚠️ **Load tests** : Vérifier la scalabilité sous charge (Upstash REST, connexions DB).
-- ⚠️ **RGPD** : Implémenter les droits manquants — suppression de compte (droit à l'oubli) et export des données (droit à la portabilité). Voir l'audit complet dans [04-developpement/securite-rgpd.md](../04-developpement/securite-rgpd.md).
-- ⚠️ **XSS résiduelle** : Corriger la sanitization du markdown dans `ChatMessage.tsx` via `DOMPurify` ou `react-markdown`.
-- ⚠️ **Rate limiting** : Ajouter sur les endpoints sensibles (`/login`, `/register`, `/chat/send`) via `@upstash/ratelimit`.
-- ⚠️ **Headers HTTP de sécurité** : CSP, X-Frame-Options, Referrer-Policy dans `next.config.ts`.
+- **Tests** : Augmenter la couverture au-delà de l'authentification (routes sensibles, composants).
+- **Performance** : Lighthouse audit, optimisation d'images, compression — relevés réels à compléter.
+- **Monitoring** : Intégrer Sentry pour suivi des erreurs en production, formaliser supervision et alertes.
+- **Load tests** : Vérifier la scalabilité sous charge (Upstash REST, connexions DB).
+- **RGPD** : Implémenter les droits manquants — suppression de compte (droit à l'oubli) et export des données (droit à la portabilité). Voir l'audit complet dans [04-developpement/securite-rgpd.md](../04-developpement/securite-rgpd.md).
+- **XSS résiduelle** : Corriger la sanitization du markdown dans `ChatMessage.tsx` via `DOMPurify` ou `react-markdown`.
+- **Rate limiting** : Ajouter sur les endpoints sensibles (`/login`, `/register`, `/chat/send`) via `@upstash/ratelimit`.
+- **Headers HTTP de sécurité** : CSP, X-Frame-Options, Referrer-Policy dans `next.config.ts`.
 
 ---
 
-## 💡 Compétences Validées (RNCP 37873)
+## Compétences Validées (RNCP 37873)
 
 ### Bloc 1 : Développer une application sécurisée
 
-- ✅ Authentification JWT sécurisée (jose + bcrypt)
-- ✅ Validation des entrées (Zod schemas)
-- ✅ Protection des routes (middleware + check userId)
-- ✅ Hachage des mots de passe (bcrypt, salt 12)
-- ✅ Cookies HTTP-only pour la session
+-  Authentification JWT sécurisée (jose + bcrypt)
+-  Validation des entrées (Zod schemas)
+-  Protection des routes (middleware + check userId)
+-  Hachage des mots de passe (bcrypt, salt 12)
+-  Cookies HTTP-only pour la session
 
 ### Bloc 2 : Concevoir une application organisée en couches
 
-- ✅ Séparation client/serveur/data
-- ✅ Next.js App Router et logique server-side
-- ✅ Composants React réutilisables
-- ✅ Hooks personnalisés pour la logique métier
-- ✅ Prisma ORM pour l'accès aux données (modèle relationnel riche, 18 modèles)
-- ✅ API Routes pour la couche métier
-- ✅ TypeScript pour sécuriser les contrats de données client/serveur
-- ✅ Server-Sent Events + Upstash Redis pour le push temps réel sans WebSocket persistant
+- Séparation client/serveur/data
+- Next.js App Router et logique server-side
+- Composants React réutilisables
+- Hooks personnalisés pour la logique métier
+- Prisma ORM pour l'accès aux données (modèle relationnel riche, 18 modèles)
+- API Routes pour la couche métier
+- TypeScript pour sécuriser les contrats de données client/serveur
+- Server-Sent Events + Upstash Redis pour le push temps réel sans WebSocket persistant
 
 ### Bloc 3 : Préparer le déploiement sécurisé
 
-- ✅ Dockerfile multi-stage optimisé
-- ✅ docker-compose avec services
-- ✅ Variables d'environnement versionnées
-- ✅ Migrations Prisma automatisées
-- ✅ CI/CD avec GitHub Actions
-- ✅ Déploiement Vercel (serverless) + Neon (PostgreSQL) + Upstash (Redis)
+- Dockerfile multi-stage optimisé
+- docker-compose avec services
+- Variables d'environnement versionnées
+- Migrations Prisma automatisées
+- CI/CD avec GitHub Actions
+- Déploiement Vercel (serverless) + Neon (PostgreSQL) + Upstash (Redis)
 
 ### Compétences Techniques Consolidées
 
@@ -205,7 +205,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ---
 
-## 🚀 Améliorations Futures
+## Améliorations Futures
 
 ### Court Terme
 
@@ -227,7 +227,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 
 ---
 
-## 📈 Métriques du Projet
+## Métriques du Projet
 
 | Indicateur               | Valeur                 |
 | ------------------------ | ---------------------- |
@@ -244,7 +244,7 @@ Ces métriques servent à montrer que le projet est suffisamment complet pour mo
 
 ---
 
-## 🎓 Conclusion
+## Conclusion
 
 Ce projet m'a permis de concevoir et documenter une application full-stack réaliste, avec des choix techniques justifiés et une architecture exploitable en production.
 

@@ -1,43 +1,43 @@
-# 🎯 Mapping RNCP 37873 — 11 compétences → preuves projet
+# Mapping RNCP 37873 — 11 compétences → preuves projet
 
 Ce document est **le point d'entrée pour le jury**. Pour chaque compétence du référentiel RNCP 37873 (Concepteur Développeur d'Applications), il indique :
 
 - la définition officielle,
 - les **preuves concrètes** dans le projet Social Network (fichiers code, sections du dossier, issues GitHub, PR),
-- le **niveau de couverture** (✅ Démontré / ⚠️ Partiel / ❌ Non couvert),
+- le **niveau de couverture** ( Démontré /  Partiel /  Non couvert),
 - les **éléments à montrer pendant la soutenance** (extraits de code, captures, diagrammes).
 
 Le projet est porté par une équipe (`arocchet/social-network`) ; **Christophe Lecart** y a contribué à hauteur de **57 commits** (2ᵉ contributeur). Les commits personnels les plus représentatifs sont indiqués pour chaque compétence quand applicable.
 
 ---
 
-## 📋 Vue d'ensemble
+## Vue d'ensemble
 
 | # | Bloc | Compétence | Couverture | Section dossier |
 |---|---|---|---|---|
-| 1 | B1 | Installer et configurer son environnement de travail | ✅ | [05-deploiement](./05-deploiement/README.md) |
-| 2 | B1 | Développer des interfaces utilisateur | ✅ | [03-conception](./03-conception/README.md), [04-developpement](./04-developpement/README.md) |
-| 3 | B1 | Développer des composants métier | ✅ | [04-developpement](./04-developpement/README.md), [api-spec](./04-developpement/api-spec.md) |
-| 4 | B1 | Contribuer à la gestion d'un projet informatique | ✅ | [02-cahier-des-charges](./02-cahier-des-charges/README.md), preuves GitHub |
-| 5 | B2 | Analyser les besoins et maquetter une application | ✅ | [03-conception](./03-conception/README.md), [annexes mockups](./07-annexes/) |
-| 6 | B2 | Définir l'architecture logicielle d'une application | ✅ | [04-developpement](./04-developpement/README.md), [diagrammes-uml](./03-conception/diagrammes-uml.md) |
-| 7 | B2 | Concevoir et mettre en place une base de données relationnelle | ✅ | [donnees.md](./03-conception/donnees.md), [diagrammes-uml.md](./03-conception/diagrammes-uml.md) |
-| 8 | B2 | Développer des composants d'accès aux données SQL et NoSQL | ✅ | [04-developpement](./04-developpement/README.md) |
-| 9 | B3 | Préparer et exécuter les plans de tests d'une application | ⚠️ | [04-developpement](./04-developpement/README.md), [tests-strategy](./04-developpement/tests-strategy.md) |
-| 10 | B3 | Préparer et documenter le déploiement d'une application | ✅ | [05-deploiement](./05-deploiement/README.md) |
-| 11 | B3 | Contribuer à la mise en production dans une démarche DevOps | ✅ | [05-deploiement](./05-deploiement/README.md) |
+| 1 | B1 | Installer et configurer son environnement de travail |  | [05-deploiement](./05-deploiement/README.md) |
+| 2 | B1 | Développer des interfaces utilisateur |  | [03-conception](./03-conception/README.md), [04-developpement](./04-developpement/README.md) |
+| 3 | B1 | Développer des composants métier |  | [04-developpement](./04-developpement/README.md), [api-spec](./04-developpement/api-spec.md) |
+| 4 | B1 | Contribuer à la gestion d'un projet informatique |  | [02-cahier-des-charges](./02-cahier-des-charges/README.md), preuves GitHub |
+| 5 | B2 | Analyser les besoins et maquetter une application |  | [03-conception](./03-conception/README.md), [annexes mockups](./07-annexes/) |
+| 6 | B2 | Définir l'architecture logicielle d'une application |  | [04-developpement](./04-developpement/README.md), [diagrammes-uml](./03-conception/diagrammes-uml.md) |
+| 7 | B2 | Concevoir et mettre en place une base de données relationnelle |  | [donnees.md](./03-conception/donnees.md), [diagrammes-uml.md](./03-conception/diagrammes-uml.md) |
+| 8 | B2 | Développer des composants d'accès aux données SQL et NoSQL |  | [04-developpement](./04-developpement/README.md) |
+| 9 | B3 | Préparer et exécuter les plans de tests d'une application |  | [04-developpement](./04-developpement/README.md), [tests-strategy](./04-developpement/tests-strategy.md) |
+| 10 | B3 | Préparer et documenter le déploiement d'une application |  | [05-deploiement](./05-deploiement/README.md) |
+| 11 | B3 | Contribuer à la mise en production dans une démarche DevOps |  | [05-deploiement](./05-deploiement/README.md) |
 
 **Sécurité (transverse aux 3 blocs) :** [04-developpement/securite-rgpd.md](./04-developpement/securite-rgpd.md)
 
 ---
 
-## 🔧 BLOC 1 — Développer une application sécurisée
+## BLOC 1 — Développer une application sécurisée
 
 ### Compétence 1 — Installer et configurer son environnement de travail en fonction du projet
 
 > *Outils de développement, conteneurs, gestionnaire de paquets, intégration continue*
 
-**Couverture : ✅ Démontré**
+**Couverture :  Démontré**
 
 **Preuves concrètes :**
 
@@ -50,7 +50,7 @@ Le projet est porté par une équipe (`arocchet/social-network`) ; **Christophe 
 | Variables d'environnement isolées | `docker-compose.yml` lignes 5-9 |
 | Stack locale complète | services `app`, `db` (PostgreSQL 16), `redis` (Redis 7) |
 | Section dossier dédiée | [05-deploiement/README.md](./05-deploiement/README.md) |
-| Issue GitHub | [#40 DevOps/Docker/CI](https://github.com/arocchet/social-network/issues/40) |
+| Issue GitHub | [#40 DevOps/Docker/CI]([Issue #40](https://github.com/arocchet/social-network/issues/40)) |
 
 **À montrer en soutenance :**
 - `docker-compose up` qui démarre tout l'environnement en une commande
@@ -63,7 +63,7 @@ Le projet est porté par une équipe (`arocchet/social-network`) ; **Christophe 
 
 > *Maquettes, design system, accessibilité, responsive, composants réutilisables*
 
-**Couverture : ✅ Démontré**
+**Couverture :  Démontré**
 
 **Preuves concrètes :**
 
@@ -76,7 +76,7 @@ Le projet est porté par une équipe (`arocchet/social-network`) ; **Christophe 
 | Composants métier | `src/components/feed/`, `chat/`, `groups/`, `auth/` |
 | Responsive design (3 breakpoints) | Tailwind CSS — `tailwind.config.js` |
 | Thème clair/sombre | `next-themes`, `src/hooks/use-theme.ts` |
-| i18n (FR/EN) | Issue [#76](https://github.com/arocchet/social-network/issues/76) |
+| i18n (FR/EN) | Issue [#76]([Issue #76](https://github.com/arocchet/social-network/issues/76)) |
 | Settings utilisateur (theme, language) | `src/app/api/private/user/settings/route.ts` |
 
 **À montrer en soutenance :**
@@ -91,7 +91,7 @@ Le projet est porté par une équipe (`arocchet/social-network`) ; **Christophe 
 
 > *Logique applicative, POO, API REST, refactoring, tests unitaires, cryptographie*
 
-**Couverture : ✅ Démontré**
+**Couverture :  Démontré**
 
 **Preuves concrètes :**
 
@@ -123,15 +123,15 @@ Le projet est porté par une équipe (`arocchet/social-network`) ; **Christophe 
 
 > *Organisation, planification, communication, Git, suivi de tickets*
 
-**Couverture : ✅ Démontré**
+**Couverture :  Démontré**
 
 **Preuves concrètes :**
 
 | Élément | Localisation |
 |---|---|
-| Repo GitHub structuré | [arocchet/social-network](https://github.com/arocchet/social-network) |
-| Issues GitHub par fonctionnalité (12 issues majeures) | Section « Preuves GitHub » dans [02-cahier-des-charges](./02-cahier-des-charges/README.md) |
-| PR de stabilisation | [PR #118](https://github.com/arocchet/social-network/pull/118) (Docker/Neon/Prisma/Redis) |
+| Repo GitHub structuré | [arocchet/social-network]([arocchet/social-network](https://github.com/arocchet/social-network)) |
+| Issues GitHub par fonctionnalité (13 issues et PRs majeurs) | Section « Preuves GitHub » dans [02-cahier-des-charges](./02-cahier-des-charges/README.md) |
+| PR de stabilisation | [PR #118]([PR #118](https://github.com/arocchet/social-network/pull/118)) (Docker/Neon/Prisma/Redis) |
 | Branches feature → merge | Historique `git log` |
 | 43 user stories priorisées | [03-conception/user-stories.md](./03-conception/user-stories.md) |
 | Timeline en 3 phases (MVP / Features / Polish) | [02-cahier-des-charges](./02-cahier-des-charges/README.md) section Timeline |
@@ -145,13 +145,13 @@ Le projet est porté par une équipe (`arocchet/social-network`) ; **Christophe 
 
 ---
 
-## 🏗️ BLOC 2 — Concevoir et développer une application sécurisée organisée en couches
+## BLOC 2 — Concevoir et développer une application sécurisée organisée en couches
 
 ### Compétence 5 — Analyser les besoins et maquetter une application
 
 > *User stories, wireframes, prototypes, validation utilisateur*
 
-**Couverture : ✅ Démontré**
+**Couverture :  Démontré**
 
 **Preuves concrètes :**
 
@@ -176,7 +176,7 @@ Le projet est porté par une équipe (`arocchet/social-network`) ; **Christophe 
 
 > *Architecture en couches, diagrammes UML (classes, séquence, cas d'utilisation), stratégie de sécurité*
 
-**Couverture : ✅ Démontré**
+**Couverture :  Démontré**
 
 **Preuves concrètes :**
 
@@ -203,7 +203,7 @@ Le projet est porté par une équipe (`arocchet/social-network`) ; **Christophe 
 
 > *Méthode Merise (MCD, MLD, MPD), dictionnaire de données, contraintes, intégrité*
 
-**Couverture : ✅ Démontré**
+**Couverture :  Démontré**
 
 **Preuves concrètes :**
 
@@ -231,7 +231,7 @@ Le projet est porté par une équipe (`arocchet/social-network`) ; **Christophe 
 
 > *Requêtes paramétrées, sécurité, performance, ORM, base relationnelle ET non-relationnelle*
 
-**Couverture : ✅ Démontré**
+**Couverture :  Démontré**
 
 **Preuves concrètes :**
 
@@ -253,25 +253,25 @@ Le projet est porté par une équipe (`arocchet/social-network`) ; **Christophe 
 
 ---
 
-## 🚀 BLOC 3 — Préparer le déploiement d'une application sécurisée
+## BLOC 3 — Préparer le déploiement d'une application sécurisée
 
 ### Compétence 9 — Préparer et exécuter les plans de tests d'une application
 
 > *Tests unitaires, intégration, E2E, sécurité, jeux d'essai, couverture*
 
-**Couverture : ⚠️ Partiel — implémentation à étoffer, stratégie documentée**
+**Couverture :  Partiel — implémentation à étoffer, stratégie documentée**
 
 **Preuves concrètes :**
 
 | Élément | Localisation | Statut |
 |---|---|---|
-| Stratégie de tests détaillée | [04-developpement/tests-strategy.md](./04-developpement/tests-strategy.md) | ✅ |
-| Configuration Jest + ts-jest | `jest.config.ts`, `jest.globalSetup.ts`, `jest.globalTeardown.ts` | ✅ |
-| Test d'intégration auth/register | `__tests__/integrations/authentification.test.ts` | ✅ |
-| Jeux d'essai documentés | tests-strategy.md section « Jeux d'essai » | ✅ |
-| Tests unitaires composants UI | À implémenter | ❌ |
-| Tests E2E (Playwright) | À implémenter | ❌ |
-| Couverture chiffrée | À mesurer | ❌ |
+| Stratégie de tests détaillée | [04-developpement/tests-strategy.md](./04-developpement/tests-strategy.md) |  |
+| Configuration Jest + ts-jest | `jest.config.ts`, `jest.globalSetup.ts`, `jest.globalTeardown.ts` |  |
+| Test d'intégration auth/register | `__tests__/integrations/authentification.test.ts` |  |
+| Jeux d'essai documentés | tests-strategy.md section « Jeux d'essai » |  |
+| Tests unitaires composants UI | À implémenter |  |
+| Tests E2E (Playwright) | À implémenter |  |
+| Couverture chiffrée | À mesurer |  |
 
 **Position honnête à tenir en soutenance :** « Un test d'intégration backend est en place, la stratégie complète est documentée et le setup Jest fonctionne. L'extension de la couverture (tests UI, E2E) est listée en priorité dans le plan d'amélioration. »
 
@@ -286,7 +286,7 @@ Le projet est porté par une équipe (`arocchet/social-network`) ; **Christophe 
 
 > *Documentation déploiement, environnements, secrets, observabilité*
 
-**Couverture : ✅ Démontré**
+**Couverture :  Démontré**
 
 **Preuves concrètes :**
 
@@ -317,7 +317,7 @@ Le projet est porté par une équipe (`arocchet/social-network`) ; **Christophe 
 
 > *CI/CD, automatisation, intégration continue, livraison continue*
 
-**Couverture : ✅ Démontré**
+**Couverture :  Démontré**
 
 **Preuves concrètes :**
 
@@ -327,9 +327,9 @@ Le projet est porté par une équipe (`arocchet/social-network`) ; **Christophe 
 | Steps lint / test / build / deploy | workflow YAML |
 | Image Docker basée sur Bun (`oven/bun:1`) | `Dockerfile` |
 | Auto-déploiement Vercel sur push main | section 5 |
-| Issue CI dédiée | [#45 CI — Lint, test, build, push image](https://github.com/arocchet/social-network/issues/45) |
-| Issue DevOps | [#40](https://github.com/arocchet/social-network/issues/40) |
-| Seed script demo data | [#46](https://github.com/arocchet/social-network/issues/46), `prisma/seed.ts` |
+| Issue CI dédiée | [#45 CI — Lint, test, build, push image]([Issue #45](https://github.com/arocchet/social-network/issues/45)) |
+| Issue DevOps | [#40]([Issue #40](https://github.com/arocchet/social-network/issues/40)) |
+| Seed script demo data | [#46]([Issue #46](https://github.com/arocchet/social-network/issues/46)), `prisma/seed.ts` |
 | Migrations auto au boot conteneur | `Dockerfile` CMD final |
 | Healthcheck endpoint | `src/app/api/private/health/route.ts` |
 
@@ -341,13 +341,13 @@ Le projet est porté par une équipe (`arocchet/social-network`) ; **Christophe 
 
 ---
 
-## 🛡️ Compétences transverses
+## Compétences transverses
 
 ### Sécurité de l'application
 
 > *Le mot « sécurisée » apparaît dans l'intitulé des 3 blocs RNCP. C'est transverse.*
 
-**Couverture : ✅ Démontré + audit honnête**
+**Couverture :  Démontré + audit honnête**
 
 Toutes les mesures, risques et plan de durcissement sont dans **[04-developpement/securite-rgpd.md](./04-developpement/securite-rgpd.md)** :
 
@@ -361,7 +361,7 @@ Toutes les mesures, risques et plan de durcissement sont dans **[04-developpemen
 
 ---
 
-## 📊 Vue d'ensemble — couverture estimée
+## Vue d'ensemble — couverture estimée
 
 | Bloc | Compétences | Démontré | Partiel | Non couvert |
 |---|---|---|---|---|
@@ -374,7 +374,7 @@ Toutes les mesures, risques et plan de durcissement sont dans **[04-developpemen
 
 ---
 
-## 🎯 Recommandation de lecture pour le jury
+## Recommandation de lecture pour le jury
 
 1. Commencer par ce document pour avoir la **carte des preuves**.
 2. Lire la [section Sécurité / RGPD](./04-developpement/securite-rgpd.md) pour le caractère transverse « sécurisée ».

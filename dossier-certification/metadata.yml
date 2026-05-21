@@ -2,42 +2,56 @@
 title: "Dossier de Certification RNCP 37873"
 subtitle: "Concepteur Développeur d'Applications — Projet Social Network"
 author: "Christophe Lecart"
-date: "Mai 2026"
+date: "Juin 2026"
 subject: "Certification RNCP 37873 — Zone01 Rouen Normandie"
 keywords: [Next.js, TypeScript, Prisma, PostgreSQL, Docker, CI/CD, RNCP]
 lang: fr
 
-# Eisvogel settings
+# Eisvogel — page de titre avec palette dark du projet Konekt
 titlepage: true
-titlepage-color: "1A1A2E"
+titlepage-color: "1A191C"
 titlepage-text-color: "FFFFFF"
-titlepage-rule-color: "4F46E5"
+titlepage-rule-color: "D283FF"
 titlepage-rule-height: 4
-titlepage-logo: ""
 
+# Table des matières
 toc-own-page: true
 toc-title: "Sommaire"
 
-header-left: "Dossier RNCP 37873 — Christophe Lecart"
-header-right: "Zone01 Rouen Normandie"
-footer-left: "Social Network — CDA Niveau 6"
-footer-right: "\\thepage"
+# Pas d'en-tête ni pied de page répétitif
+disable-header-and-footer: true
 
 book: false
 classoption: oneside
 
-colorlinks: true
-linkcolor: "Indigo"
-urlcolor: "Indigo"
-toccolor: "Black"
+# Couleurs liens — palette dark Konekt
+header-includes:
+  - \usepackage{xcolor}
+  - \usepackage{float}
+  - \usepackage{graphicx}
+  - \setkeys{Gin}{width=\linewidth,height=0.78\textheight,keepaspectratio}
+  - \definecolor{konektpurple}{HTML}{D283FF}
+  - \definecolor{konektlavender}{HTML}{8187DC}
+  - \definecolor{konektteal}{HTML}{88D4AB}
+  - \definecolor{konektdark}{HTML}{1A191C}
+  - \renewcommand{\labelitemi}{\textbullet}
+  - \renewcommand{\labelitemii}{\textendash}
+  - \renewcommand{\labelitemiii}{\textperiodcentered}
 
+colorlinks: true
+linkcolor: "konektlavender"
+urlcolor: "konektlavender"
+toccolor: "konektdark"
+
+# Code
 code-block-font-size: "\\footnotesize"
 listings: true
 listings-no-page-break: true
 
-geometry: "left=2.5cm,right=2.5cm,top=3cm,bottom=3cm"
+# Mise en page
+geometry: "left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm"
 fontsize: 11pt
-mainfont: "DejaVu Serif"
-sansfont: "DejaVu Sans"
-monofont: "DejaVu Sans Mono"
+mainfont: "Linux Libertine O"
+sansfont: "TeX Gyre Heros"
+monofont: "TeX Gyre Cursor"
 ---

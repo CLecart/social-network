@@ -1,7 +1,11 @@
 import { login } from "@/lib/server/user/login";
+import { checkRateLimit } from "@/lib/security/ratelimit";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
+    const rateLimitResponse = await checkRateLimit(req);
+    if (rateLimitResponse) return rateLimitResponse;
+
     try {
         const { email, password } = await req.json();
         const token = await login(email, password);

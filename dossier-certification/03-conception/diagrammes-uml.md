@@ -1,4 +1,4 @@
-# 📊 Diagrammes UML - Social Network (Conforme Prisma)
+# Diagrammes UML - Social Network (Conforme Prisma)
 
 ## Objectif
 

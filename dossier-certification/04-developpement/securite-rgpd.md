@@ -1,4 +1,4 @@
-# 🔐 Sécurité et conformité RGPD
+# Sécurité et conformité RGPD
 
 ## Objectif
 
@@ -132,12 +132,12 @@ Les payloads d'API sont validés via Zod avant tout traitement métier. Exemples
 
 | Header | Effet | Statut |
 |---|---|---|
-| `Strict-Transport-Security` | Force HTTPS pour toutes les requêtes futures | ❌ (Vercel le fournit par défaut côté edge) |
-| `Content-Security-Policy` | Limite les sources de scripts / styles → mitige XSS | ❌ |
-| `X-Frame-Options` ou `frame-ancestors` | Empêche le clickjacking via iframe | ❌ |
-| `X-Content-Type-Options: nosniff` | Empêche le MIME-sniffing | ❌ |
-| `Referrer-Policy` | Contrôle l'info Referer envoyée aux tiers | ❌ |
-| `Permissions-Policy` | Limite l'accès aux APIs navigateur (caméra, micro, etc.) | ❌ |
+| `Strict-Transport-Security` | Force HTTPS pour toutes les requêtes futures |  (Vercel le fournit par défaut côté edge) |
+| `Content-Security-Policy` | Limite les sources de scripts / styles → mitige XSS |  |
+| `X-Frame-Options` ou `frame-ancestors` | Empêche le clickjacking via iframe |  |
+| `X-Content-Type-Options: nosniff` | Empêche le MIME-sniffing |  |
+| `Referrer-Policy` | Contrôle l'info Referer envoyée aux tiers |  |
+| `Permissions-Policy` | Limite l'accès aux APIs navigateur (caméra, micro, etc.) |  |
 
 Ces headers sont triviaux à ajouter via la clé `headers` de `next.config.ts`. Inscrit en roadmap.
 
@@ -190,7 +190,7 @@ D'après `prisma/schema.prisma`, le projet collecte :
 | `Account` (OAuth) — tokens Google | Pour les comptes OAuth | Permet rafraîchissement futur |
 | Posts, commentaires, réactions, messages | Contenu utilisateur | Cœur du service |
 
-### 4.2 Principe de minimisation — ✅ respecté
+### 4.2 Principe de minimisation —  respecté
 
 Tous les champs sauf `email` sont **optionnels** dans le schéma Prisma. L'inscription ne demande que le strict nécessaire ; les autres champs sont enrichis ultérieurement via l'onboarding.
 
@@ -198,13 +198,13 @@ Tous les champs sauf `email` sont **optionnels** dans le schéma Prisma. L'inscr
 
 | Droit RGPD (art. 15-22) | Statut |
 |---|---|
-| **Droit d'accès** (consulter ses données) | ⚠️ Partiellement : `GET /api/private/me` retourne le profil mais pas l'intégralité (posts, messages…) |
-| **Droit de rectification** | ✅ `PUT /api/private/me` + `PATCH /api/private/user/settings` |
-| **Droit à l'effacement / oubli** | ❌ **Endpoint de suppression de compte non implémenté** |
-| **Droit à la limitation du traitement** | ⚠️ Indirect via `visibility: PRIVATE` mais non normalisé |
-| **Droit à la portabilité** | ❌ **Pas d'export structuré (JSON/CSV) des données utilisateur** |
-| **Droit d'opposition** | ⚠️ Notifications désactivables via `notificationsEnabled` |
-| **Décision automatisée / profilage** | ✅ N/A (pas d'algorithme de recommandation automatisé) |
+| **Droit d'accès** (consulter ses données) |  Partiellement : `GET /api/private/me` retourne le profil mais pas l'intégralité (posts, messages…) |
+| **Droit de rectification** |  `PUT /api/private/me` + `PATCH /api/private/user/settings` |
+| **Droit à l'effacement / oubli** |  **Endpoint de suppression de compte non implémenté** |
+| **Droit à la limitation du traitement** |  Indirect via `visibility: PRIVATE` mais non normalisé |
+| **Droit à la portabilité** |  **Pas d'export structuré (JSON/CSV) des données utilisateur** |
+| **Droit d'opposition** |  Notifications désactivables via `notificationsEnabled` |
+| **Décision automatisée / profilage** |  N/A (pas d'algorithme de recommandation automatisé) |
 
 **Points critiques à adresser pour une mise en production :** droit à l'oubli et droit à la portabilité. Ce sont des **obligations légales** dès qu'il y a des utilisateurs en UE.
 
@@ -215,7 +215,7 @@ Tous les champs sauf `email` sont **optionnels** dans le schéma Prisma. L'inscr
 
 ### 4.5 Mentions légales et politique de confidentialité
 
-❌ **Aucune page « Mentions légales » ni « Politique de confidentialité »** n'existe dans le projet. Ces pages sont **obligatoires** pour tout service en ligne accessible depuis l'UE. À créer.
+ **Aucune page « Mentions légales » ni « Politique de confidentialité »** n'existe dans le projet. Ces pages sont **obligatoires** pour tout service en ligne accessible depuis l'UE. À créer.
 
 ### 4.6 Sécurité des données en transit et au repos
 
@@ -237,7 +237,7 @@ Tous les champs sauf `email` sont **optionnels** dans le schéma Prisma. L'inscr
 
 Priorisé par impact / facilité d'implémentation.
 
-### 🔴 Critique — avant mise en production
+### Critique — avant mise en production
 
 | # | Action | Effort | Bénéfice |
 |---|---|---|---|
@@ -247,7 +247,7 @@ Priorisé par impact / facilité d'implémentation.
 | 4 | **Headers de sécurité** dans `next.config.ts` (CSP, X-Frame-Options, Referrer-Policy, X-Content-Type-Options) | 0,5 j | Couvre clickjacking, MIME sniffing, fuite Referer |
 | 5 | **Pages Mentions légales + Politique de confidentialité** | 0,5 j | Obligation légale UE |
 
-### 🟠 Important — sous 1 mois post-prod
+### Important — sous 1 mois post-prod
 
 | # | Action | Effort | Bénéfice |
 |---|---|---|---|
@@ -257,7 +257,7 @@ Priorisé par impact / facilité d'implémentation.
 | 9 | **Validation MIME / taille upload** côté serveur avant Cloudinary | 0,5 j | Anti-abus stockage |
 | 10 | **Refresh tokens** + rotation, révocation en cas de logout | 2 j | Sécurité session avancée |
 
-### 🟡 Bonus — confort exploitation
+### Bonus — confort exploitation
 
 | # | Action | Effort | Bénéfice |
 |---|---|---|---|
