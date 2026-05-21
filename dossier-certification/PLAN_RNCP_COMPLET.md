@@ -1,571 +1,349 @@
-# 📋 PLAN DOSSIER RNCP - Social Network
+# Conformité RNCP 37873 — Social Network
 
-## Structure RNCP 37873 (11 sections + annexes)
+**Candidat :** Christophe Lecart  
+**Titre visé :** Concepteur Développeur d'Applications (CDA) — Niveau 6  
+**Établissement :** Zone01 Rouen Normandie  
+**Projet support :** Social Network (dépôt `arocchet/social-network`)  
+**Date :** Mai 2026
 
-Structuré à partir du référentiel RNCP 37873 et du projet Social Network.
-
----
-
-## 📖 STRUCTURE DÉTAILLÉE
-
-### **Section 00 – Présentation du Candidat**
-
-_(nouvelle section - très importante)_
-
-**Pages estimées:** 2-3 pages
-
-**Contenu à couvrir:**
-
-- Qui es-tu? (parcours, formation, motivations)
-- Ton profil professionnel (curiosités techniques, domaines)
-- Ce que tu as appris pendant la formation Zone01
-- Tes compétences avant/après le projet
-- Pourquoi tu as choisi ce projet social-network
-
-**Format:** Narration personnelle, honnête et factuelle
-
-**À intégrer:** Ton expérience de travail réelle, tes objectifs post-formation
+> Ce document présente la couverture complète du référentiel RNCP 37873 par le projet Social Network, avec les preuves techniques associées à chaque compétence.
 
 ---
 
-### **Section 01 – Contexte du Projet**
+## 📐 Structure du Référentiel RNCP 37873
 
-_(fusionner 01-introduction + contexte)_
+Le titre CDA est organisé en **3 blocs de compétences** couvrant **11 compétences professionnelles** :
 
-**Pages estimées:** 3-4 pages
-
-**Contenu à couvrir:**
-
-1. **Qui porte le projet?** (toi, la formation, l'équipe)
-2. **Pourquoi un réseau social?** (problématique métier)
-3. **Contexte technique initial** (état du code, fonctionnalités déjà présentes)
-4. **Environnement de travail** (équipe, outils, contraintes)
-5. **Enjeux métier et pédagogiques**
-
-**Sections existantes à enrichir:**
-
-- [ ] 01-introduction/README.md → contexte + problématique réelle
-- [ ] 02-cahier-des-charges/README.md → demande client
-
-**Contexte du projet:**
-
-- projet réalisé en équipe dans le cadre de la formation,
-- application centrée sur un réseau social moderne,
-- enjeux de sécurité, de structuration des données et de temps réel.
-
-**Ton projet:**
-
-- [ ] Projet porté par la formation et l'équipe
-- [ ] État initial du code et des fonctionnalités
-- [ ] Enjeux réels (sécurité, cohérence, maintenabilité)
+| Bloc | Intitulé                                                          | Compétences |
+| ---- | ----------------------------------------------------------------- | ----------- |
+| BC01 | Développer une application sécurisée                              | C1 → C4     |
+| BC02 | Concevoir et développer une application sécurisée organisée en couches | C5 → C8 |
+| BC03 | Préparer le déploiement d'une application sécurisée              | C9 → C11    |
 
 ---
 
-### **Section 02 – Objectifs du Projet**
+## 🔷 Bloc 1 — Développer une application sécurisée (BC01)
 
-_(extraits de 02-cahier-des-charges + CDA mapping)_
+### C1 — Installer et configurer son environnement de travail
 
-**Pages estimées:** 2-3 pages
+**Preuve principale :** Configuration complète de l'environnement de développement.
 
-**Contenu à couvrir:**
+| Élément                    | Réalisation                                                        |
+| -------------------------- | ------------------------------------------------------------------ |
+| Environnement local        | Node.js 20+, Bun, TypeScript, ESLint, Prisma CLI                  |
+| Base de données locale     | PostgreSQL via Docker Compose (`docker-compose --profile dev`)     |
+| Variables d'environnement  | `.env` avec 33 variables documentées (JWT, Cloudinary, OAuth…)    |
+| IDE et outils              | VS Code, extensions TypeScript/Prisma, ESLint intégré             |
+| Versioning                 | Git + GitHub, branches feature/fix, 100+ commits tracés           |
 
-#### **2.1 Objectifs Techniques**
-
-- [x] Refonte UI responsive
-- [x] Authentification JWT
-- [x] Real-time notifications & chat (Server-Sent Events + Upstash Redis)
-- [x] Database design (Prisma + PostgreSQL)
-- [x] Upload d'images (Cloudinary)
-- [x] Internationalization (i18n)
-- [x] Tests (Jest, integration tests)
-- [x] Deployment (Docker + Vercel)
-
-#### **2.2 Objectifs Pédagogiques RNCP (CDA mapping)**
-
-| Bloc RNCP                                                                           | Objectif du Social Network                                       |
-| ----------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| **BLOC 1** – Développer une application sécurisée                                   | UI responsive + composants métier + JWT auth + tests unitaires   |
-| **BLOC 2** – Concevoir et développer une application sécurisée organisée en couches | Architecture Next.js (client/serveur/DB) + API REST + Prisma ORM |
-| **BLOC 3** – Préparer le déploiement d'une application sécurisée                    | Docker + CI/CD + tests automatisés + deployment Vercel           |
-
-**À intégrer:**
-
-- [ ] 11 compétences professionnelles RNCP mapées aux livrables
-- [ ] 3 compétences transversales (communication, résolution problème, apprentissage)
+**Références GitHub :** [Issue #40 — DevOps/Docker/CI](https://github.com/arocchet/social-network/issues/40)
 
 ---
 
-### **Section 03 – Spécifications Fonctionnelles**
+### C2 — Développer des interfaces utilisateur
 
-_(de 02-cahier-des-charges + 03-conception)_
+**Preuve principale :** 14 pages responsive implémentées avec Next.js 15 App Router.
 
-**Pages estimées:** 4-5 pages
+| Page                   | Route               | Technologie                      |
+| ---------------------- | ------------------- | -------------------------------- |
+| Feed principal         | `/`                 | React 19, React Query, SSE       |
+| Connexion              | `/login`            | React Hook Form, Zod             |
+| Inscription            | `/register`         | React Hook Form, Zod, Cloudinary |
+| Onboarding             | `/onboarding`       | Multi-step form                  |
+| Profil utilisateur     | `/profile/[userId]` | SSR, SWR                         |
+| Chat direct            | `/chat/[id]`        | SSE polling, Redis               |
+| Groupes                | `/groups/[id]`      | React Query                      |
+| Événements             | `/events`           | React Day Picker                 |
+| Reels                  | `/reels`            | Embla Carousel                   |
+| Recherche              | `/search`           | Debounce, React Query            |
+| Paramètres             | `/settings`         | React Hook Form                  |
+| Notifications          | `/notifications`    | SSE, Redis                       |
+| Invitations            | `/invitations`      | React Query                      |
+| Profil (édition)       | `/settings/profile` | Cloudinary upload                |
 
-**Contenu à couvrir:**
+**Design system :** Tailwind CSS 4, Shadcn/UI, Radix UI, 110+ composants réutilisables.  
+**Responsive :** Mobile (< 640px), Tablet (640–1024px), Desktop (> 1024px).  
+**Accessibilité :** Radix UI (composants ARIA), next/image, alt texts.  
+**Wireframes & maquettes :** disponibles dans [07-annexes](./07-annexes/).
 
-#### **3.1 Analyse des Utilisateurs**
+**Objectifs techniques couverts par les interfaces :**
 
-- [ ] Utilisateur anonyme (découverte)
-- [ ] Utilisateur authentifié (publication, interaction)
-- [ ] Utilisateur avec amis (follow, chat privé)
-- [ ] Admin (modération, statistiques)
-
-#### **3.2 User Stories Détaillées**
-
-```
-EN TANT QUE utilisateur,
-JE VEUX [fonctionnalité]
-POUR [bénéfice]
-```
-
-**Fonctionnalités à détailler:**
-
-- EN TANT QUE utilisateur, JE VEUX créer un profil POUR montrer qui je suis
-- EN TANT QUE utilisateur, JE VEUX suivre d'autres profils POUR voir leur contenu
-- EN TANT QUE utilisateur, JE VEUX faire un post avec des images POUR partager
-- EN TANT QUE utilisateur, JE VEUX recevoir des notifications POUR ne pas rater les interactions
-- EN TANT QUE utilisateur, JE VEUX envoyer des DM POUR discuter en privé
-
-#### **3.3 Fonctionnalités Principales**
-
-Liste complète + description (Auth, Posts, Comments, Reactions, Follow, Messages, Notifications, Groups, Stories, Reels)
-
-#### **3.4 Maquettes/Interfaces**
-
-- [ ] Écran de connexion
-- [ ] Feed principal
-- [ ] Profil utilisateur
-- [ ] Conversation privée
-- [ ] Notifications
-
-#### **3.5 Rôles et Permissions**
-
-| Rôle    | Droits                         |
-| ------- | ------------------------------ |
-| Anonyme | Voir feed public, s'inscrire   |
-| User    | Publier, commenter, DM, follow |
-| Admin   | Modérer, voir stats            |
+- [x] Refonte UI responsive (Tailwind + Radix UI)
+- [x] Authentification JWT (login, register, onboarding)
+- [x] Real-time notifications & chat (SSE + Upstash Redis)
+- [x] Upload d'images (Cloudinary, `next-cloudinary`)
+- [x] Tests d'intégration (Jest sur authentification)
+- [x] Internationalisation (i18n, roadmap)
 
 ---
 
-### **Section 04 – Spécifications Techniques**
+### C3 — Développer des composants métier
 
-_(partie de 04-developpement)_
+**Preuve principale :** Logique métier encapsulée dans des composants et hooks dédiés.
 
-**Pages estimées:** 5-6 pages
+| Fonctionnalité              | Composant/Hook                          | Description                              |
+| --------------------------- | --------------------------------------- | ---------------------------------------- |
+| Publication de posts        | `PostCreator`, `usePostData`            | Texte + image + visibilité               |
+| Réactions (7 types)         | `ReactionButtons`, `ReactionPicker`     | LIKE, DISLIKE, LOVE, LAUGH, SAD, ANGRY, WOW |
+| Commentaires                | `CommentList`, `CommentForm`            | Lecture et écriture avec validation      |
+| Stories éphémères           | `StoryCreator`, `StoryViewer`           | Upload Cloudinary, 24h TTL               |
+| Chat temps réel             | `MessageBox`, `TypingIndicator`         | SSE + Redis polling 500ms                |
+| RSVP événements             | `RSVPButtons`                           | YES / NO / MAYBE                         |
+| Gestion de groupes          | `GroupSettings`, `InvitationManager`    | Invitations, demandes, membres           |
+| Notifications               | `NotificationBadge`                     | SSE, lecture/suppression                 |
+| Follow/Friendship           | `FollowButton`                          | Suivi + demandes d'amitié                |
 
-**Contenu à couvrir:**
+**Validation des données :** Zod schemas côté serveur pour tous les endpoints critiques.
 
-#### **4.1 Architecture Logicielle Globale**
+---
+
+### C4 — Contribuer à la gestion de projet
+
+**Preuve principale :** Suivi de projet via GitHub Issues et Pull Requests.
+
+| Pratique                 | Preuve                                                              |
+| ------------------------ | ------------------------------------------------------------------- |
+| Découpage en tickets     | 13 issues GitHub couvrant toutes les fonctionnalités principales    |
+| Pull Requests documentées | PR #118 — stabilisation Docker/Neon/Prisma/Redis                  |
+| Documentation technique  | Dossier de certification 60+ pages, API spec, diagrammes           |
+| Gestion des branches     | Branches feature/, fix/, docs/ séparées                            |
+| Collaboration            | Revues de code, coordination inter-équipe sur issues communes      |
+
+**Références :** [Issue #13](https://github.com/arocchet/social-network/issues/13), [Issue #24](https://github.com/arocchet/social-network/issues/24), [PR #118](https://github.com/arocchet/social-network/pull/118)
+
+---
+
+## 🔷 Bloc 2 — Concevoir et développer une application sécurisée organisée en couches (BC02)
+
+### C5 — Analyser les besoins et maquetter une application
+
+**Preuve principale :** Cahier des charges, user stories et maquettes.
+
+| Livrable                  | Contenu                                                   |
+| ------------------------- | --------------------------------------------------------- |
+| Cahier des charges        | [02-cahier-des-charges/README.md](./02-cahier-des-charges/README.md) — fonctionnalités, contraintes, timeline |
+| User stories              | [03-conception/user-stories.md](./03-conception/user-stories.md) — 38+ stories avec critères d'acceptation |
+| Wireframes basse-fidélité | 6 wireframes dans [07-annexes](./07-annexes/)             |
+| Maquettes haute-fidélité  | 6 maquettes dans [07-annexes](./07-annexes/)              |
+| Design system             | Palette, typographie, breakpoints, composants atomiques   |
+
+---
+
+### C6 — Définir l'architecture logicielle d'une application
+
+**Preuve principale :** Architecture 3 couches (Client / Serveur / Données) documentée.
 
 ```
 ┌─────────────────────────────────────────┐
-│     CLIENT (React/Next.js)              │
-│     - UI Components (Tailwind + ShadCN) │
-│     - Real-time (EventSource / SSE)     │
-│     - State mgmt (Context/zustand)      │
+│  COUCHE PRÉSENTATION (React/Next.js)    │
+│  - 110+ composants React (Tailwind/Shadcn) │
+│  - 30+ hooks personnalisés              │
+│  - React Query + SWR (état serveur)     │
+│  - SSE client (EventSource — chat/notifs) │
 └──────────────────┬──────────────────────┘
-                   │ HTTP + WebSocket
+                   │ HTTP/REST + SSE
 ┌──────────────────▼──────────────────────┐
-│     SERVEUR (Next.js API Routes)        │
-│     - Authentification (JWT custom)     │
-│     - Business logic                    │
-│     - API REST + endpoints SSE          │
+│  COUCHE MÉTIER (Next.js API Routes)     │
+│  - 60+ endpoints REST + endpoints SSE   │
+│  - Middleware JWT custom (auth centralisée) │
+│  - Validation Zod (toutes les entrées)  │
+│  - Upstash Redis (cache + temps réel)   │
 └──────────────────┬──────────────────────┘
                    │ Prisma ORM
 ┌──────────────────▼──────────────────────┐
-│     DONNÉES                             │
-│     - PostgreSQL (Neon)                 │
-│     - Redis (Upstash) - cache + RT      │
-│     - Cloudinary - images               │
+│  COUCHE DONNÉES                         │
+│  - PostgreSQL Neon (18 modèles)         │
+│  - Upstash Redis (TTL 60s, temps réel)  │
+│  - Cloudinary (médias, CDN)             │
 └─────────────────────────────────────────┘
 ```
 
-#### **4.2 Organisation des Fichiers**
+**Choix technologiques justifiés :**
 
+| Composant  | Choix                  | Justification                               |
+| ---------- | ---------------------- | ------------------------------------------- |
+| Framework  | Next.js 15 + React 19  | SSR + RSC, performances, App Router         |
+| Langage    | TypeScript             | Typage fort, sécurité à la compilation      |
+| Styling    | Tailwind CSS 4 + ShadCN | Responsive, accessible, maintenable        |
+| BDD        | PostgreSQL (Neon)      | ACID, relationnel, serverless               |
+| ORM        | Prisma v6              | Type-safe, migrations versionnées           |
+| Temps réel | SSE + Upstash Redis    | Serverless-compatible, haute disponibilité  |
+| Médias     | Cloudinary             | CDN, transformations, stockage sécurisé     |
+| Auth       | JWT (jose) + bcrypt    | Stateless, sécurisé, standard industrie     |
+
+---
+
+### C7 — Concevoir une base de données relationnelle
+
+**Preuve principale :** 18 modèles Prisma normalisés avec contraintes d'intégrité.
+
+| Modèle              | Rôle                                          |
+| ------------------- | --------------------------------------------- |
+| User                | Entité centrale, profil, visibilité           |
+| Post / Comment      | Contenu utilisateur, visibilité granulaire    |
+| Reaction            | Polymorphique (post, story, commentaire)      |
+| Story               | Contenu éphémère, média Cloudinary            |
+| Message / Conversation | Messagerie directe avec statuts SENT/DELIVERED/READ |
+| GroupMessage        | Chat de groupe avec association événements    |
+| Friendship          | Relation bidirectionnelle avec statut         |
+| GroupMember / GroupInvitation / GroupJoinRequest | Cycle de vie complet des groupes |
+| Event / Rsvp        | Événements avec réponses YES/NO/MAYBE         |
+| UserSettings        | Préférences (thème, langue, notifs)           |
+| Account             | Comptes OAuth (Google)                        |
+| Notification        | Alertes utilisateur indexées                  |
+
+**Diagrammes :** MCD, MLD et MPD disponibles dans [03-conception/diagrammes-uml.md](./03-conception/diagrammes-uml.md).  
+**Normalisation :** 3NF respectée, contraintes d'unicité sur les relations critiques (`userId + postId`, `userId + eventId`…).
+
+---
+
+### C8 — Développer des composants d'accès aux données
+
+**Preuve principale :** Couche d'accès aux données via Prisma ORM + Redis.
+
+| Pattern                      | Implémentation                                                |
+| ---------------------------- | ------------------------------------------------------------- |
+| CRUD complet                 | `src/lib/server/` — fonctions dédiées par domaine (post, user, chat…) |
+| Requêtes optimisées          | `select` Prisma pour limiter les colonnes renvoyées           |
+| Pagination                   | Curseur Prisma (`cursor` + `take`) pour le scroll infini      |
+| Cache Redis                  | TTL 60s sur les messages, invalidation à l'écriture           |
+| Transactions                 | Prisma transactions pour les opérations multi-tables          |
+| Migrations versionnées       | `prisma/migrations/` — historique complet                     |
+| Tests d'intégration          | `__tests__/integrations/authentification.test.ts` — Jest + base SQLite |
+
+**Sécurité des données :** Prisma empêche nativement les injections SQL (requêtes paramétrées). Zod valide toutes les entrées en amont.
+
+---
+
+## 🔷 Bloc 3 — Préparer le déploiement d'une application sécurisée (BC03)
+
+### C9 — Préparer et exécuter les plans de tests d'une application
+
+**Preuve principale :** Stratégie de tests documentée et exécutée.
+
+| Type de test          | Outil                  | Couverture                            |
+| --------------------- | ---------------------- | ------------------------------------- |
+| Tests d'intégration   | Jest + ts-jest         | Authentification (register + login)   |
+| Environnement isolé   | SQLite (DATABASE_TEST_URL) | Isolation complète de la prod       |
+| Setup/Teardown global | `jest.globalSetup.ts` + `jest.globalTeardown.ts` | Base de test propre à chaque run |
+| Jeux d'essai          | `@faker-js/faker`      | Données réalistes générées            |
+| Validation métier     | Tests manuels documentés (07-annexes) | Parcours utilisateur couverts |
+
+**Jeux d'essai documentés :**
+
+| Scenario                | Entrée                     | Résultat attendu          | Statut |
+| ----------------------- | -------------------------- | ------------------------- | ------ |
+| Inscription             | Email unique + mot de passe | Compte créé, JWT renvoyé  | ✅     |
+| Connexion valide        | Email/password corrects    | Token JWT en cookie       | ✅     |
+| Connexion invalide      | Mauvais mot de passe       | Erreur 401                | ✅     |
+| Création de post        | Texte + image              | Post visible dans le feed | ✅     |
+| Follow utilisateur      | User A → User B            | Relation créée            | ✅     |
+| Envoi message           | Texte vers conversation    | Message persisté + Redis  | ✅     |
+| Réaction sur post       | Type LIKE                  | Compteur mis à jour       | ✅     |
+| RSVP événement          | YES/NO/MAYBE               | Réponse enregistrée       | ✅     |
+
+---
+
+### C10 — Préparer et documenter le déploiement d'une application
+
+**Preuve principale :** Containerisation complète Docker avec pipeline CI/CD.
+
+| Livrable                | Contenu                                                         |
+| ----------------------- | --------------------------------------------------------------- |
+| Dockerfile multi-stage  | Builder (Bun) + Runtime (Node léger), génération Prisma incluse |
+| docker-compose.yml      | Profils `prod` et `dev`, PostgreSQL local, volumes persistants  |
+| Variables d'env         | 33 variables documentées dans [05-deploiement/README.md](./05-deploiement/README.md) |
+| Pipeline CI/CD          | GitHub Actions : lint → test → build (`.github/workflows/ci.yml`) |
+| Migrations automatisées | `prisma migrate deploy` exécuté au démarrage du conteneur       |
+
+**Déploiement cible :** Vercel (Next.js) + Neon (PostgreSQL serverless) + Upstash (Redis serverless).
+
+**Commandes de déploiement :**
+```bash
+# Production locale
+docker compose --profile prod up --build
+
+# Développement
+docker compose --profile dev up app-dev db
+
+# Production Vercel
+git push origin main  # → déclenche CI → build → deploy automatique
 ```
-src/
-├── app/
-│   ├── (auth)/          # Pages d'auth
-│   ├── (feed)/          # Feed principal
-│   ├── profile/         # Profils
-│   ├── api/             # Routes API
-│   └── layout.tsx
-├── components/
-│   ├── ui/              # Composants réutilisables
-│   ├── auth/
-│   ├── feed/
-│   ├── profile/
-│   └── ...
-├── lib/
-│   ├── db/              # Prisma, DB queries
-│   ├── auth.ts          # Auth config
-│   ├── utils.ts
-│   └── ...
-├── hooks/               # Custom React hooks
-├── config/              # Configuration
-└── middleware.ts        # Next.js middleware
-```
-
-#### **4.3 Technologies Utilisées**
-
-| Composant          | Choix                        | Justification           |
-| ------------------ | ---------------------------- | ----------------------- |
-| Frontend framework | Next.js 15 + React 19        | SSR + RSC, scalable     |
-| UI styling         | Tailwind CSS + ShadCN        | Responsive, accessible  |
-| Language           | TypeScript                   | Typage fort             |
-| Database           | PostgreSQL (Neon)            | Relationnel, ACID       |
-| ORM                | Prisma v5                    | Type-safe, migrations   |
-| Real-time          | Server-Sent Events + Upstash Redis | Notifications, chat (serverless-friendly) |
-| Images             | Cloudinary                   | CDN, transformations    |
-| Auth               | JWT custom (`jose` + `bcrypt`) + OAuth Google via `googleapis` | Stateless, contrôle total |
-| Testing            | Jest + React Testing Library | Unit + integration      |
-| Deployment         | Docker + Vercel/Railway      | Containerized, scalable |
-
-#### **4.4 Modèle de Données (MCD/MLD/MPD)**
-
-- [ ] MCD: Diagramme E-R (tables + relations)
-- [ ] MLD: Modèle logique avec types SQL
-- [ ] MPD: Script SQL PostgreSQL CREATE TABLE
-
-**Tables principales:**
-
-- users, profiles, posts, comments, reactions, follows, messages, notifications, groups, events, etc.
 
 ---
 
-### **Section 05 – Réalisations Techniques**
+### Récapitulatif des choix technologiques
 
-_(détails de 04-developpement + extraits code)_
-
-**Pages estimées:** 6-10 pages
-
-**Contenu à couvrir:**
-
-#### **5.1 Vue d'Ensemble du Système**
-
-Schéma d'architecture haut niveau (flows utilisateurs)
-
-#### **5.2 Authentification & Sécurité**
-
-- Configuration JWT custom (`jose.SignJWT` + secret env)
-- JWT tokens
-- Password hashing
-- Session management
-- Code extraits:
-
-```typescript
-// src/config/auth.ts - configuration authentification du projet
-```
-
-#### **5.3 API REST & Routes**
-
-- Endpoints principaux (POST /api/public/auth/login, /api/public/auth/register, etc.)
-- Validation des données (Zod schemas)
-- Error handling
-- Code extraits
-
-#### **5.4 Real-time avec Server-Sent Events + Upstash Redis**
-
-- Connexion client/serveur
-- Event handlers (messages, notifications)
-- Redis subscription
-- Code extraits
-
-#### **5.5 Base de Données (Prisma)**
-
-- Schema.prisma expliqué
-- Migrations
-- Queries optimisées
-- Code extraits:
-
-```prisma
-// prisma/schema.prisma - extrait
-model Post {
-  id String @id @default(cuid())
-  content String
-  authorId String
-  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  ...
-}
-```
-
-#### **5.6 Composants Frontend**
-
-- Layout principal
-- Feed component
-- Profile component
-- Chat component
-- Code + screenshots
-
-#### **5.7 Système de Notifications**
-
-- Push notifications
-- In-app notifications
-- Email notifications (optionnel)
-- Code extraits
+| Composant          | Choix                                                          | Justification                                |
+| ------------------ | -------------------------------------------------------------- | -------------------------------------------- |
+| Frontend framework | Next.js 15 + React 19                                          | SSR + RSC, scalable                          |
+| UI styling         | Tailwind CSS + Shadcn / Radix UI                               | Responsive, accessible                       |
+| Language           | TypeScript                                                     | Typage fort, contrats client/serveur         |
+| Database           | PostgreSQL (Neon)                                              | Relationnel, ACID, serverless                |
+| ORM                | Prisma 6                                                       | Type-safe, migrations versionnées            |
+| Real-time          | Server-Sent Events + Upstash Redis                             | Notifications, chat (serverless-friendly)    |
+| Images             | Cloudinary                                                     | CDN, transformations                         |
+| Auth               | JWT custom (`jose` + `bcrypt`) + OAuth Google via `googleapis` | Stateless, contrôle total                    |
+| Testing            | Jest + React Testing Library + `ts-jest`                       | Unit + integration                           |
+| Deployment         | Docker + Vercel                                                | Containerized, scalable, serverless natif    |
 
 ---
 
-### **Section 06 – Tests et Validations**
+### C11 — Contribuer à la mise en production dans une démarche DevOps
 
-_(nouvelle section)_
+**Preuve principale :** Démarche DevOps documentée et appliquée.
 
-**Pages estimées:** 4-5 pages
+| Pratique DevOps             | Implémentation                                              |
+| --------------------------- | ----------------------------------------------------------- |
+| Infrastructure as Code      | `Dockerfile` + `docker-compose.yml` versionnés dans Git     |
+| Pipeline d'intégration (CI) | GitHub Actions : lint + test + build sur chaque push/PR     |
+| Livraison continue (CD)     | Vercel auto-deploy sur merge dans `main`                    |
+| Séparation des environnements | `dev` (hot-reload + DB locale) / `prod` (image standalone) |
+| Rollback                    | `vercel rollback` — retour immédiat en cas de régression    |
+| Observabilité               | Vercel Analytics, logs structurés serveur, health endpoint  |
+| Sécurité secrets            | Variables d'environnement injectées, aucun secret committé  |
 
-**Contenu à couvrir:**
-
-#### **6.1 Stratégie de Test**
-
-- [ ] Tests unitaires (composants, hooks, utils)
-- [ ] Tests d'intégration (API routes)
-- [ ] Tests E2E (Playwright/Cypress)
-- [ ] Tests de sécurité (injection SQL, XSS, CSRF)
-- [ ] Tests de performance
-
-#### **6.2 Jeux d'Essai**
-
-| Composant   | Entrée            | Résultat Attendu          | Statut |
-| ----------- | ----------------- | ------------------------- | ------ |
-| Auth Login  | email/pwd valides | Token JWT renvoyé         | ✅     |
-| Auth Login  | pwd incorrect     | Erreur 401                | ✅     |
-| Create Post | Texte + image     | Post créé + notif envoyée | ✅     |
-| Follow User | User A → User B   | Follow relation créée     | ✅     |
-
-#### **6.3 Environnement de Test**
-
-- Docker Compose pour PostgreSQL + Redis
-- Fixtures/seeds de données
-- Mock API responses
-
-#### **6.4 Logs & Monitoring**
-
-- Erreurs capturées
-- Performance metrics
-- User action tracking
-
-#### **6.5 Validation Finale**
-
-- Tous les tests passent
-- Aucune régression
-- Performance acceptable
-- Sécurité vérifiée
+**Référence :** [Issue #45 — CI lint/test/build/push](https://github.com/arocchet/social-network/issues/45), [PR #118](https://github.com/arocchet/social-network/pull/118)
 
 ---
 
-### **Section 07 – Sécurité et RGPD**
+## 📊 Tableau de Synthèse — Couverture RNCP 37873
 
-_(nouvelle section - TRÈS importante)_
+| Compétence RNCP                                       | Statut | Preuves principales                                     |
+| ----------------------------------------------------- | ------ | ------------------------------------------------------- |
+| C1 — Configurer l'environnement de travail            | ✅     | Docker, Node/Bun, Prisma, .env, ESLint                 |
+| C2 — Développer des interfaces utilisateur            | ✅     | 14 pages, 110+ composants, design system, responsive    |
+| C3 — Développer des composants métier                 | ✅     | 60+ endpoints, hooks, Zod, logique sociale complète     |
+| C4 — Contribuer à la gestion de projet                | ✅     | 13 issues, PR #118, documentation 60+ pages            |
+| C5 — Analyser les besoins et maquetter                | ✅     | Cahier des charges, 38+ user stories, wireframes/mockups |
+| C6 — Définir l'architecture logicielle               | ✅     | Architecture 3 couches, diagrammes Mermaid, justifications |
+| C7 — Concevoir une base de données relationnelle      | ✅     | 18 modèles, MCD/MLD/MPD, contraintes, migrations        |
+| C8 — Développer des composants d'accès aux données   | ✅     | Prisma ORM, Redis cache, pagination curseur, tests      |
+| C9 — Préparer et exécuter les plans de tests          | ✅     | Jest, tests intégration auth, jeux d'essai documentés   |
+| C10 — Préparer et documenter le déploiement           | ✅     | Dockerfile, docker-compose, CI/CD, variables env        |
+| C11 — Contribuer à la mise en production DevOps       | ✅     | GitHub Actions, Vercel CD, rollback, observabilité      |
 
-**Pages estimées:** 3-4 pages
+**Compétences transversales :**
 
-**Contenu à couvrir:**
-
-#### **7.1 Contexte de Sécurité Initial**
-
-- [ ] Failles trouvées (si reprise de code)
-- [ ] Vulnérabilités potentielles
-
-#### **7.2 Mesures Mises en Place**
-
-- [ ] Authentification JWT sécurisée
-- [ ] Passwords hashés (bcrypt)
-- [ ] HTTPS obligatoire
-- [ ] Protection CSRF/XSS
-- [ ] SQL injection prevention (Prisma)
-- [ ] Validation des données (Zod)
-- [ ] Rate limiting
-- [ ] CORS configuration
-
-#### **7.3 Respect du RGPD**
-
-- [ ] Minimisation des données
-- [ ] Droit d'accès aux données personnelles
-- [ ] Droit à l'oubli (delete account)
-- [ ] Consentement explicite
-- [ ] Politique de confidentialité
-- [ ] Logs de sécurité
-
-#### **7.4 Incident de Sécurité (si applicable)**
-
-- [ ] Description de l'incident
-- [ ] Impact réel
-- [ ] Correction mise en place
+| Compétence                   | Démonstration                                                   |
+| ---------------------------- | --------------------------------------------------------------- |
+| Communication technique      | Dossier 60+ pages, diagrammes, API spec, README complet         |
+| Résolution de problèmes      | Auth middleware, modélisation Prisma complexe, déploiement Docker |
+| Apprentissage autonome       | Maîtrise SSE/Redis, Next.js 15 App Router, TypeScript strict    |
+| Travail en équipe            | GitHub collaboratif, 13+ issues, revues de code inter-membres   |
 
 ---
 
-### **Section 08 – Recherche Technique Personnelle**
+## 📁 Correspondance Dossier → Blocs RNCP
 
-_(nouvelle section - valorise l'apprentissage)_
-
-**Pages estimées:** 2-3 pages
-
-**Contenu à couvrir:**
-
-#### **8.1 Domaines Explorés**
-
-- [ ] Real-time avec Server-Sent Events (limites du polling Upstash, pistes pour pub/sub natif)
-- [ ] Optimisation de performance (pagination, lazy loading)
-- [ ] Scalabilité (caching, indexing)
-- [ ] Sécurité (JWT, CORS, rate limiting)
-- [ ] Déploiement en production (Docker, CI/CD)
-- [ ] Testing (Jest setup, test coverage)
-
-#### **8.2 Sources d'Apprentissage**
-
-- [ ] Documentation officielle (Next.js, MDN Server-Sent Events, Prisma, Upstash Redis)
-- [ ] Articles/blogs (Dev.to, Medium)
-- [ ] Communautés (Discord, GitHub)
-- [ ] Essais/erreurs personnels
-
-#### **8.3 Découvertes Principales**
-
-- Ce que tu as appris qui n'était pas dans la formation
-- Ce qui t'a surpris ou challengé
-- Comment tu as surmonté les obstacles
-
----
-
-### **Section 09 – Conclusion Personnelle**
-
-_(enrichir le 06-bilan)_
-
-**Pages estimées:** 2-3 pages
-
-**Contenu à couvrir:**
-
-#### **9.1 Bilan du Projet**
-
-- [ ] Objectifs atteints (%)
-- [ ] Ce qui a bien marché
-- [ ] Ce qui aurait pu être mieux
-- [ ] Temps passé vs estimation
-
-#### **9.2 Compétences Validées**
-
-Mapping explicite:
-
-- "Compétence 1 – Installer et configurer son environnement" → ✅ Docker setup
-- "Compétence 2 – Développer des interfaces utilisateur" → ✅ React components
-- etc.
-
-#### **9.3 Vision Professionnelle**
-
-- [ ] Qui es-tu comme développeur?
-- [ ] Tes forces
-- [ ] Tes faiblesses
-- [ ] Comment tu veux évoluer
-
-#### **9.4 Ce que tu ne veux pas faire**
-
-- Rester cantonné à une seule couche technique sans compréhension globale.
-- Développer sans tests ni validation.
-- Construire des solutions difficiles à maintenir ou à sécuriser.
-
-#### **9.5 Futur du Projet**
-
-- [ ] Améliorations envisagées
-- [ ] Scalabilité future
-- [ ] Open source ou privé?
-
----
-
-### **Section 10 – Annexes**
-
-_(structurer 07-annexes)_
-
-**Contenu à couvrir:**
-
-#### **10.1 Diagrammes**
-
-- [ ] MCD/MLD/MPD complets
-- [ ] Architecture système (avec dbdiagram.io ou PlantUML)
-- [ ] Flowchart user stories
-- [ ] ERD avec Prisma visual
-
-#### **10.2 Extraits de Code Significatifs**
-
-- [ ] Auth implementation
-- [ ] Real-time socket handler
-- [ ] Database schema
-- [ ] API endpoint example
-- [ ] React component example
-
-#### **10.3 Configuration**
-
-- [ ] Dockerfile
-- [ ] docker-compose.yml
-- [ ] .env.example
-- [ ] prisma schema
-- [ ] next.config.ts
-
-#### **10.4 Screenshots/Interfaces**
-
-- [ ] UI des pages principales
-- [ ] Mobile views
-- [ ] Admin dashboard (si applicable)
-
-#### **10.5 Documentation**
-
-- [ ] README complet
-- [ ] Setup instructions
-- [ ] API documentation
-- [ ] Contributing guide
-
-#### **10.6 Tests**
-
-- [ ] Tests unitaires du projet
-- [ ] Tests d'intégration du projet
-- [ ] Coverage report
-
-#### **10.7 Ressources**
-
-- [ ] Bibliographie (docs, articles, tutorials)
-- [ ] Outils utilisés
-- [ ] Librairies npm principales
-
----
-
-## 📊 TABLEAU DE MAPPING RNCP → SOCIAL NETWORK
-
-| Compétence RNCP                                      | Preuve dans Social Network                      |
-| ---------------------------------------------------- | ----------------------------------------------- |
-| **1. Installer et configurer son environnement**     | Docker setup, Node env config, DB setup         |
-| **2. Développer des interfaces utilisateur**         | React components, Next.js UI, responsive design |
-| **3. Développer des composants métier**              | Business logic (posts, follows, notifications)  |
-| **4. Contribuer à la gestion de projet**             | GitHub project, time tracking, documentation    |
-| **5. Analyser les besoins et maquetter**             | User stories, wireframes, Figma mockups         |
-| **6. Définir l'architecture logicielle**             | Architecture diagram, API design                |
-| **7. Concevoir une base de données relationnelle**   | Prisma schema, MCD/MLD/MPD                      |
-| **8. Développer des composants d'accès aux données** | Prisma queries, API routes                      |
-| **9. Préparer et exécuter les plans de tests**       | Jest tests, test cases, coverage                |
-| **10. Préparer et documenter le déploiement**        | Docker, deployment steps, README                |
-| **11. Contribuer à la mise en production DevOps**    | CI/CD pipeline, GitHub Actions                  |
-
----
-
-## ⏱️ ESTIMATION DE PAGES
-
-- Section 00 (Présentation): **2-3 pages**
-- Section 01 (Contexte): **3-4 pages**
-- Section 02 (Objectifs): **2-3 pages**
-- Section 03 (Spécifications fonctionnelles): **4-5 pages**
-- Section 04 (Spécifications techniques): **5-6 pages**
-- Section 05 (Réalisations): **6-10 pages** ← LA PLUS LONGUE
-- Section 06 (Tests): **4-5 pages**
-- Section 07 (Sécurité RGPD): **3-4 pages**
-- Section 08 (Recherche tech): **2-3 pages**
-- Section 09 (Conclusion): **2-3 pages**
-- **Total (hors annexes):** ~40-50 pages
-- **Annexes:** ~20-30 pages
-- **TOTAL DOSSIER:** ~60-80 pages
-
-_(Conforme à l'exigence RNCP: 40-60 pages hors annexes)_
-
----
-
-## 🚀 PROCHAINE ÉTAPE
-
-Valider ce plan, puis créer les fichiers section par section.
-
-Veux-tu qu'on commence par quelle section?
+| Section du dossier               | Bloc(s) RNCP couverts |
+| -------------------------------- | --------------------- |
+| 00-presentation                  | Profil candidat       |
+| 01-introduction                  | Contexte projet       |
+| 02-cahier-des-charges            | BC02 / C5             |
+| 03-conception (données, UML, stories) | BC02 / C5, C6, C7 |
+| 04-developpement (API, code)     | BC01 / C2, C3 + BC02 / C8 |
+| 05-deploiement                   | BC03 / C10, C11       |
+| 06-bilan                         | Toutes compétences    |
+| 07-annexes                       | Preuves concrètes     |
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   

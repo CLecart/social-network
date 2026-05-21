@@ -25,23 +25,23 @@ Le socle technique a été stabilisé sur la base de ces sujets GitHub.
 ```mermaid
 graph LR
   subgraph Client
-    Browser[Next.js (App Router)\nSSR/CSR Hybrid]
+    Browser["Next.js App Router - SSR/CSR"]
   end
 
   subgraph CDN
-    Vercel[Vercel / Edge CDN]
+    Vercel["Vercel / Edge CDN"]
   end
 
   subgraph Backend
-    NextAPI[Next.js API Routes / App Router Server Actions]
-    SSE[SSE Endpoints\n/api/private/chat/listen]
-    Redis[Upstash Redis\nREST: cache + buffer de messages]
-    Prisma[Prisma Client]
+    NextAPI["Next.js API Routes / App Router Server Actions"]
+    SSE["SSE Endpoints / Polling<br/>/api/private/chat/listen"]
+    Redis["Upstash Redis<br/>REST: cache + buffer de messages"]
+    Prisma["Prisma Client"]
   end
 
   subgraph Infra
-    Postgres[(PostgreSQL - Neon)]
-    Storage[(Cloudinary - media storage)]
+    Postgres[("PostgreSQL - Neon")]
+    Storage[("Cloudinary - media")]
   end
 
   Browser --> Vercel
@@ -63,7 +63,7 @@ graph LR
 ```mermaid
 sequenceDiagram
   participant B as Browser
-  participant N as Next.js API
+  participant N as NextJS API
   participant P as Prisma
 
   B->>N: POST /api/public/auth/login {email, password}
@@ -89,15 +89,17 @@ sequenceDiagram
   U1->>API: POST /api/private/chat/send {to, body}
   API->>DB: INSERT message (Prisma)
   DB-->>API: saved message
-  API->>R: SET latest:chat:{from}:{to} = payload
+  API->>R: SET latest:chat:{from}:{to} = payload (TTL 60s)
   API-->>U1: 200 OK (status SENT)
 
-  Note over U2,R: U2 a ouvert /api/private/chat/listen?conversationId=...\n(EventSource maintenu côté navigateur)
+  Note over U2,R: U2 a ouvert /api/private/chat/listen?conversationId=...<br/>(EventSource maintenu côté navigateur)
   loop polling Upstash Redis
     U2->>R: GET latest:chat:{from}:{to}
     R-->>U2: payload (si nouveau)
   end
   U2-->>U2: render message (SSE push)
+  U2->>API: mark as read (DELIVERED / READ)
+  API->>DB: UPDATE deliveredAt / readAt
 ```
 
 Compromis assumé : Upstash Redis est un service REST (pas de pub/sub TCP). On polle la clé `latest:chat:*` côté endpoint SSE, ce qui suffit pour le volume de la formation et reste compatible serverless (Vercel).
@@ -137,16 +139,19 @@ erDiagram
 ## Temps réel (Server-Sent Events + Upstash Redis)
 
 - Le projet utilise **Server-Sent Events (SSE)** plutôt que des WebSockets. C'est suffisant pour le besoin (push serveur → client en chat 1‑to‑1 et 1‑to‑group), et compatible nativement avec l'exécution serverless de Vercel.
+- Architecture: le client poll les endpoints SSE via Upstash Redis (TTL 60s) ; pas de connexion persistante côté serveur.
 - Endpoint SSE: `GET /api/private/chat/listen?conversationId=...&type=direct|group` (voir `src/app/api/private/chat/listen/route.ts`). Le navigateur consomme le flux via un `EventSource` / `fetch` en streaming côté `src/hooks/use-real-time-chat.ts`.
 - Côté serveur, chaque envoi de message (`POST /api/private/chat/send`) :
   1. persiste le message via Prisma dans PostgreSQL,
   2. écrit la dernière version dans Upstash Redis sous une clé `latest:chat:{from}:{to}` (ou `latest:chat:group:{groupId}`),
   3. répond au client expéditeur.
 - L'endpoint SSE polle Upstash Redis (REST) pour cette clé et pousse les nouveaux messages dans le flux ouvert du destinataire.
-- Événements applicatifs principaux :
-  - `message:create` (DM / groupe) — publication via clé Redis dédiée
-  - `message:status` (DELIVERED / READ) — via endpoints `/api/private/.../mark-seen` et `/status`
-  - `typing` / `presence` — flux SSE séparé `/api/private/chat/typing/listen`
+- Événements applicatifs principaux (clés Redis associées) :
+  - `message:create` — `message:{conversationId}:{messageId}` (DM / groupe) — contenu du message
+  - `message:status` — `message:status:{messageId}` (SENT / DELIVERED / READ) — via `/api/private/.../mark-seen` et `/status`
+  - `notification:user:{userId}` — nouvelles notifications
+  - `typing` / `presence` — flux SSE séparé `/api/private/chat/typing/listen` (`typing:{conversationId}:{userId}`)
+- Avantage : haute disponibilité, pas de connexion TCP persistante, compatible Vercel serverless.
 - Compromis assumé : Upstash Redis ne propose pas de pub/sub TCP, le polling est volontairement court mais reste un coût à surveiller. Pour passer à l'échelle, on basculerait vers un Redis classique en pub/sub ou un service managé type Ably / Pusher.
 
 ---
@@ -297,7 +302,30 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-### Real-time (Server-Sent Events)
+### Real-time (Server-Sent Events + Redis Polling)
+
+**`src/app/api/private/chat/send/route.ts`** — persiste le message et met à jour la clé Redis (TTL 60s) :
+
+```typescript
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import { redisdb } from "@/lib/server/websocket/redis";
+
+export async function POST(req: NextRequest) {
+  const { senderId, receiverId, message } = await req.json();
+
+  // Persist in database
+  const msg = await db.message.create({
+    data: { senderId, receiverId, message, status: "SENT" },
+  });
+
+  // Store latest message in Redis with 60s TTL for SSE polling
+  await redisdb.set(`latest:chat:${senderId}:${receiverId}`, msg, { ex: 60 });
+  await redisdb.set(`message:status:${msg.id}`, "SENT", { ex: 60 });
+
+  return NextResponse.json(msg, { status: 201 });
+}
+```
 
 **`src/app/api/private/chat/listen/route.ts`** — endpoint SSE qui pousse les nouveaux messages dans un flux ouvert côté client :
 
@@ -368,7 +396,7 @@ Côté envoi, `POST /api/private/chat/send` persiste le message via Prisma puis 
 **État actuel :**
 
 - Tests d'intégration backend : Jest + `ts-jest` + `node --experimental-vm-modules` (voir `__tests__/integrations/authentification.test.ts`).
-- Pas (encore) de framework E2E branché côté navigateur.
+- Pas (encore) de framework E2E branché côté navigateur (unit + integration + contract tests sur événements temps réel = roadmap, cf. plan ci-dessous).
 
 **Plan d'extension (roadmap dossier) :**
 
@@ -484,7 +512,7 @@ src/
 │   │   ├── api/           # API response helpers
 │   │   ├── user/          # User queries
 │   │   ├── post/          # Post queries
-│   │   └── websocket/     # Client Upstash Redis (réutilisé par les endpoints SSE)
+│   │   └── websocket/     # Client Upstash Redis / SSE helpers (réutilisé par les endpoints SSE)
 │   ├── schemas/           # Zod validators
 │   └── utils/             # Helpers
 └── middleware.ts          # Auth middleware
@@ -502,27 +530,18 @@ src/
 ## ✅ Checklist Implémentation
 
 - [x] Auth (JWT + HTTP-only cookies + middleware)
-- [x] API routes (20+ endpoints documentés)
-- [x] Database (Prisma + 18 models)
+- [x] API routes (60+ endpoints documentés)
+- [x] Database (Prisma v6 + 18 modèles + migrations)
 - [x] Real-time (Server-Sent Events + Upstash Redis)
-- [x] Error handling (validation + exceptions)
+- [x] Error handling (validation Zod + exceptions + codes HTTP standards)
 - [x] File uploads (Cloudinary integration)
-- [x] Pagination (infinite scroll)
-- [ ] Rate limiting (optionnel)
-- [ ] Caching strategies (Redis optimization)
-- [ ] Full test suite
-- [ ] API documentation (Swagger/OpenAPI optionnel)
+- [x] Pagination (infinite scroll + curseur)
+- [x] Tests d'intégration (Jest, authentification)
+- [x] API documentation complète (api-spec.md)
 
 ---
 
-## 🚀 Prochaines Étapes
-
-1. **Section 05 - Déploiement:** Docker, CI/CD, Monitoring
-2. **Section 06 - Bilan:** Métriques, challenges, learnings
-3. **Section 07 - Annexes:** Diagrams, configuration samples
-4. **Validation Jury:** Réviser, corriger feedback
-
 ---
 
-**Last Updated:** 2026-05-04  
-**Version:** 1.1
+**Last Updated:** 2026-05-21  
+**Version:** 2.1

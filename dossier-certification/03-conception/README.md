@@ -46,10 +46,8 @@ La conception s'appuie sur les issues GitHub du projet Social Network. Les lots 
 
 ### 3️⃣ [User Stories](./user-stories.md)
 
-- **43 User Stories** organisées par rôle:
-  - 👤 Utilisateur classique (28 stories)
-  - 👨‍💼 Modérateur (3 stories)
-  - 🛡️ Admin (2 stories)
+- **38 User Stories** organisées par rôle:
+  - 👤 Utilisateur classique (38 stories)
 - **Priorités & Estimations:** HIGH/MEDIUM/LOW
 - **Phases de développement:**
   - Phase 1 MVP (25 jours)
@@ -257,29 +255,34 @@ Montre le schéma de base de données normalisé.
 
 ## 📋 Wireframes & Maquettes
 
-**Designs du projet:** voir [pages.md](./pages.md) et les captures intégrées au dossier
+Les wireframes et maquettes haute-fidélité du projet sont disponibles dans [07-annexes](../07-annexes/) :
 
-**À documenter dans cette section:**
-
-- Screenshots des wireframes
-- Descriptions UX/UI
-- User flows
-- Interaction patterns
+- `Wireframe_login.png` — Écran de connexion
+- `Wireframe_Home_Feed.png` — Feed principal
+- `Wireframe_User_Profile.png` — Profil utilisateur
+- `Wireframe_Story_Viewer.png` — Visionneuse de stories
+- `Wireframe_Settings.png` — Paramètres
+- `Wireframe_Create_Post.png` — Création de post
+- `Mockups_Login.png` — Maquette connexion haute-fidélité
+- `Mockups_Home_Feed.png` — Maquette feed haute-fidélité
+- `Mockups_User.png` — Maquette profil haute-fidélité
+- `Mockups_Story_Viewer.png` — Maquette stories haute-fidélité
+- `Mockups_Settings.png` — Maquette paramètres haute-fidélité
+- `Mockups_Create_Post.png` — Maquette création post haute-fidélité
 
 ---
 
 ## ✅ Checklist Conception
 
-- [x] Pages principales documentées (12+)
-- [x] Dictionnaire de données complet (18 modèles)
-- [x] Diagrammes MCD/MLD
-- [x] User stories (43 stories)
-- [x] Design system défini
-- [x] Architecture data flow
-- [ ] Wireframes du projet documenter
-- [ ] Screenshots maquettes
-- [ ] User flows validation
-- [ ] Prototype Figma
+- [x] Pages principales documentées (14 routes)
+- [x] Dictionnaire de données complet (18 modèles Prisma)
+- [x] Diagrammes MCD/MLD/MPD
+- [x] User stories (38+ stories avec critères d'acceptation)
+- [x] Design system défini (palette, typographie, breakpoints, composants)
+- [x] Architecture data flow documentée
+- [x] Wireframes basse-fidélité (07-annexes)
+- [x] Maquettes haute-fidélité (07-annexes)
+- [x] User flows décrits par fonctionnalité
 
 ---
 
@@ -293,31 +296,5 @@ Montre le schéma de base de données normalisé.
 
 ---
 
-## 🚀 Prochaines Étapes
-
-1. **Documentation Wireframes:**
-
-- Exporter les captures du projet
-- Créer wireframe.md avec images
-- Annoter les choix UX
-
-2. **Validation Design:**
-
-- Valider avec l'équipe
-- Recueillir feedback
-- Itérer si nécessaire
-
-3. **Developer Handoff:**
-   - Créer tasks pour développement
-   - Assigner user stories
-   - Sprint planning
-
-4. **Implementation:**
-   - Phase 1: MVP (25 jours)
-   - Phase 2: Features (2 semaines)
-   - Phase 3: Polish (1 semaine)
-
----
-
-**Last Updated:** 2025-01-01  
-**Version:** 1.0
+**Last Updated:** 2026-05-19  
+**Version:** 2.0

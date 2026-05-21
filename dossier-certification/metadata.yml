@@ -1,0 +1,43 @@
+---
+title: "Dossier de Certification RNCP 37873"
+subtitle: "Concepteur Développeur d'Applications — Projet Social Network"
+author: "Christophe Lecart"
+date: "Mai 2026"
+subject: "Certification RNCP 37873 — Zone01 Rouen Normandie"
+keywords: [Next.js, TypeScript, Prisma, PostgreSQL, Docker, CI/CD, RNCP]
+lang: fr
+
+# Eisvogel settings
+titlepage: true
+titlepage-color: "1A1A2E"
+titlepage-text-color: "FFFFFF"
+titlepage-rule-color: "4F46E5"
+titlepage-rule-height: 4
+titlepage-logo: ""
+
+toc-own-page: true
+toc-title: "Sommaire"
+
+header-left: "Dossier RNCP 37873 — Christophe Lecart"
+header-right: "Zone01 Rouen Normandie"
+footer-left: "Social Network — CDA Niveau 6"
+footer-right: "\\thepage"
+
+book: false
+classoption: oneside
+
+colorlinks: true
+linkcolor: "Indigo"
+urlcolor: "Indigo"
+toccolor: "Black"
+
+code-block-font-size: "\\footnotesize"
+listings: true
+listings-no-page-break: true
+
+geometry: "left=2.5cm,right=2.5cm,top=3cm,bottom=3cm"
+fontsize: 11pt
+mainfont: "DejaVu Serif"
+sansfont: "DejaVu Sans"
+monofont: "DejaVu Sans Mono"
+---

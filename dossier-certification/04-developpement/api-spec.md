@@ -877,9 +877,9 @@ Récupère les invitations de groupe en attente.
 
 ---
 
-## 🔄 Temps Réel (Server-Sent Events)
+## 🔄 Temps Réel (Server-Sent Events / Redis)
 
-Le projet n'utilise pas Socket.io ni de WebSocket persistant. Le push serveur → client passe par des endpoints **Server-Sent Events** qui pollent Upstash Redis pour détecter les nouveaux messages et statuts. C'est un compromis serverless-friendly (compatible Vercel), suffisant pour le volume cible.
+Le projet n'utilise pas Socket.io ni de WebSocket persistant. Le push serveur → client passe par des endpoints **Server-Sent Events** qui pollent Upstash Redis pour détecter les nouveaux messages et statuts. Les mises à jour temps réel sont gérées côté client et serveur via ces endpoints SSE et des clés Redis (TTL court). C'est un compromis serverless-friendly (compatible Vercel), suffisant pour le volume cible.
 
 ### GET /api/private/chat/listen
 
@@ -988,7 +988,7 @@ Mis à jour via des endpoints REST classiques, pas via SSE :
 ## 🔗 Implémentation
 
 - **Stack:** Next.js 15 API Routes (App Router) + Prisma 6 + PostgreSQL (Neon)
-- **Auth:** JWT custom (`jose` + `jsonwebtoken`) + bcrypt, cookie `authToken`
+- **Auth:** JWT custom (`jose` + `jsonwebtoken`) + bcrypt, cookie `authToken` (HttpOnly)
 - **Real-time:** Server-Sent Events + Upstash Redis (polling REST)
 - **Storage:** Cloudinary
 - **Validation:** Zod schemas (`src/lib/schemas/`)
@@ -996,4 +996,4 @@ Mis à jour via des endpoints REST classiques, pas via SSE :
 
 ---
 
-**Last Updated:** 2026-05-04
+**Last Updated:** 2026-05-21

@@ -41,3 +41,14 @@ commit-msg.txt
 
 #Vscode
 .vscode
+
+# Python venvs used to build the dossier (pandoc/docx pipeline)
+.docx-venv/
+dossier-certification/07-annexes/.venv_docx/
+
+# LibreOffice / Word lock files
+.~lock.*#
+**/.~lock.*#
+
+# Pandoc / mermaid build artifacts
+dossier-certification/mermaid-filter.err

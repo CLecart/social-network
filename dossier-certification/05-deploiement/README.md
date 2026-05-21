@@ -21,39 +21,61 @@ Les éléments de déploiement et d'intégration continue sont documentés dans 
 
 - **app**: application Next.js 15 (App Router), runtime Bun.
 - **db**: PostgreSQL pour les données métier (en local) / Neon (en prod).
-- **redis**: Upstash Redis (REST) — cache léger et buffer de messages pour les flux SSE temps réel. Pas de pub/sub TCP : un Redis local OSS est utilisé en compose pour le développement.
+- **Upstash Redis** (REST): cache léger et buffer de messages pour les flux SSE temps réel. Service managé configuré via variables d'environnement (`UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`), sans service Redis local dédié dans `docker-compose.yml`. Pas de pub/sub TCP — polling REST côté SSE.
 
 ### docker-compose.yml
 
-La configuration à la racine du projet orchestre les dépendances locales pour reproduire un environnement proche de la production.
+La configuration à la racine du projet orchestre l’exécution locale de l’application et de la base de données. Le service `app` utilise le fichier `.env` pour charger les variables nécessaires, notamment l’accès à PostgreSQL et à Upstash Redis.
 
 ```yaml
 services:
   app:
-    build: .
-    ports:
-      - "3000:3000"
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
       DATABASE_URL: ${DATABASE_URL}
-      REDIS_URL: ${REDIS_URL}
-      JWT_SECRET: ${JWT_SECRET}
-    depends_on:
-      - db
-      - redis
-
-  db:
-    image: postgres:16-alpine
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: "1"
     ports:
-      - "5432:5432"
+      - "3000:3000"
+
+  app-dev:
+    profiles: ["dev"]
+    image: oven/bun:1
+    working_dir: /app
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      POSTGRES_DB: social-network
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-
-  redis:
-    image: redis:7-alpine
+      DATABASE_URL: ${DATABASE_URL}
+      NODE_ENV: development
+      NEXT_TELEMETRY_DISABLED: "1"
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
+    command: >
+      sh -c "
+        bun install &&
+        bunx prisma generate &&
+        bunx prisma migrate deploy &&
+        bun run dev
+      "
     ports:
-      - "6379:6379"
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - app-node-modules:/app/node_modules
+      - app-next-cache:/app/.next
+    stdin_open: true
+    tty: true
+
+volumes:
+  app-node-modules:
+  app-next-cache:
 ```
 
 ### Dockerfile
@@ -74,7 +96,6 @@ Points importants:
 ### PostgreSQL sur Neon
 
 - **URL principale**: `DATABASE_URL`.
-- **URL directe**: `DIRECT_URL` pour Prisma.
 - **Migrations**: `prisma migrate deploy` en production.
 - **Sécurité**: secrets injectés via variables d'environnement, jamais committés.
 
@@ -83,9 +104,10 @@ Points importants:
 Upstash Redis sert à deux usages dans le projet :
 
 - cache applicatif léger ;
-- buffer de messages (clés `latest:chat:{from}:{to}`, `latest:chat:group:{groupId}`) lu par les endpoints **Server-Sent Events** (`/api/private/chat/listen`, `/api/private/chat/typing/listen`) pour pousser les événements aux clients.
+- buffer de messages (clés `latest:chat:{from}:{to}`, `latest:chat:group:{groupId}`) lu par les endpoints **Server-Sent Events** (`/api/private/chat/listen`, `/api/private/chat/typing/listen`) pour pousser les événements aux clients ;
+- diffusion des événements SSE/Redis entre instances serverless Vercel (même clé Redis vue par toutes les fonctions).
 
-Le JWT n'est pas stocké côté serveur : il est stateless. Les sessions Redis évoquées dans certaines roadmaps internes (révocation forcée, multi-device) sont un axe d'amélioration, pas l'implémentation actuelle.
+Le JWT n'est pas stocké côté serveur : il est stateless. Les sessions Redis évoquées dans certaines roadmaps internes (révocation forcée, multi-device, invalidation JWT côté serveur) sont un axe d'amélioration, pas l'implémentation actuelle.
 
 ---
 
@@ -106,13 +128,20 @@ Flux retenu:
 
 ```bash
 DATABASE_URL=postgresql://...
-DIRECT_URL=postgresql://...
-REDIS_URL=redis://...
 JWT_SECRET=...
-NEXTAUTH_SECRET=...
-NEXTAUTH_URL=https://social-network.example.com
-NEXT_PUBLIC_APP_URL=https://social-network.example.com
+OAUTH_TOKEN_ENCRYPTION_KEY=...
+UPSTASH_REDIS_REST_URL=https://...
+UPSTASH_REDIS_REST_TOKEN=...
+CLOUDINARY_CLOUD_NAME=...
+CLOUDINARY_API_KEY=...
+CLOUDINARY_API_SECRET=...
+NEXT_PUBLIC_GIPHY_API_KEY=...
+CLIENT_ID=...
+CLIENT_SECRET=...
+REDIRECT_URL=...
 ```
+
+> Pour le temps réel, le projet utilise Upstash Redis via `UPSTASH_REDIS_REST_URL` et `UPSTASH_REDIS_REST_TOKEN`.
 
 ### Contrôles post-déploiement
 
@@ -191,30 +220,7 @@ vercel rollback
 - [x] Redis documenté pour les sessions et le temps réel.
 - [x] Déploiement cible sur Vercel.
 - [x] Pipeline GitHub Actions documenté.
-- [ ] Sentry ou équivalent à activer en production.
-
-### Activation et configuration Sentry (option recommandée)
-
-Pour activer le suivi des erreurs en production nous recommandons Sentry. Étapes résumées :
-
-1. Créer un projet sur Sentry (https://sentry.io) et récupérer le `DSN` du projet.
-2. Installer et configurer le SDK Next.js : `@sentry/nextjs`.
-3. Ajouter les variables d'environnement côté plateforme (`SENTRY_DSN`, `SENTRY_ENVIRONMENT`, `SENTRY_AUTH_TOKEN` si nécessaire pour les releases).
-4. Configurer `sentry.client.config.js` et `sentry.server.config.js` selon la documentation officielle.
-5. Optionnel : automatiser les releases Sentry dans GitHub Actions (ajout d'un step `sentry-cli` avec `SENTRY_AUTH_TOKEN`).
-
-Exemple d'env vars à définir dans Vercel / Railway / Platform :
-
-```bash
-SENTRY_DSN=https://examplePublicKey@o0.ingest.sentry.io/0
-SENTRY_ENVIRONMENT=production
-SENTRY_TRACES_SAMPLE_RATE=0.1
-```
-
-Notes:
-
-- Activer Sentry améliore la traçabilité des erreurs et facilite la correction avant la soutenance.
-- L'activation doit être faite avec attention (masquage des données sensibles, conformité RGPD si applicable).
+- [x] Monitoring des erreurs documenté (Vercel Analytics + logs structurés serveur).
 
 ---
 

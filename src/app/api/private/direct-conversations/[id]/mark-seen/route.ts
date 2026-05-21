@@ -1,17 +1,17 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { redisdb } from '@/lib/server/websocket/redis';
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import { redisdb } from "@/lib/server/websocket/redis";
 import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const userId = await getUserIdFromRequest(request);
 
   if (!userId) {
-    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
+    return NextResponse.json(respondError("Unauthorized"), { status: 401 });
   }
 
   try {
@@ -19,11 +19,11 @@ export async function POST(
 
     // Verify that the other user exists
     const otherUser = await db.user.findUnique({
-      where: { id: otherUserId }
+      where: { id: otherUserId },
     });
 
     if (!otherUser) {
-      return NextResponse.json(respondError('User not found'), { status: 404 });
+      return NextResponse.json(respondError("User not found"), { status: 404 });
     }
 
     // Get all unread messages from the other user to the current user
@@ -32,13 +32,13 @@ export async function POST(
         senderId: otherUserId,
         receiverId: userId,
         status: {
-          in: ['SENT', 'DELIVERED'] // Only update if not already read
-        }
+          in: ["SENT", "DELIVERED"], // Only update if not already read
+        },
       },
       select: {
         id: true,
-        senderId: true
-      }
+        senderId: true,
+      },
     });
 
     // Update messages to read status
@@ -47,27 +47,27 @@ export async function POST(
         senderId: otherUserId,
         receiverId: userId,
         status: {
-          in: ['SENT', 'DELIVERED']
-        }
+          in: ["SENT", "DELIVERED"],
+        },
       },
       data: {
-        status: 'READ',
+        status: "READ",
         readAt: new Date(),
-        deliveredAt: new Date()
-      }
+        deliveredAt: new Date(),
+      },
     });
 
     // Send status updates via Redis for each message
     const now = new Date();
     for (const message of messagesToUpdate) {
       const statusUpdate = {
-        type: 'message_status_update',
+        type: "message_status_update",
         messageId: message.id,
-        status: 'READ',
+        status: "READ",
         deliveredAt: now.toISOString(),
         readAt: now.toISOString(),
-        conversationId: otherUserId, // For direct messages, use other user as conversationId for WebSocket routing
-        timestamp: now.toISOString()
+        conversationId: otherUserId, // For direct messages, use other user as conversationId for SSE polling routing
+        timestamp: now.toISOString(),
       };
 
       const statusKey = `status_update:${message.senderId}:${message.id}:${Date.now()}`;
@@ -76,7 +76,10 @@ export async function POST(
 
     return NextResponse.json(respondSuccess(null));
   } catch (error) {
-    console.error('Error marking direct conversation as seen:', error);
-    return NextResponse.json(respondError('Failed to mark conversation as seen'), { status: 500 });
+    console.error("Error marking direct conversation as seen:", error);
+    return NextResponse.json(
+      respondError("Failed to mark conversation as seen"),
+      { status: 500 },
+    );
   }
 }
