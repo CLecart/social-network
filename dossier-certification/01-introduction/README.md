@@ -1,5 +1,7 @@
 # 01 - Introduction
 
+**Candidat :** Christophe Lecart — **Session d'examen : 2 juin 2026** — RNCP 37873 · Zone01 Rouen Normandie
+
 ## Contexte et Objectif
 
 ### Problématique

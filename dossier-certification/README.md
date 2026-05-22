@@ -4,10 +4,11 @@
 
 ### RNCP 37873
 
-**Projet:** Social Network
+**Projet:** Social Network — Konekt
 **Candidat:** Christophe Lecart
 **Établissement:** Zone01 Rouen Normandie
-**Statut:** Reconversion / recherche d'alternance
+**Référentiel RNCP :** 37873
+**Session d'examen :** 2 juin 2026
 **Profil:** Développeur Full Stack
 
 ### Profil Candidat
