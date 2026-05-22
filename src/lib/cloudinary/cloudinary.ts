@@ -13,7 +13,7 @@ class CloudinaryService {
             const stream = cloudinary.uploader.upload_stream(
                 {
                     folder,
-                    public_id: options.filename,
+                    public_id: options.filename?.replace(/\.[^.]+$/, ''),
                     resource_type: 'image' // Explicite pour les images
                 },
                 (error, result) => {

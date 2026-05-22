@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { serializeDates } from "@/lib/utils/serializeDates";
-
+import { normalizeImageUrl } from "@/lib/utils/normalizeImageUrl";
 import { ZodSchema } from "zod";
 
 export async function getUserByIdServer<T>(
@@ -25,6 +25,9 @@ export async function getUserByIdServer<T>(
         });
 
         if (!user) return null;
+
+        user.avatar = normalizeImageUrl(user.avatar) ?? user.avatar;
+        user.banner = normalizeImageUrl(user.banner) ?? user.banner;
 
         // Serialize date fields then validate/shape result with provided schema
         const serialized = serializeDates(user);
