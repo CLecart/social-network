@@ -232,6 +232,7 @@ export default function ProfilePage() {
             src={post.image || "https://i.pinimg.com/736x/ac/de/54/acde5463c760002ed97dc553eb8238ab.jpg"}
             alt="Post"
             fill
+            sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 20vw"
             className="object-cover border-[var(--detailMinimal)] border-1 rounded-lg"
           />
         ) : mediaType === 'video' ? (
@@ -329,6 +330,7 @@ export default function ProfilePage() {
                       src={profileUser.banner}
                       alt="Bannière de profil"
                       fill
+                      sizes="(max-width: 768px) 100vw, calc(100vw - 256px)"
                       className="object-cover"
                     />
                   </div>
