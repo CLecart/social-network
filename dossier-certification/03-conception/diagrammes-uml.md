@@ -1234,7 +1234,7 @@ Pour la défense devant le jury, ce tableau permet de pointer directement le cod
 
 ## Utilisation
 
-- **MCD / MLD** : coller dans dbdiagram.io pour visualiser les relations.
+- **MCD** : fichier source `03-conception/mcd-social-network.drawio` — ouvrir dans [app.diagrams.net](https://app.diagrams.net) ou l'extension draw.io de VS Code pour visualiser et exporter.
 - **MPD** : utiliser comme base SQL de référence pour expliquer la structure physique pendant la soutenance.
 - **Diagramme de classes** : section 4 ci-dessus, rendu Mermaid sur GitHub ou via [mermaid.live](https://mermaid.live) pour export PNG/SVG en vue d'intégration dans le diaporama.
 - **Diagramme de cas d'utilisation** : section 5 ci-dessus, même méthode d'export.

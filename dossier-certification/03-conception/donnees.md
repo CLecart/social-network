@@ -218,7 +218,7 @@ Source : `prisma/schema.prisma` — traduit en types SQL PostgreSQL.
 
 ## Model: Conversation
 
-**Description :** Conversation de groupe ou wrapper DM.
+**Description :** Conversation de groupe ou wrapper DM. Dans le MCD conceptuel (`mcd-social-network.drawio`), cette entité est représentée sous le nom **GROUPE** lorsque `isGroup = true` — c'est un choix de modélisation Prisma (une seule table, pas de modèle `Group` dédié). Le MCD draw.io matérialise la distinction conceptuelle avec une entité GROUPE reliée à EVENEMENT (APPARTIENT) et à UTILISATEUR (MEMBRE).
 
 ### Attributs
 
