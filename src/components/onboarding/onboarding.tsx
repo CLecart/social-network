@@ -96,7 +96,7 @@ export default function FormOnboardingPage({ formSteps, className, ...props }: F
     if (hasStarted && showTransition) {
         return (
             <div
-                className={cn("bg-[var(--bgLevel2)] min-h-screen flex flex-col items-center justify-center px-4 py-8 sm:px-6 md:px-8", className)}
+                className={cn("bg-(--bgLevel2) min-h-screen flex flex-col items-center justify-center px-4 py-8 sm:px-6 md:px-8", className)}
                 {...props}
             >
                 <div className="flex justify-center gap-2 md:justify-start">
@@ -118,7 +118,7 @@ export default function FormOnboardingPage({ formSteps, className, ...props }: F
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.3 }}
-                        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-rose-400 via-blue-500 to-fuchsia-500 leading-tight"
+                        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-rose-400 via-blue-500 to-fuchsia-500 leading-tight"
                     >
                         Let's get to know you
                     </motion.p>
@@ -131,7 +131,7 @@ export default function FormOnboardingPage({ formSteps, className, ...props }: F
     if (!hasStarted) {
         return (
             <div
-                className={cn("bg-[var(--bgLevel2)] min-h-screen flex flex-col items-center justify-center px-4 py-8 sm:px-6 md:px-8", className)}
+                className={cn("bg-(--bgLevel2) min-h-screen flex flex-col items-center justify-center px-4 py-8 sm:px-6 md:px-8", className)}
                 {...props}
             >
                 <div className="flex justify-center gap-2 md:justify-start">
@@ -152,7 +152,7 @@ export default function FormOnboardingPage({ formSteps, className, ...props }: F
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
-                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[var(--textNeutral)] mb-4 sm:mb-6"
+                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-(--textNeutral) mb-4 sm:mb-6"
                     >
                         Welcome!
                     </motion.h1>
@@ -160,7 +160,7 @@ export default function FormOnboardingPage({ formSteps, className, ...props }: F
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.4 }}
-                        className="text-lg sm:text-xl md:text-2xl text-[var(--textNeutralAlt)] mb-8 sm:mb-10 md:mb-12 leading-relaxed px-2"
+                        className="text-lg sm:text-xl md:text-2xl text-(--textNeutralAlt) mb-8 sm:mb-10 md:mb-12 leading-relaxed px-2"
                     >
                         Before we continue, we'd love to know you better.
                     </motion.p>
@@ -184,7 +184,7 @@ export default function FormOnboardingPage({ formSteps, className, ...props }: F
     if (isCompleted) {
         return (
             <div
-                className={cn("bg-[var(--bgLevel2)] min-h-screen flex flex-col items-center justify-center px-4 py-8 sm:px-6 md:px-8", className)}
+                className={cn("bg-(--bgLevel2) min-h-screen flex flex-col items-center justify-center px-4 py-8 sm:px-6 md:px-8", className)}
                 {...props}
             >
                 <div className="flex justify-center gap-2 md:justify-start">
@@ -206,7 +206,7 @@ export default function FormOnboardingPage({ formSteps, className, ...props }: F
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.3 }}
-                        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-rose-400 via-blue-500 to-fuchsia-500 leading-tight"
+                        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-rose-400 via-blue-500 to-fuchsia-500 leading-tight"
                     >
                         All done! Thank you for providing your information.
                     </motion.p>
@@ -218,7 +218,7 @@ export default function FormOnboardingPage({ formSteps, className, ...props }: F
     // Form Steps
     if (showForm) {
         return (
-            <div className={cn("bg-[var(--bgLevel2)] min-h-screen flex flex-col px-4 py-6 sm:px-6 sm:py-8 md:px-8", className)} {...props}>
+            <div className={cn("bg-(--bgLevel2) min-h-screen flex flex-col px-4 py-6 sm:px-6 sm:py-8 md:px-8", className)} {...props}>
                 {/* Header */}
                 <div className="flex justify-center gap-2 md:justify-start">
                     <div className="flex items-center space-x-3 fixed top-5 left-5">
@@ -239,7 +239,7 @@ export default function FormOnboardingPage({ formSteps, className, ...props }: F
                                 return message ? (
                                     <motion.div
                                         key={lastStep.id}
-                                        className="text-[var(--textNeutral)] font-semibold text-lg sm:text-xl md:text-2xl text-center px-4"
+                                        className="text-(--textNeutral) font-semibold text-lg sm:text-xl md:text-2xl text-center px-4"
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -10 }}
@@ -264,14 +264,14 @@ export default function FormOnboardingPage({ formSteps, className, ...props }: F
                                 transition={{ duration: 0.4 }}
                                 className="space-y-4 sm:space-y-6 max-w-lg sm:max-w-xl w-full mx-auto"
                             >
-                                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--textNeutral)] text-center px-2 leading-tight">
+                                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-(--textNeutral) text-center px-2 leading-tight">
                                     {currentStep.question}
                                 </h1>
 
                                 <form onSubmit={handleSubmit} className="space-y-4">
                                     <div className="px-2 sm:px-4 md:px-6 lg:px8">
                                         {!currentStep.editable ? (
-                                            <div className="w-full text-base sm:text-lg md:text-xl font-medium tracking-tight py-3 sm:py-4 px-2 text-[var(--neutralFillAlt)] border-b border-gray-300 min-h-[3rem] sm:min-h-[3.5rem] flex items-center">
+                                            <div className="w-full text-base sm:text-lg md:text-xl font-medium tracking-tight py-3 sm:py-4 px-2 text-(--neutralFillAlt) border-b border-gray-300 min-h-12 sm:min-h-14 flex items-center">
                                                 {currentStep.value}
                                             </div>
                                         ) : (
@@ -285,8 +285,8 @@ export default function FormOnboardingPage({ formSteps, className, ...props }: F
                                                 className={cn(
                                                     "w-full text-base sm:text-lg md:text-xl font-medium tracking-tight",
                                                     "border-0 focus:outline-none bg-transparent",
-                                                    "placeholder:text-[var(--greyFill)] py-3 sm:py-4 md:py-6 px-2 rounded-2xl",
-                                                    "min-h-[3rem] sm:min-h-[3.5rem] md:min-h-[4rem]"
+                                                    "placeholder:text-(--greyFill) py-3 sm:py-4 md:py-6 px-2 rounded-2xl",
+                                                    "min-h-12 sm:min-h-14 md:min-h-16"
                                                 )}
                                             />
                                         )}
@@ -305,7 +305,7 @@ export default function FormOnboardingPage({ formSteps, className, ...props }: F
                             onClick={() => setCurrentStepIndex((prev) => prev - 1)}
                             variant="ghost"
                             disabled={currentStepIndex < 1}
-                            className="bg-[var(--white)] hover:bg-[var(--white)]/80 text-gray-900 border border-gray-200 rounded-full px-8 py-4 text-sm font-medium disabled:opacity-50 transition-all duration-200"
+                            className="bg-(--white) hover:bg-(--white)/80 text-gray-900 border border-gray-200 rounded-full px-8 py-4 text-sm font-medium disabled:opacity-50 transition-all duration-200"
                         >
                             ← Previous Step
                         </Button>
@@ -314,7 +314,7 @@ export default function FormOnboardingPage({ formSteps, className, ...props }: F
                             onClick={handleSubmit}
                             variant="ghost"
                             disabled={!currentValue.trim()}
-                            className="bg-[var(--white)] hover:bg-[var(--white)]/80 text-gray-900 border border-gray-200 rounded-full px-8 py-4 text-sm font-medium disabled:opacity-50 transition-all duration-200"
+                            className="bg-(--white) hover:bg-(--white)/80 text-gray-900 border border-gray-200 rounded-full px-8 py-4 text-sm font-medium disabled:opacity-50 transition-all duration-200"
                         >
                             {isLastStep ? "FINISH" : "Next Step →"}
                         </Button>
@@ -331,12 +331,12 @@ export default function FormOnboardingPage({ formSteps, className, ...props }: F
                             onClick={() => setCurrentStepIndex((prev) => prev - 1)}
                             variant="ghost"
                             disabled={currentStepIndex < 1}
-                            className="cursor-pointer bg-[var(--white)] hover:bg-[var(--white)]/80 text-gray-900 border border-gray-200 rounded-full px-8 py-4 text-sm font-medium disabled:opacity-50 transition-all duration-200"
+                            className="cursor-pointer bg-(--white) hover:bg-(--white)/80 text-gray-900 border border-gray-200 rounded-full px-8 py-4 text-sm font-medium disabled:opacity-50 transition-all duration-200"
                         >
                             ← Previous Step
                         </Button>
 
-                        <p className="text-sm text-[var(--textNeutral)] tracking-wider">
+                        <p className="text-sm text-(--textNeutral) tracking-wider">
                             {String(currentStepIndex + 1).padStart(2, "0")} / {String(steps.length).padStart(2, "0")}
                         </p>
 
@@ -344,7 +344,7 @@ export default function FormOnboardingPage({ formSteps, className, ...props }: F
                             onClick={handleSubmit}
                             variant="ghost"
                             disabled={!currentValue.trim()}
-                            className="cursor-pointer bg-[var(--white)] hover:bg-[var(--white)]/80 text-gray-900 border border-gray-200 rounded-full px-8 py-4 text-sm font-medium disabled:opacity-50 transition-all duration-200"
+                            className="cursor-pointer bg-(--white) hover:bg-(--white)/80 text-gray-900 border border-gray-200 rounded-full px-8 py-4 text-sm font-medium disabled:opacity-50 transition-all duration-200"
                         >
                             {isLastStep ? "FINISH" : "Next Step →"}
                         </Button>

@@ -4,7 +4,7 @@ import { CommentSchema } from "../comment";
 import { ReactionSchema } from "../reaction";
 
 export const PostWithDetailsSchema = PostSchema.extend({
-    comments: z.array(CommentSchema),
+    comments: z.array(CommentSchema).optional().default([]),
     reactions: z.array(ReactionSchema),
 }).describe('PostWithDetailsSchema');
 
