@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram id="AvOPGSfi3XTp1epjIo77" name="Page-1">
-    <mxGraphModel dx="2875" dy="893" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="2619" dy="759" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -21,22 +21,22 @@
         <mxCell id="e_post" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=13;" value="&lt;b&gt;PUBLICATION&lt;/b&gt;&lt;hr&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;message&lt;br&gt;datetime&lt;br&gt;image&lt;br&gt;visibility" vertex="1">
           <mxGeometry height="120" width="120" x="-240" y="160" as="geometry" />
         </mxCell>
-        <mxCell id="e_comment" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=13;" value="&lt;b&gt;COMMENTAIRE&lt;/b&gt;&lt;hr&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;content&lt;br&gt;datetime" vertex="1">
+        <mxCell id="e_comment" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=13;" value="&lt;b&gt;COMMENTAIRE&lt;/b&gt;&lt;hr&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;message&lt;br&gt;datetime" vertex="1">
           <mxGeometry height="120" width="120" x="-240" y="520" as="geometry" />
         </mxCell>
         <mxCell id="e_msg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=13;" value="&lt;b&gt;MESSAGE&lt;/b&gt;&lt;hr&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;message&lt;br&gt;timestamp&lt;br&gt;status" vertex="1">
           <mxGeometry height="120" width="160" x="760" y="345" as="geometry" />
         </mxCell>
-        <mxCell id="e_event" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=13;" value="&lt;b&gt;EVENEMENT&lt;/b&gt;&lt;hr&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;title&lt;br&gt;description&lt;br&gt;date&lt;br&gt;location" vertex="1">
+        <mxCell id="e_event" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=13;" value="&lt;b&gt;EVENEMENT&lt;/b&gt;&lt;hr&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;title&lt;br&gt;description&lt;br&gt;datetime&lt;br&gt;createdAt" vertex="1">
           <mxGeometry height="120" width="160" x="240" y="40" as="geometry" />
         </mxCell>
         <mxCell id="e_conv" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=13;" value="&lt;b&gt;CONVERSATION&lt;/b&gt;&lt;hr&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;title&lt;br&gt;isGroup&lt;br&gt;createdAt" vertex="1">
           <mxGeometry height="125" width="160" x="760" y="630" as="geometry" />
         </mxCell>
-        <mxCell id="e_notif" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;NOTIFICATION&lt;/b&gt;&lt;hr&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;type&lt;br&gt;message&lt;br&gt;read&lt;br&gt;createdAt" vertex="1">
+        <mxCell id="e_notif" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=11;" value="&lt;b&gt;NOTIFICATION&lt;/b&gt;&lt;hr&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;type&lt;br&gt;message&lt;br&gt;isRead&lt;br&gt;createdAt" vertex="1">
           <mxGeometry height="120" width="160" x="480" y="640" as="geometry" />
         </mxCell>
-        <mxCell id="e_story" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=13;" value="&lt;b&gt;STORY&lt;/b&gt;&lt;hr&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;content&lt;br&gt;image&lt;br&gt;visibility&lt;br&gt;expiresAt" vertex="1">
+        <mxCell id="e_story" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=13;" value="&lt;b&gt;STORY&lt;/b&gt;&lt;hr&gt;&lt;u&gt;id&lt;/u&gt;&lt;br&gt;media&lt;br&gt;datetime&lt;br&gt;visibility" vertex="1">
           <mxGeometry height="120" width="120" x="-440" y="40" as="geometry" />
         </mxCell>
         <mxCell id="e_reaction" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=8;spacingTop=4;fontSize=13;" value="&lt;div&gt;&lt;b style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;REACTION&lt;/b&gt;&lt;/div&gt;&lt;hr&gt;&lt;u&gt;&lt;div&gt;&lt;u style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;id&lt;/u&gt;&lt;/div&gt;&lt;/u&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;type&lt;/span&gt;&lt;/div&gt;" vertex="1">

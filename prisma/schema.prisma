@@ -98,7 +98,7 @@ model Comment {
 
 model Reaction {
   id        String       @id @default(cuid())
-  type      ReactionType
+  type      ReactionType // LIKE | DISLIKE | LOVE | LAUGH | SAD | ANGRY | WOW
   userId    String
   postId    String?
   datetime  DateTime     @default(now())
