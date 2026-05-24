@@ -395,7 +395,7 @@ export default function ProfilePage() {
       <div className="flex h-screen bg-[var(--bgLevel1)] items-center justify-center">
         <div className="p-4 text-center">
           <div className="text-red-600 mb-4">
-            Erreur lors du chargement du profil: {error}
+            Erreur lors du chargement du profil: {error?.message ?? String(error)}
           </div>
           <Button onClick={refetch} variant="outline">
             Réessayer
