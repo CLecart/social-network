@@ -4,8 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft,
-  Heart,
-  MessageCircle,
   Camera,
   Edit3,
   Grid3X3,
@@ -194,15 +192,15 @@ export default function ProfilePage() {
   // Afficher un loader pendant le chargement initial
   if (loading) {
     return (
-      <div className="flex h-screen bg-[var(--bgLevel1)] items-center justify-center">
-        <div className="text-[var(--textMinimal)]">Chargement du profil...</div>
+      <div className="flex h-screen bg-(--bgLevel1) items-center justify-center">
+        <div className="text-(--textMinimal)">Chargement du profil...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex h-screen bg-[var(--bgLevel1)] items-center justify-center">
+      <div className="flex h-screen bg-(--bgLevel1) items-center justify-center">
         <div className="p-4 text-center">
           <div className="text-red-600 mb-4">
             Erreur lors du chargement du profil: {error?.message ?? String(error)}
@@ -217,8 +215,8 @@ export default function ProfilePage() {
 
   if (!profileUser) {
     return (
-      <div className="flex h-screen bg-[var(--bgLevel1)] items-center justify-center">
-        <div className="text-[var(--textMinimal)]">Profil non trouvé</div>
+      <div className="flex h-screen bg-(--bgLevel1) items-center justify-center">
+        <div className="text-(--textMinimal)">Profil non trouvé</div>
       </div>
     );
   }
@@ -238,8 +236,8 @@ export default function ProfilePage() {
       onClick={() => setActiveFilter(type)}
       className={`flex-1 flex flex-col items-center py-3 px-2 border-b-2 transition-colors ${
         activeFilter === type
-          ? "border-[var(--blue)] text-[var(--blue)]"
-          : "border-transparent text-[var(--textMinimal)] hover:text-[var(--textNeutral)]"
+          ? "border-(--blue) text-(--blue)"
+          : "border-transparent text-(--textMinimal) hover:text-(--textNeutral)"
       }`}
     >
       <Icon className="w-5 h-5 mb-1" />
@@ -251,22 +249,22 @@ export default function ProfilePage() {
 
   return (
     <PostProvider>
-      <div className="flex h-screen bg-[var(--bgLevel1)]">
+      <div className="flex h-screen bg-(--bgLevel1)">
         <NavigationBar />
 
         <div className="flex-1 flex flex-col overflow-auto">
           {/* Header */}
-          <header className="flex items-center justify-between p-4 border-b border-[var(--detailMinimal)] bg-[var(--bgLevel1)] sticky top-0 z-50">
+          <header className="flex items-center justify-between p-4 border-b border-(--detailMinimal) bg-(--bgLevel1) sticky top-0 z-50">
             <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => router.back()}
-                className="text-[var(--textNeutral)] hover:bg-[var(--greyHighlighted)]"
+                className="text-(--textNeutral) hover:bg-(--greyHighlighted)"
               >
                 <ArrowLeft className="w-6 h-6" />
               </Button>
-              <h1 className="font-semibold text-lg text-[var(--textNeutral)]">
+              <h1 className="font-semibold text-lg text-(--textNeutral)">
                 {profileUser.username}
               </h1>
             </div>
@@ -275,7 +273,7 @@ export default function ProfilePage() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-[var(--textNeutral)] hover:bg-[var(--greyHighlighted)]"
+                  className="text-(--textNeutral) hover:bg-(--greyHighlighted)"
                 >
                   <Settings className="w-5 h-5" />
                 </Button>
@@ -285,11 +283,11 @@ export default function ProfilePage() {
           </header>
 
           {/* Contenu principal */}
-          <div className="bg-[var(--bgLevel1)] mx-auto w-full">
+          <div className="bg-(--bgLevel1) mx-auto w-full">
             {/* Profile Info avec Bannière */}
-            <div className="bg-[var(--bgLevel2)]">
+            <div className="bg-(--bgLevel2)">
               {/* Bannière */}
-              <div className="relative h-32 md:h-48 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 overflow-hidden">
+              <div className="relative h-32 md:h-48 bg-linear-to-r from-blue-400 via-purple-500 to-pink-500 overflow-hidden">
                 {profileUser.banner && !bannerError ? (
                   <div className="relative w-full h-64">
                     <Image
@@ -302,7 +300,7 @@ export default function ProfilePage() {
                     />
                   </div>
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500" />
+                  <div className="w-full h-full bg-linear-to-r from-blue-400 via-purple-500 to-pink-500" />
                 )}
                 {/* TODO: Faire en sorte de pouvoir modifier la bannière */}
                 {isOwnProfile && (
@@ -322,12 +320,12 @@ export default function ProfilePage() {
               <div className="p-4">
                 <div className="flex items-start gap-4 mb-4 -mt-12 relative">
                   <div className="relative">
-                    <Avatar className="w-20 h-20 md:w-24 md:h-24 border-4 border-[var(--bgLevel2)]">
+                    <Avatar className="w-20 h-20 md:w-24 md:h-24 border-4 border-(--bgLevel2)">
                       <AvatarImage
                         src={profileUser.avatar || "/placeholder.svg"}
                         alt={profileUser.username}
                       />
-                      <AvatarFallback className="bg-[var(--greyFill)] text-[var(--textNeutral)]">
+                      <AvatarFallback className="bg-(--greyFill) text-(--textNeutral)">
                         {profileUser.username![0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
@@ -336,7 +334,7 @@ export default function ProfilePage() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute -bottom-1 -right-1 w-8 h-8 bg-[var(--bgLevel2)] border border-[var(--detailMinimal)] hover:bg-[var(--greyHighlighted)] rounded-full"
+                        className="absolute -bottom-1 -right-1 w-8 h-8 bg-(--bgLevel2) border border-(--detailMinimal) hover:bg-(--greyHighlighted) rounded-full"
                       >
                         <Edit3 className="w-3 h-3" />
                       </Button>
@@ -347,10 +345,10 @@ export default function ProfilePage() {
                   <div className="flex-1 mt-14">
                     <div className="flex justify-around text-center mb-4">
                       <div className="flex flex-col items-center">
-                        <div className="font-semibold text-lg text-[var(--textNeutral)]">
+                        <div className="font-semibold text-lg text-(--textNeutral)">
                           {posts?.length || 0}
                         </div>
-                        <div className="text-sm text-[var(--textMinimal)]">
+                        <div className="text-sm text-(--textMinimal)">
                           {(posts?.length || 0) > 1
                             ? "publications"
                             : "publication"}
@@ -373,14 +371,14 @@ export default function ProfilePage() {
 
                           <div className="max-h-[400px] overflow-y-auto">
                             {followers.length === 0 ? (
-                              <p className="text-sm text-[var(--textMinimal)]">
+                              <p className="text-sm text-(--textMinimal)">
                                 Aucun abonné
                               </p>
                             ) : (
                               followers.map((f) => (
                                 <div
                                   key={f.id}
-                                  className="flex items-center gap-2 p-2 border-b border-[var(--detailMinimal)]"
+                                  className="flex items-center gap-2 p-2 border-b border-(--detailMinimal)"
                                 >
                                   <Avatar className="w-8 h-8">
                                     <AvatarImage
@@ -391,7 +389,7 @@ export default function ProfilePage() {
                                       {f.username?.toUpperCase()}
                                     </AvatarFallback>
                                   </Avatar>
-                                  <span className="text-[var(--textNeutral)] font-medium">
+                                  <span className="text-(--textNeutral) font-medium">
                                     {f.username}
                                   </span>
                                 </div>
@@ -417,14 +415,14 @@ export default function ProfilePage() {
 
                           <div className="max-h-[400px] overflow-y-auto">
                             {following.length === 0 ? (
-                              <p className="text-sm text-[var(--textMinimal)]">
+                              <p className="text-sm text-(--textMinimal)">
                                 Aucun abonné
                               </p>
                             ) : (
                               following.map((f) => (
                                 <div
                                   key={f.id}
-                                  className="flex items-center gap-2 p-2 border-b border-[var(--detailMinimal)]"
+                                  className="flex items-center gap-2 p-2 border-b border-(--detailMinimal)"
                                 >
                                   <Avatar className="w-8 h-8">
                                     <AvatarImage
@@ -435,7 +433,7 @@ export default function ProfilePage() {
                                       {f.username?.toUpperCase()}
                                     </AvatarFallback>
                                   </Avatar>
-                                  <span className="text-[var(--textNeutral)] font-medium">
+                                  <span className="text-(--textNeutral) font-medium">
                                     {f.username}
                                   </span>
                                 </div>
@@ -451,13 +449,13 @@ export default function ProfilePage() {
                 {/* Name and Bio */}
                 <div className="mb-4">
                   {profileUser.birthDate && (
-                    <h2 className="font-semibold text-base mb-1 text-[var(--textNeutral)]">
+                    <h2 className="font-semibold text-base mb-1 text-(--textNeutral)">
                       {formatDate(profileUser.birthDate)}
                     </h2>
                   )}
                   {(profileUser.firstName || profileUser.lastName) && (
                     <div className="flex items-center gap-2 mb-1">
-                      <h2 className="font-semibold text-base text-[var(--textNeutral)]">
+                      <h2 className="font-semibold text-base text-(--textNeutral)">
                         {profileUser.firstName} {profileUser.lastName}
                       </h2>
                       {profileUser.visibility === "PRIVATE" && (
@@ -465,42 +463,30 @@ export default function ProfilePage() {
                       )}
                     </div>
                   )}
-                  <p className="text-sm text-[var(--textMinimal)] mb-1">
+                  <p className="text-sm text-(--textMinimal) mb-1">
                     @{profileUser.username}
                   </p>
-                  <p className="text-sm text-[var(--textMinimal)] mb-1">
+                  <p className="text-sm text-(--textMinimal) mb-1">
                     {profileUser.email}
                   </p>
-                  <div className="text-sm whitespace-pre-line text-[var(--textMinimal)] mb-2">
+                  <div className="text-sm whitespace-pre-line text-(--textMinimal) mb-2">
                     {profileUser.biography ||
                       (isOwnProfile
                         ? "Aucune bio pour le moment"
                         : "Aucune biographie")}
                   </div>
-                  {/* {profileUser.website && (
-                    <a
-                      href={`https://${profileUser.website}`}
-                      className="text-sm text-[var(--blue)] hover:underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {profileUser.website}
-                    </a>
-                  )} */}
                 </div>
 
                 {/* Action Buttons */}
                 <div className="flex gap-2">
                   {isOwnProfile ? (
-                    <>
-                      <Button
-                        onClick={handleGoToSettings}
-                        variant="outline"
-                        className="flex-1 mx-2 border-[var(--detailMinimal)] text-[var(--textNeutral)] hover:bg-[var(--greyHighlighted)]"
-                      >
-                        Modifier le profil
-                      </Button>
-                    </>
+                    <Button
+                      onClick={handleGoToSettings}
+                      variant="outline"
+                      className="flex-1 mx-2 border-(--detailMinimal) text-(--textNeutral) hover:bg-(--greyHighlighted)"
+                    >
+                      Modifier le profil
+                    </Button>
                   ) : (
                     <>
                       {profileUser?.visibility === "PRIVATE" ? (
@@ -513,8 +499,8 @@ export default function ProfilePage() {
                               : friendshipStatus === "PENDING"
                                 ? "bg-orange-500 text-white hover:bg-orange-600"
                                 : friendshipStatus === "ACCEPTED"
-                                  ? "bg-[var(--green60)] text-[var(--textNeutral)] hover:bg-[var(--greyHighlighted)]"
-                                  : "bg-[var(--blue)] hover:bg-[var(--blue80)] text-white"
+                                  ? "bg-(--green60) text-(--textNeutral) hover:bg-(--greyHighlighted)"
+                                  : "bg-(--blue) hover:bg-(--blue80) text-white"
                           }`}
                           disabled={friendPending}
                         >
@@ -533,7 +519,7 @@ export default function ProfilePage() {
                             // Si on est ami, ne montrer que le bouton Ami(e)
                             <Button
                               onClick={handleFriendRequest}
-                              className="flex-1 transition-opacity bg-[var(--green60)] text-[var(--textNeutral)] hover:bg-[var(--greyHighlighted)]"
+                              className="flex-1 transition-opacity bg-(--green60) text-(--textNeutral) hover:bg-(--greyHighlighted)"
                               disabled={friendPending}
                             >
                               {friendPending ? "En cours..." : "Ami(e)"}
@@ -547,8 +533,8 @@ export default function ProfilePage() {
                                   followPending
                                     ? "bg-gray-400 text-white cursor-not-allowed opacity-60"
                                     : isFollowing && followStatus === "ACCEPTED"
-                                      ? "bg-[var(--green60)] text-[var(--textNeutral)] hover:bg-[var(--greyHighlighted)]"
-                                      : "bg-[var(--blue)] hover:bg-[var(--blue80)] text-white"
+                                      ? "bg-(--green60) text-(--textNeutral) hover:bg-(--greyHighlighted)"
+                                      : "bg-(--blue) hover:bg-(--blue80) text-white"
                                 }`}
                                 disabled={followPending}
                               >
@@ -566,7 +552,7 @@ export default function ProfilePage() {
                                     ? "bg-gray-400 text-white cursor-not-allowed opacity-60"
                                     : friendshipStatus === "PENDING"
                                       ? "bg-orange-500 text-white hover:bg-orange-600"
-                                      : "bg-[var(--lavender)] hover:bg-[var(--lavender80)] text-white"
+                                      : "bg-(--lavender) hover:bg-(--lavender80) text-white"
                                 }`}
                                 disabled={friendPending}
                               >
@@ -583,7 +569,7 @@ export default function ProfilePage() {
 
                       <Button
                         variant="outline"
-                        className="flex-1 ml-2 border-[var(--detailMinimal)] text-[var(--textNeutral)] hover:bg-[var(--greyHighlighted)]"
+                        className="flex-1 ml-2 border-(--detailMinimal) text-(--textNeutral) hover:bg-(--greyHighlighted)"
                       >
                         Message
                       </Button>
@@ -594,7 +580,7 @@ export default function ProfilePage() {
             </div>
 
             {/* TabBar pour filtrer les posts */}
-            <div className="bg-[var(--bgLevel2)] border-t border-[var(--detailMinimal)] sticky top-[73px] z-40">
+            <div className="bg-(--bgLevel2) border-t border-(--detailMinimal) sticky top-18.25 z-40">
               <div className="flex">
                 <TabButton
                   type="all"
@@ -618,7 +604,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Posts Grid */}
-            <div className="bg-[var(--bgLevel2)]">
+            <div className="bg-(--bgLevel2)">
               <div className="p-4">
                 {(() => {
                   // Si le compte est privé, afficher en fonction des permissions du résumé
@@ -644,10 +630,10 @@ export default function ProfilePage() {
                     return (
                       <div className="text-center py-8">
                         <div className="text-6xl mb-4">🔒</div>
-                        <p className="text-[var(--textMinimal)] text-lg font-medium mb-2">
+                        <p className="text-(--textMinimal) text-lg font-medium mb-2">
                           Ce compte est privé
                         </p>
-                        <p className="text-[var(--textNeutral)] text-sm">
+                        <p className="text-(--textNeutral) text-sm">
                           Suivez @{profileUser.username} pour voir ses
                           publications
                         </p>
@@ -659,7 +645,7 @@ export default function ProfilePage() {
                   if (!posts) {
                     return (
                       <div className="flex justify-center py-8">
-                        <div className="text-[var(--textMinimal)]">
+                        <div className="text-(--textMinimal)">
                           Chargement des posts...
                         </div>
                       </div>
@@ -669,7 +655,7 @@ export default function ProfilePage() {
                   if (filteredPosts.length === 0) {
                     return (
                       <div className="text-center py-8">
-                        <p className="text-[var(--textMinimal)]">
+                        <p className="text-(--textMinimal)">
                           {activeFilter === "photos" &&
                             "Aucune photo à afficher"}
                           {activeFilter === "videos" &&
@@ -720,7 +706,7 @@ export default function ProfilePage() {
               ) : selectedPostDetails ? (
                 <div className="flex w-full h-full">
                   <MediaSection post={selectedPostDetails} />
-                  <div className="flex flex-col w-[500px] bg-[var(--bgLevel1)] border-l border-[var(--detailMinimal)]">
+                  <div className="flex flex-col w-[500px] bg-(--bgLevel1) border-l border-(--detailMinimal)">
                     <PostHeader post={selectedPostDetails} />
                     <div
                       ref={contentRef}

@@ -59,7 +59,7 @@ const ResultsList: React.FC<ResultsListProps> = ({ query, results = [] }) => {
   if (results.length === 0 && query.trim()) {
     return (
       <div className="text-center py-8">
-        <p className="text-sm text-[var(--textMinimal)]">
+        <p className="text-sm text-(--textMinimal)">
           Aucun résultat pour "{query}"
         </p>
       </div>
@@ -71,10 +71,10 @@ const ResultsList: React.FC<ResultsListProps> = ({ query, results = [] }) => {
       {results.map((item) => {
         if (isAccountItem(item)) {
           return (
-            <div key={item.id} className="flex items-center justify-between p-3 hover:bg-[var(--bgLevel2)] rounded-lg transition-colors">
+            <div key={item.id} className="flex items-center justify-between p-3 hover:bg-(--bgLevel2) rounded-lg transition-colors">
               <Link href={`/profile/${item.id}`}>
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white overflow-hidden">
+                  <div className="w-12 h-12 rounded-full bg-linear-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white overflow-hidden">
                     {item.image ? (
                       <img src={item.image} alt={item.username} className="w-full h-full object-cover rounded-full" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                     ) : (
@@ -82,10 +82,10 @@ const ResultsList: React.FC<ResultsListProps> = ({ query, results = [] }) => {
                     )}
                   </div>
                   <div>
-                    <p className="font-medium text-sm text-[var(--textNeutral)]">
+                    <p className="font-medium text-sm text-(--textNeutral)">
                       {item.username}
                     </p>
-                    <p className="text-xs text-[var(--textMinimal)]">
+                    <p className="text-xs text-(--textMinimal)">
                       {item.displayName}
                     </p>
                   </div>
@@ -97,16 +97,16 @@ const ResultsList: React.FC<ResultsListProps> = ({ query, results = [] }) => {
 
         if (isTagItem(item)) {
           return (
-            <div key={item.id} className="flex items-center justify-between p-3 hover:bg-[var(--bgLevel2)] rounded-lg transition-colors">
+            <div key={item.id} className="flex items-center justify-between p-3 hover:bg-(--bgLevel2) rounded-lg transition-colors">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-lg bg-[var(--bgLevel2)] flex items-center justify-center">
-                  <span className="text-lg text-[var(--textNeutral)]">#</span>
+                <div className="w-12 h-12 rounded-lg bg-(--bgLevel2) flex items-center justify-center">
+                  <span className="text-lg text-(--textNeutral)">#</span>
                 </div>
                 <div>
-                  <p className="font-medium text-sm text-[var(--textNeutral)]">
+                  <p className="font-medium text-sm text-(--textNeutral)">
                     {item.name}
                   </p>
-                  <p className="text-xs text-[var(--textMinimal)]">
+                  <p className="text-xs text-(--textMinimal)">
                     {item.postCount} posts
                   </p>
                 </div>
@@ -119,11 +119,11 @@ const ResultsList: React.FC<ResultsListProps> = ({ query, results = [] }) => {
           return (
             <div key={item.id}>
               <div
-                className="p-4 border border-[var(--detailMinimal)] rounded-lg hover:bg-[var(--bgLevel2)] transition-colors cursor-pointer"
+                className="p-4 border border-(--detailMinimal) rounded-lg hover:bg-(--bgLevel2) transition-colors cursor-pointer"
                 onClick={() => setSelectedPostId(item.id)}
               >
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white overflow-hidden flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white overflow-hidden shrink-0">
                     {item.user.image ? (
                       <img src={item.user.image} alt={item.user.username} className="w-full h-full object-cover rounded-full" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                     ) : (
@@ -132,17 +132,17 @@ const ResultsList: React.FC<ResultsListProps> = ({ query, results = [] }) => {
                   </div>
                   <div className="flex-1 max-w-lg">
                     <div className="flex items-center gap-2 mb-2">
-                      <p className="font-medium text-sm text-[var(--textNeutral)]">
+                      <p className="font-medium text-sm text-(--textNeutral)">
                         {item.user.username}
                       </p>
-                      <span className="text-xs text-[var(--textMinimal)]">
+                      <span className="text-xs text-(--textMinimal)">
                         {item.user.displayName}
                       </span>
-                      <span className="text-xs text-[var(--textMinimal)]">
+                      <span className="text-xs text-(--textMinimal)">
                         {new Date(item.createdAt).toLocaleDateString()}
                       </span>
                     </div>
-                    <p className="text-sm  text-[var(--textNeutral)] mb-3 leading-relaxed">
+                    <p className="text-sm  text-(--textNeutral) mb-3 leading-relaxed">
                       {item.content}
                     </p>
                     {item.images && (
@@ -165,7 +165,7 @@ const ResultsList: React.FC<ResultsListProps> = ({ query, results = [] }) => {
                         )}
                       </div>
                     )}
-                    <div className="flex items-center gap-4 text-xs text-[var(--textMinimal)]">
+                    <div className="flex items-center gap-4 text-xs text-(--textMinimal)">
                       <span>{item.stats.likes} likes</span>
                       <span>{item.stats.comments} comments</span>
                     </div>
