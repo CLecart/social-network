@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function GET(request: NextRequest) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -67,25 +69,25 @@ export async function GET(request: NextRequest) {
       createdAt: group.createdAt.toISOString()
     }));
 
-    return NextResponse.json({ groups: formattedGroups });
+    return NextResponse.json(respondSuccess({ groups: formattedGroups }));
   } catch (error) {
     console.error('Error fetching groups:', error);
-    return NextResponse.json({ error: 'Failed to fetch groups' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to fetch groups'), { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
     const { title, memberIds = [] } = await request.json();
 
     if (!title?.trim()) {
-      return NextResponse.json({ error: 'Title is required' }, { status: 400 });
+      return NextResponse.json(respondError('Title is required'), { status: 400 });
     }
 
     // Filter out duplicates and the creator from memberIds to avoid conflicts
@@ -123,17 +125,15 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    return NextResponse.json({ 
-      group: {
-        id: group.id,
-        title: group.title,
-        memberCount: group.members.length,
-        members: group.members.map(member => member.user),
-        createdAt: group.createdAt.toISOString()
-      }
-    });
+    return NextResponse.json(respondSuccess({ 
+      id: group.id,
+      title: group.title,
+      memberCount: group.members.length,
+      members: group.members.map(member => member.user),
+      createdAt: group.createdAt.toISOString()
+    }));
   } catch (error) {
     console.error('Error creating group:', error);
-    return NextResponse.json({ error: 'Failed to create group' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to create group'), { status: 500 });
   }
 }

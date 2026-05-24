@@ -27,8 +27,8 @@ export default function BlockedPage({ onBack }: BlockedSettingsProps) {
     }
   }
 
+  // TODO: implemente handleSave
   const handleSave = () => {
-    console.log('Blocked users:', blockedUsers)
     onBack?.()
   }
 
@@ -60,7 +60,7 @@ export default function BlockedPage({ onBack }: BlockedSettingsProps) {
               className="flex-1 p-3 bg-[var(--bgLevel1)] border border-[var(--detailMinimal)] rounded-lg text-[var(--textMinimal)] placeholder-[var(--textNeutral)] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               onKeyPress={(e) => e.key === 'Enter' && blockNewUser()}
             />
-            <Button 
+            <Button
               onClick={blockNewUser}
               disabled={!newUsername.trim() || blockedUsers.includes(newUsername.trim())}
               className="px-6"

@@ -1,6 +1,8 @@
 // pages/api/groups/[id]/join.ts
 
 import { NextRequest, NextResponse } from "next/server";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 import {
   respondJoinRequest,
   ActionType,
@@ -15,16 +17,16 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const userId = req.headers.get("x-user-id");
+    const userId = await getUserIdFromRequest(req);
     const { id: groupId } = await params;
     const { requestId, action } = await req.json();
 
     if (!userId) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+      return NextResponse.json(respondError("Not authenticated"), { status: 401 });
     }
 
     if (!isValidAction(action)) {
-      return NextResponse.json({ error: "Invalid action" }, { status: 400 });
+      return NextResponse.json(respondError("Invalid action"), { status: 400 });
     }
 
     const response = await respondJoinRequest({
@@ -34,7 +36,7 @@ export async function POST(
       action,
     });
 
-    return NextResponse.json(response, { status: 200 });
+    return NextResponse.json(respondSuccess(response, "Join request updated"), { status: 200 });
   } catch (err) {
     console.error("Join request error:", err);
     const message = err instanceof Error ? err.message : "Server error";
@@ -44,6 +46,6 @@ export async function POST(
         : message === "Invalid request"
         ? 400
         : 500;
-    return NextResponse.json({ error: message }, { status });
+    return NextResponse.json(respondError(message), { status });
   }
 }

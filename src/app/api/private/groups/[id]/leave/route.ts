@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -23,7 +25,7 @@ export async function POST(
     });
 
     if (!membership) {
-      return NextResponse.json({ error: 'Not a member of this group' }, { status: 403 });
+      return NextResponse.json(respondError('Not a member of this group'), { status: 403 });
     }
 
     // Check if user is the owner
@@ -35,13 +37,14 @@ export async function POST(
     });
 
     if (!group) {
-      return NextResponse.json({ error: 'Group not found' }, { status: 404 });
+      return NextResponse.json(respondError('Group not found'), { status: 404 });
     }
 
     if (group.ownerId === userId) {
-      return NextResponse.json({ 
-        error: 'Group owner cannot leave the group. Please delete the group or transfer ownership first.' 
-      }, { status: 400 });
+      return NextResponse.json(
+        respondError('Group owner cannot leave the group. Please delete the group or transfer ownership first.'),
+        { status: 400 }
+      );
     }
 
     // Remove user from group in transaction
@@ -78,9 +81,9 @@ export async function POST(
       });
     });
 
-    return NextResponse.json({ success: true, message: 'Successfully left the group' });
+    return NextResponse.json(respondSuccess(null, 'Successfully left the group'));
   } catch (error) {
     console.error('Error leaving group:', error);
-    return NextResponse.json({ error: 'Failed to leave group' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to leave group'), { status: 500 });
   }
 }

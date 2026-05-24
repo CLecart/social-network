@@ -9,7 +9,7 @@ export const ReactionTypeSchema = z.enum([
     "SAD",
     "ANGRY",
     "WOW"
-]);
+]).describe('ReactionTypeSchema');
 
 export const ReactionSchema = z
   .object({

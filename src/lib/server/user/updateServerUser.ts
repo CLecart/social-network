@@ -3,7 +3,7 @@ import { UserSchemas } from "@/lib/schemas/user";
 import { parseOrThrow } from "@/lib/utils/validation";
 
 export async function updateUserServer(userId: string, data: unknown) {
-    const updates = parseOrThrow(UserSchemas.Update, data);
+    const updates = parseOrThrow(UserSchemas.Update, data, { label: 'UserUpdateBody' });
 
     if (updates.birthDate && typeof updates.birthDate === "string") {
         updates.birthDate = new Date(updates.birthDate);

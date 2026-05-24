@@ -6,38 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Calendar, Clock, Users, Check, X, HelpCircle, Edit, Trash2 } from 'lucide-react';
-// Using native JavaScript date formatting
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  datetime: string;
-  owner: {
-    id: string;
-    username: string;
-    firstName?: string;
-    lastName?: string;
-    avatar?: string;
-  };
-  group: {
-    id: string;
-    title: string;
-  };
-  rsvpCounts: {
-    yes: number;
-    no: number;
-    maybe: number;
-  };
-  userRsvp: string | null;
-  createdAt: string;
-}
+import { GroupEvent } from '@/lib/schemas/group/event';
 
 interface EventCardProps {
-  event: Event;
+  event: GroupEvent;
   currentUserId: string;
   onRsvpUpdate: (eventId: string, status: 'YES' | 'NO' | 'MAYBE' | null) => void;
-  onEdit?: (event: Event) => void;
+  onEdit?: (event: GroupEvent) => void;
   onDelete?: (eventId: string) => void;
 }
 

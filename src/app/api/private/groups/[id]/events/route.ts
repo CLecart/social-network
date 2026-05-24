@@ -1,10 +1,11 @@
 import { createEvent } from "@/lib/db/queries/groups/createEvent";
 import { respondError, respondSuccess } from '@/lib/server/api/response';
 import { NextRequest, NextResponse } from 'next/server';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const eventOwner = req.headers.get("x-user-id");
+    const eventOwner = await getUserIdFromRequest(req);
     const { id: groupId } = await params;
     const { description, title, datetime } = await req.json();
 

@@ -4,7 +4,7 @@ import { signJwt } from '@/lib/jwt/signJwt';
 
 
 export async function login(email: string, password: string): Promise<string> {
-    const user = await db.user.findUnique({ where: { email } });
+    const user = await db.user.findUnique({ where: { email: email.toLowerCase() } });
     if (!user) throw new Error('Invalid email or password');
 
     if (!user.password) {

@@ -5,10 +5,11 @@ import { PostSchemas } from "@/lib/schemas/post";
 import { parseCreatePost } from "@/lib/parsers/formParsers";
 import { parseOrThrow } from "@/lib/utils/validation";
 import { respondError, respondSuccess } from "@/lib/server/api/response";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
 export async function POST(req: NextRequest) {
     try {
-        const userId = req.headers.get("x-user-id");
+        const userId = await getUserIdFromRequest(req);
 
         if (!userId) {
             return NextResponse.json(respondError("Missing user ID"), { status: 401 });
@@ -16,7 +17,7 @@ export async function POST(req: NextRequest) {
 
         const formData = await req.formData();
         const rawPost = parseCreatePost(formData);
-        const parsedData = parseOrThrow(PostSchemas.create, rawPost);
+        const parsedData = parseOrThrow(PostSchemas.create, rawPost, { label: 'CreatePostBody' });
 
         // Ensure visibility is always defined
         const postWithVisibility = {
@@ -39,7 +40,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
     try {
-        const userId = req.headers.get("x-user-id");
+        const userId = await getUserIdFromRequest(req);
 
         if (!userId) {
             return NextResponse.json(respondError("Missing user ID"), { status: 401 });

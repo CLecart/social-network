@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Calendar,
@@ -16,72 +15,23 @@ import {
 } from "lucide-react";
 import { EventCard } from "@/components/events/EventCard";
 import Link from "next/link";
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  datetime: string;
-  owner: {
-    id: string;
-    username: string;
-    firstName?: string;
-    lastName?: string;
-    avatar?: string;
-  };
-  group: {
-    id: string;
-    title: string;
-  };
-  rsvpCounts: {
-    yes: number;
-    no: number;
-    maybe: number;
-  };
-  userRsvp: string | null;
-  createdAt: string;
-}
+import { GroupEvent } from "@/lib/schemas/group/event";
+import { useUser } from "@/hooks/use-user-data";
+import { useEvents } from "@/hooks/use-events";
+import { apiFetch } from "@/lib/client/api/fetcher";
 
 export default function EventsPage() {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentUserId, setCurrentUserId] = useState<string>("");
+  const [events, setEvents] = useState<GroupEvent[]>([]);
+  const { user } = useUser();
+  const currentUserId = user?.id || "";
+  const { data, isLoading, refresh } = useEvents();
   const [activeTab, setActiveTab] = useState<"upcoming" | "past" | "my-events">(
     "upcoming"
   );
 
   useEffect(() => {
-    loadEvents();
-    loadCurrentUser();
-  }, []);
-
-  const loadCurrentUser = async () => {
-    try {
-      const response = await fetch("/api/user/me");
-      if (response.ok) {
-        const data = await response.json();
-        setCurrentUserId(data.user.id);
-      }
-    } catch (error) {
-      console.error("Error fetching current user:", error);
-    }
-  };
-
-  const loadEvents = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch("/api/private/events");
-      const data = await response.json();
-
-      if (data.events) {
-        setEvents(data.events);
-      }
-    } catch (error) {
-      console.error("Error loading events:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    setEvents(data?.events ?? []);
+  }, [data]);
 
   const handleRsvpUpdate = (
     eventId: string,
@@ -128,28 +78,23 @@ export default function EventsPage() {
     }
 
     try {
-      const response = await fetch(`/api/private/events/${eventId}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        setEvents((prevEvents) =>
-          prevEvents.filter((event) => event.id !== eventId)
-        );
-      } else {
-        alert("Erreur lors de la suppression de l'événement");
-      }
+      await apiFetch(`/api/private/events/${eventId}`, { method: "DELETE" });
+      setEvents((prevEvents) => prevEvents.filter((event) => event.id !== eventId));
     } catch (error) {
       console.error("Error deleting event:", error);
       alert("Erreur lors de la suppression de l'événement");
     }
   };
 
-  const now = new Date();
-  const upcomingEvents = events.filter(
-    (event) => new Date(event.datetime) > now
+  const now = useMemo(() => new Date(), []);
+  const upcomingEvents = useMemo(
+    () => events.filter((event) => new Date(event.datetime) > now),
+    [events, now]
   );
-  const pastEvents = events.filter((event) => new Date(event.datetime) <= now);
+  const pastEvents = useMemo(
+    () => events.filter((event) => new Date(event.datetime) <= now),
+    [events, now]
+  );
   const myEvents = events.filter((event) => event.owner.id === currentUserId);
 
   const getEventsForTab = () => {

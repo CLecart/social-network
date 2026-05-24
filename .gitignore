@@ -29,6 +29,11 @@ yarn-error.log*
 # vercel
 .vercel
 
+# dossier certification — fichiers générés (PDF, HTML)
+dossier-certification/*.pdf
+dossier-certification/*.html
+dossier-certification/.~lock.*
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
@@ -40,4 +45,18 @@ commit-msg.txt
 /scripts
 
 #Vscode
-.vscode
+.vscode/
+
+# Python venvs used to build the dossier (pandoc/docx pipeline)
+.docx-venv/
+dossier-certification/07-annexes/.venv_docx/
+
+# LibreOffice / Word lock files
+.~lock.*#
+**/.~lock.*#
+
+# Pandoc / mermaid build artifacts
+dossier-certification/mermaid-filter.err
+
+# test coverage reports
+/coverage-ui

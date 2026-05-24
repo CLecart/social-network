@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { PostWithDetails } from "@/lib/schemas/post";
 import { serializeDates } from "@/lib/utils/serializeDates";
+import { normalizeImageUrl } from "@/lib/utils/normalizeImageUrl";
 import { getUserPosts } from "@/lib/db/queries/post/getAllPosts";
 
 export async function getPostsByUserIdServer(
@@ -9,7 +10,12 @@ export async function getPostsByUserIdServer(
 ): Promise<PostWithDetails[]> {
   try {
     const posts = await getUserPosts(userId, 0, 50, currentUserId);
-    return serializeDates(posts);
+    const normalized = posts.map(p => ({
+      ...p,
+      image: normalizeImageUrl(p.image) ?? p.image,
+      user: p.user ? { ...p.user, avatar: normalizeImageUrl(p.user.avatar) ?? p.user.avatar } : p.user,
+    }));
+    return serializeDates(normalized);
   } catch (error) {
     console.error("Database error in getPostsByUserIdServer:", error);
     throw new Error("Failed to fetch user posts");

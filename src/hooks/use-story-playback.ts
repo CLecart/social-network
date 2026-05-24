@@ -66,18 +66,6 @@ export function useStoryPlayback({
 
   const handleImageLoad = useCallback(async () => {
     if (!imageRef.current || !currentStoryContent) return;
-
-    const expectedSrc = currentStoryContent.image;
-    const currentSrc = imageRef.current.src;
-
-    if (
-      !expectedSrc ||
-      !currentSrc.includes(expectedSrc.split("/").pop() || "")
-    ) {
-      console.log("Callback image obsolète ignoré");
-      return;
-    }
-
     try {
       setMediaLoaded(true);
       setIsPaused(false);
@@ -93,17 +81,6 @@ export function useStoryPlayback({
 
   const handleVideoLoad = useCallback(async () => {
     if (!videoRef.current || !currentStoryContent) return;
-
-    const expectedSrc = currentStoryContent.image;
-    const currentSrc = videoRef.current.src;
-
-    if (
-      !expectedSrc ||
-      !currentSrc.includes(expectedSrc.split("/").pop() || "")
-    ) {
-      console.log("Callback vidéo obsolète ignoré");
-      return;
-    }
 
     try {
       if (videoRef.current.readyState >= 2) {

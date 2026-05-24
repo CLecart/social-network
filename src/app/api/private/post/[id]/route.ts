@@ -1,6 +1,7 @@
 import { getPostById } from "@/lib/db/queries/post/getPostById";
 import { respondSuccess, respondError } from "@/lib/server/api/response";
 import { NextRequest, NextResponse } from "next/server";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
 export async function GET(
   req: NextRequest,
@@ -8,7 +9,7 @@ export async function GET(
 ) {
   try {
     const { id: postId } = await params;
-    const currentUserId = req.headers.get("x-user-id") || undefined;
+    const currentUserId = (await getUserIdFromRequest(req)) || undefined;
 
     if (!postId) {
       return NextResponse.json(respondError("Post ID is required"), {

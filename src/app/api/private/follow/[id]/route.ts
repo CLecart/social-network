@@ -1,10 +1,12 @@
 import { checkFriendshipInDb } from "@/lib/db/friendship/checkFriendship";
 import { createFriendshipInDb } from "@/lib/db/friendship/createFriendship";
 import { deleteFriendshipInDb } from "@/lib/db/friendship/deleteFriendship";
-import { getUser } from "@/lib/db/user/getUser";
 import { respondSuccess, respondError } from "@/lib/server/api/response";
-import { ProfileVisibility } from "@prisma/client";
+import { InvitationStatus, ProfileVisibility } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { getUserByIdServer } from "@/lib/server/user/getUser";
+import { UserPublic, UserSchemas } from "@/lib/schemas/user";
 
 export async function GET(
 	_req: NextRequest,
@@ -18,7 +20,7 @@ export async function GET(
 			});
 		}
 
-		const follow = await getUser({ userId: followId });
+		const follow = await getUserByIdServer<UserPublic>(followId, UserSchemas.Public);
 
 		// Check if the user exists
 		if (!follow) {
@@ -27,7 +29,7 @@ export async function GET(
 			});
 		}
 
-		const userId = _req.headers.get("x-user-id");
+		const userId = await getUserIdFromRequest(_req);
 		// Validate userId from request headers
 		if (!userId) {
 			return NextResponse.json(respondError("Not authenticated"), {
@@ -40,10 +42,8 @@ export async function GET(
 			userId: userId,
 		});
 
-		console.log("FRIENDSHIP: ", { existingFriendship })
-
 		// On ne retourne que les relationships de type "followed"
-		if (!existingFriendship || existingFriendship.status !== "accepted") {
+		if (!existingFriendship || existingFriendship.status !== InvitationStatus.ACCEPTED) {
 			return NextResponse.json(
 				respondError("Follow relationship not found"),
 				{ status: 400 }
@@ -77,7 +77,7 @@ export async function POST(
 			});
 		}
 
-		const follow = await getUser({ userId: followId });
+		const follow = await getUserByIdServer<UserPublic>(followId, UserSchemas.Public);
 
 		// Check if the user exists
 		if (!follow) {
@@ -86,7 +86,7 @@ export async function POST(
 			});
 		}
 
-		const userId = _req.headers.get("x-user-id");
+		const userId = await getUserIdFromRequest(_req);
 		// Validate userId from request headers
 		if (!userId) {
 			return NextResponse.json(respondError("Not authenticated"), {
@@ -109,7 +109,7 @@ export async function POST(
 			});
 
 			// Si c'était une amitié acceptée, supprimer aussi l'amitié inverse
-			if (existingFriendship.status === "accepted") {
+			if (existingFriendship.status === InvitationStatus.ACCEPTED) {
 				const reverseFriendship = await checkFriendshipInDb({
 					followId: userId,
 					userId: followId,
@@ -136,9 +136,6 @@ export async function POST(
 				);
 			}
 
-			// Create a new follow relationship (only for PUBLIC accounts)
-			console.log('Follow visibility:', follow.visibility, 'ProfileVisibility.PUBLIC:', ProfileVisibility.PUBLIC);
-
 			// On ne peut follow que les comptes publics
 			if (follow.visibility !== ProfileVisibility.PUBLIC) {
 				return NextResponse.json(
@@ -147,12 +144,10 @@ export async function POST(
 				);
 			}
 
-			const status = "accepted";
-
 			const newFriendship = await createFriendshipInDb({
 				followId: followId,
 				userId: userId,
-				status: status,
+				status: InvitationStatus.ACCEPTED,
 			});
 
 			if (!newFriendship) {

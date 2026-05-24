@@ -94,7 +94,6 @@ export function ChatWindow({
             method: 'POST'
           });
 
-          console.log(`${type} conversation marked as seen, status updates sent via Redis`);
         } catch (error) {
           console.error('Error marking conversation as seen:', error);
         }

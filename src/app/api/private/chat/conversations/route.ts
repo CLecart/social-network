@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { filterConversationsByVisibility } from '@/lib/db/queries/messages/visibilityFilters';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function GET(request: NextRequest) {
   // Get the authenticated user ID from the middleware
-  const userId = request.headers.get('x-user-id');
-  
+  const userId = await getUserIdFromRequest(request);
+
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -47,7 +49,7 @@ export async function GET(request: NextRequest) {
 
     // Get group conversations for this user
     const userGroups = await db.conversationMember.findMany({
-      where: { 
+      where: {
         userId,
         conversation: { isGroup: true }
       },
@@ -84,20 +86,18 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    console.log('🔍 DEBUG: Found', userGroups.length, 'groups for user', userId);
-
     const conversationMap = new Map();
-    
+
     // Process direct messages - group by conversation partner
     const conversationPartners = new Map();
-    
+
     recentMessages.forEach(message => {
       const partnerId = message.senderId === userId ? message.receiverId : message.senderId;
       const partner = message.senderId === userId ? message.receiver : message.sender;
-      
+
       // Only keep the most recent message per partner
-      if (!conversationPartners.has(partnerId) || 
-          message.datetime > conversationPartners.get(partnerId).message.datetime) {
+      if (!conversationPartners.has(partnerId) ||
+        message.datetime > conversationPartners.get(partnerId).message.datetime) {
         conversationPartners.set(partnerId, { message, partner });
       }
     });
@@ -111,8 +111,8 @@ export async function GET(request: NextRequest) {
           user: {
             id: partner.id,
             username: partner.username,
-            displayName: partner.firstName && partner.lastName 
-              ? `${partner.firstName} ${partner.lastName}` 
+            displayName: partner.firstName && partner.lastName
+              ? `${partner.firstName} ${partner.lastName}`
               : partner.username,
             avatar: partner.avatar,
             isOnline: false,
@@ -132,15 +132,13 @@ export async function GET(request: NextRequest) {
     userGroups.forEach(conversationMember => {
       const group = conversationMember.conversation;
       if (!group || !group.isGroup) return; // Skip non-group conversations
-      
+
       const groupId = group.id; // Use the actual group id, not prefixed
-      
-      console.log('🔍 DEBUG: Processing group', group.id, 'with', group.members?.length || 0, 'members');
-      
+
       // Only add if not already processed
       if (!conversationMap.has(groupId)) {
         const lastMessage = group.messages?.[0];
-        
+
         conversationMap.set(groupId, {
           id: group.id,
           type: 'group',
@@ -150,8 +148,8 @@ export async function GET(request: NextRequest) {
           members: group.members?.map(m => ({
             id: m.user.id,
             username: m.user.username,
-            displayName: m.user.firstName && m.user.lastName 
-              ? `${m.user.firstName} ${m.user.lastName}` 
+            displayName: m.user.firstName && m.user.lastName
+              ? `${m.user.firstName} ${m.user.lastName}`
               : m.user.username,
             avatar: m.user.avatar,
           })) || [],
@@ -175,18 +173,14 @@ export async function GET(request: NextRequest) {
 
     const conversations = Array.from(conversationMap.values());
 
-    console.log('🔍 DEBUG: Total conversations before filtering:', conversations.length);
-    console.log('🔍 DEBUG: Conversation types:', conversations.map(c => ({ id: c.id, type: c.type, isGroup: c.isGroup })));
-
     // Filter conversations based on privacy settings
     // Group conversations are not filtered, only direct conversations
     const filteredConversations = await filterConversationsByVisibility(conversations, userId);
 
-    console.log('🔍 DEBUG: Total conversations after filtering:', filteredConversations.length);
 
-    return NextResponse.json({ conversations: filteredConversations });
+    return NextResponse.json(respondSuccess({ conversations: filteredConversations }));
   } catch (error) {
     console.error('Error fetching conversations:', error);
-    return NextResponse.json({ error: 'Failed to fetch conversations' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to fetch conversations'), { status: 500 });
   }
 }

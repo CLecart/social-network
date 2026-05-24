@@ -1,9 +1,10 @@
 import { db } from "@/lib/db";
+import { InvitationStatus } from "@prisma/client";
 
 type Params = {
   followId: string;
   userId: string;
-  status?: "pending" | "accepted" | "rejected";
+  status?: InvitationStatus;
 };
 
 export async function createFriendshipInDb(params: Params) {
@@ -12,7 +13,7 @@ export async function createFriendshipInDb(params: Params) {
       data: {
         userId: params.userId,
         friendId: params.followId,
-        status: params.status || "pending",
+        status: params.status || InvitationStatus.PENDING,
       },
       select: {
         userId: true,

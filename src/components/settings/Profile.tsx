@@ -73,11 +73,10 @@ const EditProfile = () => {
     }
   };
 
-  // Soumission du formulaire (placeholder)
+  // TODO : Review profile settings
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     // Appel API (ex. fetch("/api/profile", { method: "POST", body: JSON.stringify(profile) }))
-    console.log("Envoi des données de profil :", profile);
     alert("Profil mis à jour !"); //(mettre un truc plus stylé)
   };
 
@@ -212,14 +211,12 @@ const EditProfile = () => {
                 className="sr-only"
               />
               <div
-                className={`w-12 h-6 flex items-center bg-gray-600 rounded-full p-1 duration-200 ease-in-out ${
-                  profile.showAccountSuggestions ? "bg-blue-500" : "bg-gray-600"
-                }`}
+                className={`w-12 h-6 flex items-center bg-gray-600 rounded-full p-1 duration-200 ease-in-out ${profile.showAccountSuggestions ? "bg-blue-500" : "bg-gray-600"
+                  }`}
               >
                 <div
-                  className={`bg-white w-4 h-4 rounded-full transform duration-200 ease-in-out ${
-                    profile.showAccountSuggestions ? "translate-x-6" : "translate-x-0"
-                  }`}
+                  className={`bg-white w-4 h-4 rounded-full transform duration-200 ease-in-out ${profile.showAccountSuggestions ? "translate-x-6" : "translate-x-0"
+                    }`}
                 />
               </div>
             </label>

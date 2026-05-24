@@ -1,6 +1,6 @@
 import { Comment } from "@/lib/schemas/comment/";
 import { CreatePost } from "@/lib/schemas/post/create";
-import { fetcher } from "@/lib/server/api/fetcher";
+import { apiFetch } from "@/lib/client/api/fetcher";
 
 export async function createCommentClient(postId: string, comment: CreatePost) {
     try {
@@ -14,7 +14,7 @@ export async function createCommentClient(postId: string, comment: CreatePost) {
             throw new Error("PostId non trouvé")
         }
 
-        const response = await fetcher<Comment>(`/api/private/post/${postId}/comments`, {
+        const response = await apiFetch<Comment>(`/api/private/post/${postId}/comments`, {
             method: 'POST',
             body: formData
         })

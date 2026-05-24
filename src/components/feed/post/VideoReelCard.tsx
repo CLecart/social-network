@@ -23,9 +23,7 @@ export default function VideoReelCard({ post, isVisible }: VideoReelCardProps) {
             if (isVisible) {
                 videoRef.current.play().then(() => {
                     setIsPlaying(true);
-                }).catch((error) => {
-                    console.log("Video play failed:", error);
-                });
+                })
             } else {
                 videoRef.current.pause();
                 setIsPlaying(false);

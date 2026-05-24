@@ -6,8 +6,9 @@ import { Globe, Lock, Users } from "lucide-react";
 import { Visibility } from "@prisma/client";
 
 interface VisibilitySelectProps {
-  value: Visibility;
-  onChange: (value: Visibility) => void;
+  readonly value: Visibility;
+  readonly onChange: (value: Visibility) => void;
+  readonly id?: string;
 }
 
 const visibilityOptions = [
@@ -31,12 +32,12 @@ const visibilityOptions = [
   },
 ];
 
-export function VisibilitySelect({ value, onChange }: VisibilitySelectProps) {
+export function VisibilitySelect({ value, onChange, id }: VisibilitySelectProps) {
   const selectedOption = visibilityOptions.find(option => option.value === value);
 
   return (
     <Select value={value} onValueChange={(newValue) => onChange(newValue as Visibility)}>
-      <SelectTrigger className="w-[140px] h-8 text-xs bg-[var(--bgLevel2)] border-[var(--detailMinimal)]">
+      <SelectTrigger id={id} className="w-35 h-8 text-xs bg-(--bgLevel2) border-(--detailMinimal)">
         <SelectValue>
           <div className="flex items-center gap-2">
             {selectedOption && (
@@ -48,18 +49,18 @@ export function VisibilitySelect({ value, onChange }: VisibilitySelectProps) {
           </div>
         </SelectValue>
       </SelectTrigger>
-      <SelectContent className="bg-[var(--bgLevel1)] border-[var(--detailMinimal)]">
+      <SelectContent className="bg-(--bgLevel1) border-(--detailMinimal)">
         {visibilityOptions.map((option) => (
-          <SelectItem 
-            key={option.value} 
+          <SelectItem
+            key={option.value}
             value={option.value}
-            className="hover:bg-[var(--bgLevel2)] focus:bg-[var(--bgLevel2)]"
+            className="hover:bg-(--bgLevel2) focus:bg-(--bgLevel2)"
           >
             <div className="flex items-center gap-3">
-              <option.icon className="h-4 w-4 text-[var(--textNeutral)]" />
+              <option.icon className="h-4 w-4 text-(--textNeutral)" />
               <div className="flex flex-col">
                 <span className="text-sm font-medium">{option.label}</span>
-                <span className="text-xs text-[var(--textNeutral)]">{option.description}</span>
+                <span className="text-xs text-(--textNeutral)">{option.description}</span>
               </div>
             </div>
           </SelectItem>

@@ -20,8 +20,8 @@ export function TimeSpentPage({ onBack }: TimeSpentPageProps) {
 
   const averageTime = Math.round(weeklyData.reduce((acc, day) => acc + day.time, 0) / 7)
 
+  // TODO : Comprendre handleSave
   const handleSave = () => {
-    console.log('Paramètres sauvegardés')
     onBack?.()
   }
 

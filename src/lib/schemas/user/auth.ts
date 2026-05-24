@@ -19,11 +19,11 @@ const UserBaseSchema = UserSchema.pick({
 export const CredentialsLoginSchema = z.object({
     email: z.string().email({ message: "Invalid email address" }),
     password: z.string().min(6, { message: "Password must be at least 6 characters" }),
-});
+}).describe('CredentialsLoginSchema');
 
 
 // Enum pour source d’inscription
-export const RegistrationSourceEnum = z.enum(["credentials", "google", "discord"]);
+export const RegistrationSourceEnum = z.enum(["credentials", "google", "discord"]).describe('RegistrationSourceEnum');
 
 
 // Schéma inscription / mise à jour, basé sur UserBaseSchema, avec logique spécifique auth

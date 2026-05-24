@@ -13,10 +13,8 @@ export default function ContentPreferencesSettings({ onBack }: ContentPreference
   const [mediaQuality, setMediaQuality] = useState<'low' | 'medium' | 'high'>('high')
   const [showSensitiveContent, setShowSensitiveContent] = useState(false)
 
+  // Reveiw handleSave
   const handleSave = () => {
-    console.log('Video Autoplay:', videoAutoplay)
-    console.log('Media Quality:', mediaQuality)
-    console.log('Show Sensitive Content:', showSensitiveContent)
     onBack?.()
   }
 
@@ -72,11 +70,10 @@ export default function ContentPreferencesSettings({ onBack }: ContentPreference
             {qualityOptions.map((option) => (
               <div
                 key={option.value}
-                className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
-                  mediaQuality === option.value
+                className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${mediaQuality === option.value
                     ? 'bg-[var(--bgLevel2)] border border-[var(--detailMinimal)]'
                     : 'hover:bg-[var(--bgLevel2)]'
-                }`}
+                  }`}
                 onClick={() => setMediaQuality(option.value as 'low' | 'medium' | 'high')}
               >
                 <div className="flex items-center gap-3">
@@ -89,11 +86,10 @@ export default function ContentPreferencesSettings({ onBack }: ContentPreference
                     className="w-4 h-4 bg-[var(--bgLevel2)] border-[var(--detailMinimal)]"
                   />
                   <div>
-                    <div className={`font-medium ${
-                      mediaQuality === option.value 
-                        ? 'text-[var(--textNeutral)]' 
+                    <div className={`font-medium ${mediaQuality === option.value
+                        ? 'text-[var(--textNeutral)]'
                         : 'text-[var(--textMinimal)]'
-                    }`}>
+                      }`}>
                       {option.label}
                     </div>
                     <div className="text-sm text-[var(--textNeutral)]">{option.description}</div>

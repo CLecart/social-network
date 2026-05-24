@@ -1,66 +1,53 @@
-import { APIResponse } from "../../schemas/api";
+import { cookies } from "next/headers";
 
-type FetchOptions = Omit<RequestInit, "body" | "headers"> & {
-    body?: Record<string, any> | FormData;
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+type FetcherOptions<T> = {
+    method: HttpMethod;
+    body?: T;
     headers?: Record<string, string>;
-    timeout?: number;
-}
+    timeout?: number; // Default: 5000ms
+    retry?: number;   // Default: 2
+};
 
+// Nouvelle signature avec génériques
+export async function fetcher<TRequest, TResponse>(
+    url: string,
+    options: FetcherOptions<TRequest>
+): Promise<TResponse> {
+    const { method, body, headers = {}, timeout = 5000, retry = 3 } = options;
 
+    const cookieStore = await cookies();
+    const authToken = cookieStore.get("authToken")?.value;
+    const finalHeaders = authToken
+        ? { ...headers, Authorization: `Bearer ${authToken}` }
+        : headers;
 
-export async function fetcher<T>(url: string, options: FetchOptions = {}): Promise<APIResponse<T>> {
-    const { body, headers: customHeaders, timeout, ...restOptions } = options;
-    const headers: Record<string, string> = { ...customHeaders };
-    let bodyToSend: BodyInit | null = null;
+    let lastError: unknown;
+    for (let i = 0; i < retry; i++) {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
 
-    if (body instanceof FormData) {
-        bodyToSend = body;
-    } else if (body) {
-        bodyToSend = JSON.stringify(body);
-        headers["Content-Type"] = "application/json";
-    }
+            const response = await fetch(url, {
+                method,
+                headers: finalHeaders,
+                body: body ? JSON.stringify(body) : undefined,
+                signal: controller.signal,
+            });
 
-    const controller = new AbortController();
-    const timeoutId = timeout ? setTimeout(() => controller.abort(), timeout) : null;
+            clearTimeout(timeoutId);
 
-    try {
-        const res = await fetch(url, {
-            ...restOptions,
-            body: bodyToSend,
-            headers,
-            signal: controller.signal,
-        });
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(`HTTP ${response.status}: ${JSON.stringify(errorData)}`);
+            }
 
-        if (timeoutId) clearTimeout(timeoutId);
-
-        const contentType = res.headers.get("Content-Type") || "";
-        const isJson = contentType.includes("application/json");
-
-        const payload = isJson ? await res.json().catch(() => ({})) : null;
-
-        if (!res.ok) {
-            return {
-                success: false,
-                data: null,
-                message: payload?.message || `Request failed with status ${res.status}`,
-                fieldErrors: payload?.fieldErrors || undefined,
-            };
+            return (await response.json()) as TResponse;
+        } catch (error) {
+            lastError = error;
+            if (i === retry - 1) throw lastError; // Dernière tentative → relance l'erreur
+            await new Promise(resolve => setTimeout(resolve, 1000 * i)); // Backoff exponentiel
         }
-
-        return payload as APIResponse<T>;
-    } catch (err) {
-        if (timeoutId) clearTimeout(timeoutId);
-        if (err instanceof DOMException && err.name === "AbortError") {
-            return {
-                success: false,
-                data: null,
-                message: "Request timed out",
-            };
-        }
-        return {
-            success: false,
-            data: null,
-            message: err instanceof Error ? err.message : "Unknown error",
-        };
     }
+    throw lastError;
 }

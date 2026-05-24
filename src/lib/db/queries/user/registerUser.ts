@@ -66,6 +66,7 @@ export async function register(input: RegisterUserInput): Promise<UserPublic> {
         select: {
             id: true,
             username: true,
+            email: true,
             firstName: true,
             lastName: true,
             birthDate: true,
@@ -100,6 +101,6 @@ export async function register(input: RegisterUserInput): Promise<UserPublic> {
         birthDate: newUser.birthDate?.toISOString(),
     };
 
-    return parseOrThrow(UserSchemas.Public, userWithVisibility);
+    return parseOrThrow(UserSchemas.Public, userWithVisibility, { label: 'RegisterUserReturn' });
 
 }

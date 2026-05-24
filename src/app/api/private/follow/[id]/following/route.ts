@@ -4,22 +4,22 @@ import { db } from "@/lib/db";
 
 export async function GET(
     _req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const { id: userId } = params;
+        const { id: userId } = await params;
         if (!userId) {
             return NextResponse.json(respondError("User ID is required"), { status: 400 });
         }
 
         const following = await db.friendship.findMany({
-            where: { userId: userId, status: "accepted" },
+            where: { userId: userId, status: "ACCEPTED" },
             include: { friend: true } // info sur l'utilisateur suivi
         });
 
         return NextResponse.json(
             respondSuccess(
-                following.map(f => f.follow),
+                following,
                 "Following retrieved successfully"
             ),
             { status: 200 }

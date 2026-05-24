@@ -12,13 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search, Plus, MessageCircle } from "lucide-react";
 
-interface User {
-  id: string;
-  username: string;
-  firstName?: string;
-  lastName?: string;
-  avatar?: string;
-}
+import { useUserSearch } from "@/hooks/use-user-search";
+import type { UserSearch } from "@/lib/schemas/user/search";
 
 interface NewChatModalProps {
   onStartChat: (userId: string) => void;
@@ -27,41 +22,17 @@ interface NewChatModalProps {
 export function NewChatModal({ onStartChat }: NewChatModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<User[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-
-  const searchUsers = async (query: string) => {
-    if (!query.trim()) {
-      setSearchResults([]);
-      return;
-    }
-
-    setIsSearching(true);
-    try {
-      const response = await fetch(
-        `/api/private/chat/search-users?q=${encodeURIComponent(query)}`
-      );
-      const data = await response.json();
-      setSearchResults(data.users || []);
-    } catch (error) {
-      console.error("Error searching users:", error);
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
-    }
-  };
+  const { users: searchResults, isLoading: isSearching } = useUserSearch(searchQuery, 300);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
-    searchUsers(query);
   };
 
   const handleStartChat = (userId: string) => {
     onStartChat(userId);
     setIsOpen(false);
     setSearchQuery("");
-    setSearchResults([]);
   };
 
   return (
@@ -96,7 +67,7 @@ export function NewChatModal({ onStartChat }: NewChatModalProps) {
               </div>
             ) : searchResults.length > 0 ? (
               <div className="space-y-2">
-                {searchResults.map((user) => (
+                {searchResults.map((user: UserSearch) => (
                   <div
                     key={user.id}
                     className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--bgLevel2)] cursor-pointer"
@@ -105,7 +76,7 @@ export function NewChatModal({ onStartChat }: NewChatModalProps) {
                     <Avatar className="w-10 h-10">
                       <AvatarImage
                         src={user.avatar || "/placeholder.svg"}
-                        alt={user.username}
+                        alt={user?.username || "Anonymous"}
                       />
                       <AvatarFallback>
                         {user.firstName?.[0] || user.username?.[0] || "U"}

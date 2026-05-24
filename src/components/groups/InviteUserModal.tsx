@@ -7,20 +7,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Search, UserPlus, X } from 'lucide-react';
+import { useUserSearch } from '@/hooks/use-user-search';
+import type { UserSearch } from '@/lib/schemas/user/search';
+import { apiFetch } from '@/lib/client/api/fetcher';
 
-interface User {
-  id: string;
-  username: string;
-  firstName?: string;
-  lastName?: string;
-  avatar?: string;
-}
+// Use shared UserSearch type
 
 interface InviteUserModalProps {
   isOpen: boolean;
   onClose: () => void;
   groupId: string;
-  groupTitle: string;
+  groupTitle: string | null | undefined;
   onInviteSent: () => void;
 }
 
@@ -32,55 +29,26 @@ export function InviteUserModal({
   onInviteSent
 }: InviteUserModalProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<User[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
+  const { users: searchUser, isLoading: isSearching } = useUserSearch(searchQuery, 300);
+  const [searchResults, setSearchResults] = useState(searchUser);
   const [isInviting, setIsInviting] = useState(false);
   const [invitedUsers, setInvitedUsers] = useState<Set<string>>(new Set());
-
-  const searchUsers = async (query: string) => {
-    if (!query.trim()) {
-      setSearchResults([]);
-      return;
-    }
-
-    setIsSearching(true);
-    try {
-      const response = await fetch(`/api/private/chat/search-users?q=${encodeURIComponent(query)}`);
-      const data = await response.json();
-      setSearchResults(data.users || []);
-    } catch (error) {
-      console.error('Error searching users:', error);
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
-    }
-  };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
-    searchUsers(query);
   };
 
 
   const handleInviteUser = async (userId: string) => {
     setIsInviting(true);
     try {
-      const response = await fetch(`/api/private/groups/${groupId}/invitations`, {
+      await apiFetch(`/api/private/groups/${groupId}/invitations`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ invitedUserId: userId }),
+        body: { invitedUserId: userId },
       });
-
-      if (response.ok) {
-        setInvitedUsers(prev => new Set(prev).add(userId));
-        onInviteSent();
-      } else {
-        const error = await response.json();
-        alert(error.error || 'Erreur lors de l\'envoi de l\'invitation');
-      }
+      setInvitedUsers(prev => new Set(prev).add(userId));
+      onInviteSent();
     } catch (error) {
       console.error('Error inviting user:', error);
       alert('Erreur lors de l\'envoi de l\'invitation');
@@ -89,7 +57,7 @@ export function InviteUserModal({
     }
   };
 
-  const getUserDisplayName = (user: User) => {
+  const getUserDisplayName = (user: UserSearch) => {
     return user.firstName && user.lastName
       ? `${user.firstName} ${user.lastName}`
       : user.username;
@@ -137,7 +105,7 @@ export function InviteUserModal({
           {/* Search Results */}
           <div className="space-y-2 max-h-60 overflow-y-auto">
             {searchResults.length > 0 ? (
-              searchResults.map((user) => (
+              searchResults.map((user: UserSearch) => (
                 <div
                   key={user.id}
                   className="flex items-center gap-3 p-3 border rounded-lg hover:bg-[var(--bgLevel2)]"

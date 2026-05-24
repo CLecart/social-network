@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { apiFetch } from '@/lib/client/api/fetcher';
 
 interface Conversation {
   id: string;
@@ -47,18 +48,14 @@ export function useConversations() {
     try {
       if (type === 'direct') {
         // For direct messages, count unread messages from this sender
-        const response = await fetch(`/api/private/messages?senderId=${conversationId}&unreadOnly=true`);
-        if (response.ok) {
-          const data = await response.json();
-          return data.messages?.length || 0;
-        }
+        const res = await apiFetch<any>(`/api/private/messages?senderId=${conversationId}&unreadOnly=true`);
+        const data = (res as any)?.data;
+        return (data?.messages?.length) || 0;
       } else {
         // For groups, count unread messages in this conversation
-        const response = await fetch(`/api/private/conversations/${conversationId}/unread-count`);
-        if (response.ok) {
-          const data = await response.json();
-          return data.count || 0;
-        }
+        const res = await apiFetch<any>(`/api/private/conversations/${conversationId}/unread-count`);
+        const data = (res as any)?.data;
+        return data?.count || 0;
       }
     } catch (error) {
       console.error('Error getting unread count:', error);
@@ -71,13 +68,12 @@ export function useConversations() {
         setIsLoading(true);
         
         // Load both direct conversations and groups
-        const [directResponse, groupsResponse] = await Promise.all([
-          fetch(`/api/private/chat/conversations`),
-          fetch(`/api/private/groups`)
+        const [directRes, groupsRes] = await Promise.all([
+          apiFetch<any>(`/api/private/chat/conversations`),
+          apiFetch<any>(`/api/private/groups`),
         ]);
-        
-        const directData = directResponse.ok ? await directResponse.json() : { conversations: [] };
-        const groupsData = groupsResponse.ok ? await groupsResponse.json() : { groups: [] };
+        const directData = (directRes as any)?.data ?? { conversations: [] };
+        const groupsData = (groupsRes as any)?.data ?? { groups: [] };
         
         // Format direct conversations with real unread data
         const directConversations: Conversation[] = await Promise.all(

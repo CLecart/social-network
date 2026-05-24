@@ -1,9 +1,8 @@
-import { fetcher } from "@/lib/server/api/fetcher";
+import { apiFetch } from "@/lib/client/api/fetcher";
 
 export async function UpdatedReaction(data: Record<string, any>) {
   try {
-    console.log(data, "data in UpdatedReaction");
-    const response = await fetcher<void>("/api/private/reaction", {
+    const response = await apiFetch<void>("/api/private/reaction", {
       method: "PUT",
       body: data,
     });
@@ -17,7 +16,7 @@ export async function UpdatedReaction(data: Record<string, any>) {
 
 export async function DeleteReaction(id: string) {
   try {
-    const response = await fetcher<void>(`/api/private/reaction/${id}`, {
+    const response = await apiFetch<void>(`/api/private/reaction/${id}`, {
       method: "DELETE",
     });
     return response;

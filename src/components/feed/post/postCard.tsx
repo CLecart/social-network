@@ -4,24 +4,19 @@ import type React from "react";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Send, Bookmark, Play, Video, MessageCircle } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { PostDetails } from "./postDetails";
 import Link from "next/link";
+import Image from "next/image";
 import { usePostContext } from "@/app/context/post-context";
 import type { Post } from "@/lib/schemas/post";
 import { ReactionComponent } from "@/components/reaction/toggleLike";
 import { useReactionContext } from "@/app/context/reaction-context";
 
-interface PostContent {
-  isLiked?: boolean;
-  likesCount?: number;
-}
 
-const PostCard = ({ isLiked, likesCount }: PostContent) => {
+const PostCard = () => {
   const { allposts } = usePostContext();
   const { reactionCounts } = useReactionContext();
-
-  console.log("PostCard:", allposts[0]?.reactions);
 
   // Etat pour gérer quel post a ses détails ouverts
   const [openPostId, setOpenPostId] = useState<string | null>(null);
@@ -82,10 +77,13 @@ const PostCard = ({ isLiked, likesCount }: PostContent) => {
     if (mediaType === "image") {
       return (
         <div className="relative aspect-square border-b border-[var(--detailMinimal)]">
-          <img
-            src={post.image || "https://via.placeholder.com/400x400?text=Image"}
+          <Image
+            src={post.image || "/placeholder.svg"}
             alt="Post"
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 640px) 100vw, 600px"
+            className="object-cover"
+            priority={false}
           />
         </div>
       );

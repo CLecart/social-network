@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
+import { apiFetch } from '@/lib/client/api/fetcher';
 
 interface ChatMessage {
   id: string;
@@ -26,10 +27,10 @@ interface UseRealTimeChatProps {
   type?: 'direct' | 'group';
 }
 
-export function useRealTimeChat({ 
-  receiverId, 
-  conversationId, 
-  type = 'direct' 
+export function useRealTimeChat({
+  receiverId,
+  conversationId,
+  type = 'direct'
 }: UseRealTimeChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isConnected, setIsConnected] = useState(false);
@@ -50,10 +51,10 @@ export function useRealTimeChat({
           ...(type === 'group' && conversationId ? { conversationId } : {}),
         });
 
-        const response = await fetch(`/api/private/chat/messages?${params}`);
-        const data = await response.json();
-        
-        if (data.messages) {
+        const res = await apiFetch<any>(`/api/private/chat/messages?${params}`);
+        const data = (res as any)?.data;
+
+        if (data?.messages) {
           setMessages(data.messages);
         }
       } catch (error) {
@@ -84,7 +85,7 @@ export function useRealTimeChat({
     eventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        
+
         if (data.type === 'connected') {
           console.log('Connected to real-time chat');
           return;
@@ -92,13 +93,11 @@ export function useRealTimeChat({
 
         if (data.type === 'message_status_update') {
           // Update message status
-          console.log('Received status update:', data);
           setMessages(prev => {
             const updated = prev.map(msg => {
               if (msg.id === data.messageId) {
-                console.log(`Updating message ${msg.id} from status ${msg.status} to ${data.status}`);
-                return { 
-                  ...msg, 
+                return {
+                  ...msg,
                   status: data.status,
                   deliveredAt: data.deliveredAt,
                   readAt: data.readAt
@@ -106,18 +105,15 @@ export function useRealTimeChat({
               }
               return msg;
             });
-            console.log('Messages after status update:', updated.filter(m => m.id === data.messageId));
             return updated;
           });
           return;
         }
 
-        // Add new message to the list
         setMessages(prev => {
-          // Check if message already exists (avoid duplicates)
           const exists = prev.some(msg => msg.id === data.id);
           if (exists) return prev;
-          
+
           return [...prev, data];
         });
       } catch (error) {
@@ -135,7 +131,6 @@ export function useRealTimeChat({
     };
   }, [receiverId, conversationId, type]);
 
-  // Set up typing indicator connection
   useEffect(() => {
     const params = new URLSearchParams({
       type,
@@ -149,9 +144,8 @@ export function useRealTimeChat({
     typingEventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        
+
         if (data.type === 'connected') {
-          console.log('Connected to typing indicator');
           return;
         }
 
@@ -213,17 +207,14 @@ export function useRealTimeChat({
   // Fonction pour envoyer le statut de frappe
   const sendTypingStatus = async (isTyping: boolean) => {
     try {
-      await fetch('/api/private/chat/typing', {
+      await apiFetch('/api/private/chat/typing', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+        body: {
           receiverId: type === 'direct' ? receiverId : undefined,
           conversationId: type === 'group' ? conversationId : undefined,
           type,
           isTyping,
-        }),
+        },
       });
     } catch (error) {
       console.error('Error sending typing status:', error);
@@ -232,25 +223,16 @@ export function useRealTimeChat({
 
   const sendMessage = async (message: string) => {
     try {
-      const response = await fetch('/api/private/chat/send', {
+      const res = await apiFetch<any>('/api/private/chat/send', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+        body: {
           receiverId: type === 'direct' ? receiverId : undefined,
           conversationId: type === 'group' ? conversationId : undefined,
           message,
           type,
-        }),
+        },
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to send message');
-      }
-
-      const data = await response.json();
-      return data;
+      return (res as any)?.data;
     } catch (error) {
       console.error('Error sending message:', error);
       throw error;

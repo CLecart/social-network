@@ -1,5 +1,5 @@
 import { CreatePost, Post } from "@/lib/schemas/post";
-import { fetcher } from "@/lib/server/api/fetcher";
+import { apiFetch } from "@/lib/client/api/fetcher";
 
 export async function createPostClient(post: CreatePost) {
   const formData = new FormData();
@@ -11,7 +11,7 @@ export async function createPostClient(post: CreatePost) {
   }
 
   try {
-    const response = await fetcher<Post>("/api/private/post", {
+    const response = await apiFetch<Post>("/api/private/post", {
       method: "POST",
       body: formData,
     });

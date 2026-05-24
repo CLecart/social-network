@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function GET(request: NextRequest) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -14,7 +16,7 @@ export async function GET(request: NextRequest) {
     const unreadOnly = url.searchParams.get('unreadOnly') === 'true';
 
     if (!senderId) {
-      return NextResponse.json({ error: 'senderId is required' }, { status: 400 });
+      return NextResponse.json(respondError('senderId is required'), { status: 400 });
     }
 
     const whereClause: any = {
@@ -42,9 +44,9 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    return NextResponse.json({ messages });
+    return NextResponse.json(respondSuccess({ messages }));
   } catch (error) {
     console.error('Error fetching messages:', error);
-    return NextResponse.json({ error: 'Failed to fetch messages' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to fetch messages'), { status: 500 });
   }
 }

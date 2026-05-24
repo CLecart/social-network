@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { redisdb } from '@/lib/server/websocket/redis';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
-  
+  const userId = await getUserIdFromRequest(request);
+
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -24,7 +26,7 @@ export async function POST(
     });
 
     if (!member) {
-      return NextResponse.json({ error: 'Not a member of this conversation' }, { status: 403 });
+      return NextResponse.json(respondError('Not a member of this conversation'), { status: 403 });
     }
 
     // Get the latest message in this conversation
@@ -103,13 +105,12 @@ export async function POST(
 
         const statusKey = `status_update:${message.senderId}:${message.id}:${Date.now()}`;
         await redisdb.set(statusKey, statusUpdate, { ex: 300 });
-        console.log(`Status update sent for message ${message.id} to user ${message.senderId}`);
       }
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json(respondSuccess(null));
   } catch (error) {
     console.error('Error marking conversation as seen:', error);
-    return NextResponse.json({ error: 'Failed to mark conversation as seen' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to mark conversation as seen'), { status: 500 });
   }
 }

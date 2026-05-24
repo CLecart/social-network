@@ -1,13 +1,15 @@
 import { searchUsers } from "@/lib/db/queries/search/searchUsers";
 import { searchPosts } from "@/lib/db/queries/search/searchPosts";
 import { NextRequest, NextResponse } from "next/server";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("q") || "";
     
     // Récupérer l'ID de l'utilisateur connecté depuis les headers
-    const currentUserId = req.headers.get("x-user-id") || undefined;
+    const currentUserId = (await getUserIdFromRequest(req)) || undefined;
 
     try {
         const [users, posts] = await Promise.all([
@@ -60,9 +62,9 @@ export async function GET(req: NextRequest) {
 
         const results = [...userResults, ...postResults];
 
-        return NextResponse.json(results);
+        return NextResponse.json(respondSuccess(results));
     } catch (error) {
         console.error("Search API error:", error);
-        return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+        return NextResponse.json(respondError("Erreur serveur"), { status: 500 });
     }
 }

@@ -2,139 +2,73 @@
 // hooks/useUserPosts.ts
 'use client';
 
-import { PostWithDetails } from '@/lib/schemas/post';
-import { useState, useEffect, useCallback } from 'react';
+import { PostWithDetails, PostWithDetailsSchema } from '@/lib/schemas/post';
+import { useCallback, useMemo, useState } from 'react';
+import { useApi } from '@/hooks/use-api';
 
 interface UseUserPostsParams {
-    userId?: string; // Si non fourni, utilise l'utilisateur connecté
-    publicOnly?: boolean;
-    page?: number;
-    limit?: number;
+  userId?: string; // Si non fourni, utilise l'utilisateur connecté
+  publicOnly?: boolean;
+  page?: number; // réservé pour futur usage (pagination côté API)
+  limit?: number;
 }
 
 interface UseUserPostsReturn {
-    posts: PostWithDetails[];
-    loading: boolean;
-    error: string | null;
-    hasMore: boolean;
-    total: number;
-    setPosts: React.Dispatch<React.SetStateAction<PostWithDetails[]>>
-    refetch: () => void;
-    loadMore: () => void;
+  posts: PostWithDetails[];
+  loading: boolean;
+  error: string | null;
+  hasMore: boolean;
+  total: number;
+  setPosts: React.Dispatch<React.SetStateAction<PostWithDetails[]>>
+  refetch: () => void;
+  loadMore: () => void;
 }
 
 export function useUserPosts({
-    userId,
-    publicOnly = false,
-    page = 1,
-    limit = 10,
+  userId,
+  publicOnly = false,
+  page = 1,
+  limit = 10,
 }: UseUserPostsParams = {}): UseUserPostsReturn {
-    const [posts, setPosts] = useState<PostWithDetails[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [hasMore, setHasMore] = useState(false);
-    const [total, setTotal] = useState(0);
-    const [currentPage, setCurrentPage] = useState(page);
+  const enabled = !!userId;
+  const url = enabled ? `/api/private/post/profile/${userId}` : '';
+  const { data, isLoading, error, refresh } = useApi<PostWithDetails[]>({
+    url,
+    schema: PostWithDetailsSchema.array(),
+    envelope: true,
+    enabled,
+    swrOptions: {
+      revalidateOnFocus: false,
+      shouldRetryOnError: false,
+      keepPreviousData: true,
+    },
+  });
 
-    const fetchPosts = useCallback(async (pageToFetch: number = 1, append: boolean = false) => {
-        try {
-            setLoading(true);
-            setError(null);
+  const posts = useMemo(() => data ?? [], [data]);
+  const [postsState, setPosts] = useState<PostWithDetails[]>([]);
 
-            const params = new URLSearchParams({
-                page: pageToFetch.toString(),
-                limit: limit.toString(),
-                publicOnly: publicOnly.toString(),
-            });
+  // Expose a setter while keeping SWR as source of truth
+  const effectivePosts = posts.length ? posts : postsState;
 
-            if (userId) {
-                params.append('userId', userId);
-            }
+  const hasMore = false; // l'endpoint actuel ne pagine pas
+  const total = effectivePosts.length;
 
-            const response = await fetch(`/api/private/post/profile/${userId}`, {
-                method: 'GET',
-                credentials: 'include',
-            });
+  const refetch = useCallback(() => {
+    refresh();
+  }, [refresh]);
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to fetch posts');
-            }
+  const loadMore = useCallback(() => {
+    // pas de pagination serveur pour le moment
+  }, []);
 
-            const data = await response.json();
-
-            const userPosts = data.posts || [];
-
-            if (append) {
-                setPosts(prev => [...prev, ...userPosts]);
-            } else {
-                setPosts(userPosts);
-            }
-
-            setHasMore(data.pagination?.hasMore || false);
-            setTotal(data.pagination?.total || userPosts.length);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Unknown error');
-        } finally {
-            setLoading(false);
-        }
-    }, [userId, publicOnly, limit]);
-
-    const loadMore = useCallback(() => {
-        if (!loading && hasMore) {
-            const nextPage = currentPage + 1;
-            setCurrentPage(nextPage);
-            fetchPosts(nextPage, true);
-        }
-    }, [loading, hasMore, currentPage, fetchPosts]);
-
-    const refetch = useCallback(() => {
-        setCurrentPage(1);
-        fetchPosts(1, false);
-    }, [fetchPosts]);
-
-    useEffect(() => {
-        if (userId) {
-            const fetchData = async () => {
-                try {
-                    setLoading(true);
-                    setError(null);
-
-                    const response = await fetch(`/api/private/post/profile/${userId}`, {
-                        method: 'GET',
-                        credentials: 'include',
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.message || 'Failed to fetch posts');
-                    }
-
-                    const data = await response.json();
-                    const userPosts = data.posts || [];
-
-                    setPosts(userPosts);
-                    setHasMore(data.pagination?.hasMore || false);
-                    setTotal(data.pagination?.total || userPosts.length);
-                } catch (err) {
-                    setError(err instanceof Error ? err.message : 'Unknown error');
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            fetchData();
-        }
-    }, [userId]);
-
-    return {
-        posts,
-        loading,
-        error,
-        hasMore,
-        total,
-        refetch,
-        loadMore,
-        setPosts,
-    };
+  return {
+    posts: effectivePosts,
+    loading: isLoading,
+    error: error ? (error instanceof Error ? error.message : String(error)) : null,
+    hasMore,
+    total,
+    refetch,
+    loadMore,
+    setPosts,
+  };
 }

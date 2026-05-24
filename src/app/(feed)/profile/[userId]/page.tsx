@@ -11,356 +11,161 @@ import {
   Grid3X3,
   Video,
   Settings,
-  Share,
   Lock,
-  LockOpen
 } from "lucide-react";
 import Image from "next/image";
 import { ModeToggle } from "@/components/toggle-theme";
 import NavigationBar from "@/components/feed/navBar/navigationBar";
-import { useUserProfile } from "@/hooks/use-user-data";
+import { useProfileSummary } from "@/hooks/use-profile-summary";
 import { formatDate } from "@/app/utils/dateFormat";
 import { useUserPosts } from "@/hooks/use-posts-by-user";
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef } from "react";
 import { PostProvider } from "@/app/context/post-context";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { LoadingState, ErrorState, MediaSection, CommentsSection, PostHeader, PostFooter } from "@/components/feed/post/postDetails";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  LoadingState,
+  ErrorState,
+  MediaSection,
+  CommentsSection,
+  PostHeader,
+  PostFooter,
+} from "@/components/feed/post/postDetails";
 import { useParams, useRouter } from "next/navigation";
-import { set } from "date-fns";
+import { useFollowers, useFollowing } from "@/hooks/use-followers";
+import { usePostDetails } from "@/hooks/use-post-details";
+import { toggleFollow } from "@/lib/client/follow/toggleFollow";
+import { toggleFriendshipRequest } from "@/lib/client/friendship/toggleFriendship";
+import PostItem from "@/components/profile/PostItem";
 
-type FilterType = 'all' | 'photos' | 'videos' | 'text';
+type FilterType = "all" | "photos" | "videos" | "text";
 
 export default function ProfilePage() {
-
   const params = useParams();
 
-  const userId = params?.userId as string | undefined
+  const userId = params?.userId as string | undefined;
 
   const router = useRouter();
-  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<any>(null);
-  const [selectedPostDetails, setSelectedPostDetails] = useState<any>(null);
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [isPending, setIsPending] = useState(false);
-  const [followStatus, setFollowStatus] = useState<string | null>(null); // followed, pending, accepted
-  const [friendshipStatus, setFriendshipStatus] = useState<string | null>(null); // pending, accepted pour les amis
-  const [isFriendRequestPending, setIsFriendRequestPending] = useState(false);
-  const [followersCount, setFollowersCount] = useState(0);
-  const [followingCount, setFollowingCount] = useState(0);
-  const [postDetailsLoading, setPostDetailsLoading] = useState(false);
-  const [postDetailsError, setPostDetailsError] = useState<string | null>(null);
-
-  const [followers, setFollowers] = useState<any[]>([]);
-  const [following, setFollowing] = useState<any[]>([]);
+  const [followPending, setFollowPending] = useState(false);
+  const [friendPending, setFriendPending] = useState(false);
 
   const contentRef = useRef<HTMLDivElement>(null);
 
   const {
-    user: profileUser,
-    loading,
+    data: summary,
+    isLoading: loading,
     error,
-    isOwnProfile,
-    refetch
-  } = useUserProfile(userId)
+    refresh: refetch,
+  } = useProfileSummary(userId);
+  const profileUser = summary?.user;
+  const isOwnProfile = !!summary?.isOwnProfile;
 
-
-  const { posts, hasMore, loadMore } = useUserPosts({
+  const { posts } = useUserPosts({
     userId: profileUser?.id,
-    limit: 12
+    limit: 12,
   });
-  // Initialiser les états de suivi
+  // API hooks
+  const stats = summary?.stats;
+  const isFollowing = summary?.relationship.followStatus === "ACCEPTED";
+  const followStatus = summary?.relationship.followStatus ?? null;
+  const friendshipStatus = summary?.relationship.friendshipStatus ?? null;
+  // Actions déclenchées côté client (follow / friend request)
+  const { data: followers = [], refresh: refreshFollowers } = useFollowers(
+    profileUser?.id,
+  );
+  const { data: following = [], refresh: refreshFollowing } = useFollowing(
+    profileUser?.id,
+  );
+  const {
+    data: selectedPostDetails,
+    isLoading: postDetailsLoading,
+    error: postDetailsError,
+    refresh: refreshPostDetails,
+  } = usePostDetails(selectedPost?.id);
 
+  // Statuts de follow/amitié et compteurs gérés par hooks ci-dessus
 
-  // Vérifier si l'utilisateur actuel suit le profil
-  const checkFollowingStatus = async () => {
-    if (!profileUser) return;
-
-    console.log("---------1------------", profileUser.id)
-    try {
-      const response = await fetch(`/api/private/follow/${profileUser.id}`, {
-        method: "GET",
-        credentials: "include",
-      });
-      console.log("followStatus", followStatus)
-
-
-      if (!response.ok) {
-        setIsFollowing(false);
-        setFollowStatus(null);
-        return;
-      }
-
-      const data = await response.json();
-      console.log("data follow", data)
-      if (data.success && data.data) {
-        setIsFollowing(true);
-        setFollowStatus(data.data.status || "accepted");
-      } else {
-        setIsFollowing(false);
-        setFollowStatus(null);
-      }
-    } catch (err) {
-      console.error("Erreur lors de la vérification du suivi:", err);
-      setIsFollowing(false);
-      setFollowStatus(null);
-    }
-  };
-
-  // Vérifier le statut d'amitié séparément
-  const checkFriendshipStatus = async () => {
-    if (!profileUser) return;
-
-    try {
-      const response = await fetch(`/api/private/friend-requests/status/${profileUser.id}`, {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.data) {
-          setFriendshipStatus(data.data.status);
-        } else {
-          setFriendshipStatus(null);
-        }
-      } else {
-        setFriendshipStatus(null);
-      }
-    } catch (err) {
-      console.error("Erreur lors de la vérification de l'amitié:", err);
-      setFriendshipStatus(null);
-    }
-  };
-
-  useEffect(() => {
-    if (!profileUser) return;
-
-    // Mettre à jour le nombre de followers
-    const updateSatsCount = async () => {
-      try {
-        const response = await fetch(`/api/private/follow/stats/${profileUser.id}`, {
-          method: "GET",
-          credentials: "include",
-        });
-
-        if (!response.ok) {
-          setFollowersCount(0);
-          return;
-        }
-
-        const data = await response.json();
-        console.log(data.data)
-        setFollowersCount(data.data.follower || 0);
-        setFollowingCount(data.data.following || 0);
-      } catch (err) {
-        console.error("Erreur lors de la récupération des followers:", err);
-      }
-    }
-
-    checkFollowingStatus();
-    checkFriendshipStatus();
-    updateSatsCount();
-  }, [profileUser]);
-
-
-
-  // Fonction pour suivre/ne plus suivre un utilisateur
+  // Suivre / ne plus suivre via apiFetch helper
   const handleFollowToggle = async () => {
     if (!profileUser?.id || isOwnProfile) return;
-
     try {
-      setIsPending(true);
-
-      const response = await fetch(`/api/private/follow/${profileUser?.id}/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ userId: profileUser.id }),
-      });
-
-      const data = await response.json();
-
-      if (!data.success) {
-        console.error("Erreur API:", data.message);
-        return;
-      }
-
-      if (data.data) {
-        setIsFollowing(true);
-        setFollowStatus(data.data.status || "accepted");
-
-        // Augmenter le count des followers seulement pour les follows et amis acceptés
-        // Pas pour les demandes en attente
-        if (data.data.status === "followed" || data.data.status === "accepted") {
-          setFollowersCount((prev) => prev + 1);
-        }
-      } else {
-        // Unfollow/Remove friend
-        setIsFollowing(false);
-        setFollowStatus(null);
-        setFollowersCount((prev) => prev - 1);
-      }
+      setFollowPending(true);
+      await toggleFollow(profileUser.id);
+      await refetch();
     } catch (err) {
       console.error("Erreur lors du suivi:", err);
     } finally {
-      setIsPending(false);
+      setFollowPending(false);
     }
   };
 
-  // Fonction pour envoyer/annuler une demande d'amitié
+  // Envoyer/annuler une demande d'amitié
   const handleFriendRequest = async () => {
     if (!profileUser?.id || isOwnProfile) return;
-
     try {
-      setIsFriendRequestPending(true);
-
-      const response = await fetch(`/api/private/friend-requests`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ friendId: profileUser.id }),
-      });
-
-      const data = await response.json();
-
-      if (!data.success) {
-        console.error("Erreur API:", data.message);
-        return;
-      }
-
-      if (data.data) {
-        // Demande d'ami envoyée
-        setFriendshipStatus("pending");
-      } else {
-        // Demande annulée ou amitié supprimée
-        setFriendshipStatus(null);
-        // Après avoir supprimé l'amitié, on doit rafraîchir le statut de follow
-        // car les deux boutons redeviennent disponibles
-        checkFollowingStatus();
-      }
+      setFriendPending(true);
+      await toggleFriendshipRequest(profileUser.id);
+      await refetch();
     } catch (err) {
       console.error("Erreur lors de la demande d'amitié:", err);
     } finally {
-      setIsFriendRequestPending(false);
+      setFriendPending(false);
     }
   };
 
   // ------------------------
-
-
-  const fetchFollowers = async () => {
-    if (!profileUser?.id) return;
-    try {
-      const response = await fetch(`/api/private/follow/${profileUser.id}/followers`, {
-        method: "GET",
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (data.success) {
-        setFollowers(data.data || []);
-      }
-    } catch (err) {
-      console.error("Erreur lors du fetch des followers:", err);
-    }
-  };
-
-  const fetchFollowing = async () => {
-    if (!profileUser?.id) return;
-    try {
-      const response = await fetch(`/api/private/follow/${profileUser.id}/following`, {
-        method: "GET",
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (data.success) {
-        setFollowing(data.data || []);
-      }
-    } catch (err) {
-      console.error("Erreur lors du fetch des following:", err);
-    }
-  };
-
-
-  // ------------------------
-
-  const fetchPostDetails = async (targetPostId: string) => {
-    if (!targetPostId) return;
-
-    try {
-      setPostDetailsLoading(true);
-      setPostDetailsError(null);
-
-      const response = await fetch(`/api/private/post/${targetPostId}`, {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch post details");
-      }
-
-      const data = await response.json();
-
-
-      setSelectedPostDetails(data.data);
-      console.log(selectedPostDetails)
-    } catch (err) {
-      setPostDetailsError(err instanceof Error ? err.message : "Unknown error");
-    } finally {
-      setPostDetailsLoading(false);
-    }
-  };
   const handleGoToSettings = () => {
-    router.push("/settings/profile")
-  }
+    router.push("/settings/profile");
+  };
 
   const handlePostClick = (post: any) => {
     setSelectedPost(post);
-    setSelectedPostDetails(post);
     setIsOpen(true);
-    fetchPostDetails(post.id);
   };
 
   const handleCloseDialog = () => {
     setIsOpen(false);
     setSelectedPost(null);
-    setSelectedPostDetails(null);
-    setPostDetailsError(null);
   };
 
   const getMediaType = (mediaUrl: string | null) => {
-    if (!mediaUrl) return 'text';
+    if (!mediaUrl) return "text";
 
-    if (mediaUrl.includes('/video/') || mediaUrl.includes('video')) return 'video';
-    if (mediaUrl.includes('/image/') || mediaUrl.includes('image')) return 'image';
+    if (mediaUrl.includes("/video/") || mediaUrl.includes("video"))
+      return "video";
+    if (mediaUrl.includes("/image/") || mediaUrl.includes("image"))
+      return "image";
 
-    const videoExtensions = ['.mp4', '.mov', '.avi', '.webm', '.mkv', '.flv'];
-    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+    const videoExtensions = [".mp4", ".mov", ".avi", ".webm", ".mkv", ".flv"];
+    const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"];
 
     const lowerUrl = mediaUrl.toLowerCase();
 
-    if (videoExtensions.some(ext => lowerUrl.includes(ext))) return 'video';
-    if (imageExtensions.some(ext => lowerUrl.includes(ext))) return 'image';
+    if (videoExtensions.some((ext) => lowerUrl.includes(ext))) return "video";
+    if (imageExtensions.some((ext) => lowerUrl.includes(ext))) return "image";
 
-    return 'image';
+    return "image";
   };
 
   const filteredPosts = useMemo(() => {
     if (!posts) return [];
 
     switch (activeFilter) {
-      case 'photos':
-        return posts.filter(post => getMediaType(post.image) === 'image');
-      case 'videos':
-        return posts.filter(post => getMediaType(post.image) === 'video');
-      case 'text':
-        return posts.filter(post => !post.image);
+      case "photos":
+        return posts.filter((post) => getMediaType(post.image) === "image");
+      case "videos":
+        return posts.filter((post) => getMediaType(post.image) === "video");
+      case "text":
+        return posts.filter((post) => !post.image);
       default:
         return posts;
     }
@@ -369,9 +174,13 @@ export default function ProfilePage() {
   const postCounts = useMemo(() => {
     if (!posts) return { all: 0, photos: 0, videos: 0, text: 0 };
 
-    const photos = posts.filter(post => getMediaType(post.image) === 'image').length;
-    const videos = posts.filter(post => getMediaType(post.image) === 'video').length;
-    const textOnly = posts.filter(post => !post.image).length;
+    const photos = posts.filter(
+      (post) => getMediaType(post.image) === "image",
+    ).length;
+    const videos = posts.filter(
+      (post) => getMediaType(post.image) === "video",
+    ).length;
+    const textOnly = posts.filter((post) => !post.image).length;
 
     return {
       all: posts.length,
@@ -417,7 +226,7 @@ export default function ProfilePage() {
     type,
     icon: Icon,
     label,
-    count
+    count,
   }: {
     type: FilterType;
     icon: any;
@@ -426,10 +235,11 @@ export default function ProfilePage() {
   }) => (
     <button
       onClick={() => setActiveFilter(type)}
-      className={`flex-1 flex flex-col items-center py-3 px-2 border-b-2 transition-colors ${activeFilter === type
-        ? 'border-[var(--blue)] text-[var(--blue)]'
-        : 'border-transparent text-[var(--textMinimal)] hover:text-[var(--textNeutral)]'
-        }`}
+      className={`flex-1 flex flex-col items-center py-3 px-2 border-b-2 transition-colors ${
+        activeFilter === type
+          ? "border-[var(--blue)] text-[var(--blue)]"
+          : "border-transparent text-[var(--textMinimal)] hover:text-[var(--textNeutral)]"
+      }`}
     >
       <Icon className="w-5 h-5 mb-1" />
       <span className="text-xs font-medium">
@@ -437,69 +247,6 @@ export default function ProfilePage() {
       </span>
     </button>
   );
-
-  const PostItem = ({ post }: { post: any }) => {
-    const mediaType = getMediaType(post.image);
-
-    return (
-      <div
-        className="aspect-square relative group cursor-pointer bg-[var(--bgLevel1)] rounded-lg overflow-hidden"
-        onClick={() => handlePostClick(post)}
-      >
-        {mediaType === 'image' ? (
-          <Image
-            src={post.image || "https://i.pinimg.com/736x/ac/de/54/acde5463c760002ed97dc553eb8238ab.jpg"}
-            alt="Post"
-            fill
-            className="object-cover border-[var(--detailMinimal)] border-1 rounded-lg"
-          />
-        ) : mediaType === 'video' ? (
-          <video
-            src={post.image}
-            className="w-full h-full object-cover border-[var(--detailMinimal)] border-1 rounded-lg"
-            muted
-            loop
-            onMouseEnter={(e) => {
-              const video = e.target as HTMLVideoElement;
-              video.play();
-            }}
-            onMouseLeave={(e) => {
-              const video = e.target as HTMLVideoElement;
-              video.pause();
-              video.currentTime = 0;
-            }}
-          />
-        ) : (
-          <div className="flex items-center justify-center p-2 h-full text-xs text-[var(--textNeutral)] text-center break-words">
-            <p className="line-clamp-4">{post.content}</p>
-          </div>
-        )}
-
-        {mediaType === 'video' && (
-          <div className="absolute top-2 right-2 bg-black/60 text-white px-2 py-1 rounded text-xs">
-            <Video className="w-3 h-3" />
-          </div>
-        )}
-
-        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-          <div className="flex items-center gap-4 text-white">
-            <div className="flex items-center gap-1">
-              <Heart className="w-4 h-4 fill-white" />
-              <span className="text-sm font-semibold">
-                {post._count?.reactions || 0}
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <MessageCircle className="w-4 h-4 fill-white" />
-              <span className="text-sm font-semibold">
-                {post._count?.comments || 0}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   return (
     <PostProvider>
@@ -548,13 +295,14 @@ export default function ProfilePage() {
                       src={profileUser.banner}
                       alt="Bannière de profil"
                       fill
+                      sizes="(max-width: 768px) 100vw, calc(100vw - 256px)"
                       className="object-cover"
                     />
                   </div>
                 ) : (
                   <div className="w-full h-full bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500" />
                 )}
-
+                {/* TODO: Faire en sorte de pouvoir modifier la bannière */}
                 {isOwnProfile && (
                   <div className="absolute top-4 right-4">
                     <Button
@@ -601,18 +349,19 @@ export default function ProfilePage() {
                           {posts?.length || 0}
                         </div>
                         <div className="text-sm text-[var(--textMinimal)]">
-                          {(posts?.length || 0) > 1 ? 'publications' : 'publication'}
+                          {(posts?.length || 0) > 1
+                            ? "publications"
+                            : "publication"}
                         </div>
                       </div>
 
-
                       <Dialog>
                         <DialogTrigger asChild>
                           <button
                             className="flex flex-col items-center"
-                            onClick={fetchFollowers} // fetch juste avant d’ouvrir
+                            onClick={refreshFollowers} // rafraîchir juste avant d’ouvrir
                           >
-                            {followersCount} abonnés
+                            {stats?.follower ?? 0} abonnés
                           </button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
@@ -622,7 +371,9 @@ export default function ProfilePage() {
 
                           <div className="max-h-[400px] overflow-y-auto">
                             {followers.length === 0 ? (
-                              <p className="text-sm text-[var(--textMinimal)]">Aucun abonné</p>
+                              <p className="text-sm text-[var(--textMinimal)]">
+                                Aucun abonné
+                              </p>
                             ) : (
                               followers.map((f) => (
                                 <div
@@ -630,8 +381,13 @@ export default function ProfilePage() {
                                   className="flex items-center gap-2 p-2 border-b border-[var(--detailMinimal)]"
                                 >
                                   <Avatar className="w-8 h-8">
-                                    <AvatarImage src={f.avatar || "/placeholder.svg"} alt={f.username} />
-                                    <AvatarFallback>{f.username[0]?.toUpperCase()}</AvatarFallback>
+                                    <AvatarImage
+                                      src={f.avatar || "/placeholder.svg"}
+                                      alt={f.username}
+                                    />
+                                    <AvatarFallback>
+                                      {f.username?.toUpperCase()}
+                                    </AvatarFallback>
                                   </Avatar>
                                   <span className="text-[var(--textNeutral)] font-medium">
                                     {f.username}
@@ -647,28 +403,35 @@ export default function ProfilePage() {
                         <DialogTrigger asChild>
                           <button
                             className="flex flex-col items-center"
-                            onClick={fetchFollowers} // fetch juste avant d’ouvrir
+                            onClick={refreshFollowing} // rafraîchir juste avant d’ouvrir
                           >
-                            {followingCount} abonnements
+                            {stats?.following ?? 0} abonnements
                           </button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
                           <DialogHeader>
-                            <DialogTitle>Abonnés</DialogTitle>
+                            <DialogTitle>Abonnements</DialogTitle>
                           </DialogHeader>
 
                           <div className="max-h-[400px] overflow-y-auto">
-                            {followers.length === 0 ? (
-                              <p className="text-sm text-[var(--textMinimal)]">Aucun abonné</p>
+                            {following.length === 0 ? (
+                              <p className="text-sm text-[var(--textMinimal)]">
+                                Aucun abonné
+                              </p>
                             ) : (
-                              followers.map((f) => (
+                              following.map((f) => (
                                 <div
                                   key={f.id}
                                   className="flex items-center gap-2 p-2 border-b border-[var(--detailMinimal)]"
                                 >
                                   <Avatar className="w-8 h-8">
-                                    <AvatarImage src={f.avatar || "/placeholder.svg"} alt={f.username} />
-                                    <AvatarFallback>{f.username[0]?.toUpperCase()}</AvatarFallback>
+                                    <AvatarImage
+                                      src={f.avatar || "/placeholder.svg"}
+                                      alt={f.username}
+                                    />
+                                    <AvatarFallback>
+                                      {f.username?.toUpperCase()}
+                                    </AvatarFallback>
                                   </Avatar>
                                   <span className="text-[var(--textNeutral)] font-medium">
                                     {f.username}
@@ -679,7 +442,6 @@ export default function ProfilePage() {
                           </div>
                         </DialogContent>
                       </Dialog>
-
                     </div>
                   </div>
                 </div>
@@ -695,8 +457,11 @@ export default function ProfilePage() {
                     <div className="flex items-center gap-2 mb-1">
                       <h2 className="font-semibold text-base text-[var(--textNeutral)]">
                         {profileUser.firstName} {profileUser.lastName}
-                      </h2>{profileUser.visibility === "PRIVATE" && (<Lock size={14} />)}</div>
-
+                      </h2>
+                      {profileUser.visibility === "PRIVATE" && (
+                        <Lock size={14} />
+                      )}
+                    </div>
                   )}
                   <p className="text-sm text-[var(--textMinimal)] mb-1">
                     @{profileUser.username}
@@ -705,7 +470,10 @@ export default function ProfilePage() {
                     {profileUser.email}
                   </p>
                   <div className="text-sm whitespace-pre-line text-[var(--textMinimal)] mb-2">
-                    {profileUser.biography || (isOwnProfile ? "Aucune bio pour le moment" : "Aucune biographie")}
+                    {profileUser.biography ||
+                      (isOwnProfile
+                        ? "Aucune bio pour le moment"
+                        : "Aucune biographie")}
                   </div>
                   {/* {profileUser.website && (
                     <a
@@ -730,77 +498,79 @@ export default function ProfilePage() {
                       >
                         Modifier le profil
                       </Button>
-
                     </>
                   ) : (
                     <>
-                      {profileUser?.visibility === 'PRIVATE' ? (
+                      {profileUser?.visibility === "PRIVATE" ? (
                         // Profil privé : seulement demande d'ami
                         <Button
                           onClick={handleFriendRequest}
-                          className={`flex-1 transition-opacity ${isFriendRequestPending
-                            ? "bg-gray-400 text-white cursor-not-allowed opacity-60"
-                            : friendshipStatus === "pending"
-                              ? "bg-orange-500 text-white hover:bg-orange-600"
-                              : friendshipStatus === "accepted"
-                                ? "bg-[var(--green60)] text-[var(--textNeutral)] hover:bg-[var(--greyHighlighted)]"
-                                : "bg-[var(--blue)] hover:bg-[var(--blue80)] text-white"
-                            }`}
-                          disabled={isFriendRequestPending}
+                          className={`flex-1 transition-opacity ${
+                            friendPending
+                              ? "bg-gray-400 text-white cursor-not-allowed opacity-60"
+                              : friendshipStatus === "PENDING"
+                                ? "bg-orange-500 text-white hover:bg-orange-600"
+                                : friendshipStatus === "ACCEPTED"
+                                  ? "bg-[var(--green60)] text-[var(--textNeutral)] hover:bg-[var(--greyHighlighted)]"
+                                  : "bg-[var(--blue)] hover:bg-[var(--blue80)] text-white"
+                          }`}
+                          disabled={friendPending}
                         >
-                          {isFriendRequestPending
+                          {friendPending
                             ? "En cours..."
-                            : friendshipStatus === "pending"
+                            : friendshipStatus === "PENDING"
                               ? "Demande envoyée"
-                              : friendshipStatus === "accepted"
+                              : friendshipStatus === "ACCEPTED"
                                 ? "Ami(e)"
                                 : "Demander en ami"}
                         </Button>
                       ) : (
                         // Profil public : logique conditionnelle
                         <>
-                          {friendshipStatus === "accepted" ? (
+                          {friendshipStatus === "ACCEPTED" ? (
                             // Si on est ami, ne montrer que le bouton Ami(e)
                             <Button
                               onClick={handleFriendRequest}
                               className="flex-1 transition-opacity bg-[var(--green60)] text-[var(--textNeutral)] hover:bg-[var(--greyHighlighted)]"
-                              disabled={isFriendRequestPending}
+                              disabled={friendPending}
                             >
-                              {isFriendRequestPending ? "En cours..." : "Ami(e)"}
+                              {friendPending ? "En cours..." : "Ami(e)"}
                             </Button>
                           ) : (
                             // Si on n'est pas ami, montrer Follow + Add Friend
                             <>
                               <Button
                                 onClick={handleFollowToggle}
-                                className={`flex-1 transition-opacity mr-1 ${isPending
-                                  ? "bg-gray-400 text-white cursor-not-allowed opacity-60"
-                                  : isFollowing && followStatus === "followed"
-                                    ? "bg-[var(--green60)] text-[var(--textNeutral)] hover:bg-[var(--greyHighlighted)]"
-                                    : "bg-[var(--blue)] hover:bg-[var(--blue80)] text-white"
-                                  }`}
-                                disabled={isPending}
+                                className={`flex-1 transition-opacity mr-1 ${
+                                  followPending
+                                    ? "bg-gray-400 text-white cursor-not-allowed opacity-60"
+                                    : isFollowing && followStatus === "ACCEPTED"
+                                      ? "bg-[var(--green60)] text-[var(--textNeutral)] hover:bg-[var(--greyHighlighted)]"
+                                      : "bg-[var(--blue)] hover:bg-[var(--blue80)] text-white"
+                                }`}
+                                disabled={followPending}
                               >
-                                {isPending
+                                {followPending
                                   ? "En cours..."
-                                  : isFollowing && followStatus === "followed"
+                                  : isFollowing && followStatus === "ACCEPTED"
                                     ? "Suivi(e)"
                                     : "Suivre"}
                               </Button>
 
                               <Button
                                 onClick={handleFriendRequest}
-                                className={`flex-1 ml-1 transition-opacity ${isFriendRequestPending
-                                  ? "bg-gray-400 text-white cursor-not-allowed opacity-60"
-                                  : friendshipStatus === "pending"
-                                    ? "bg-orange-500 text-white hover:bg-orange-600"
-                                    : "bg-[var(--lavender)] hover:bg-[var(--lavender80)] text-white"
-                                  }`}
-                                disabled={isFriendRequestPending}
+                                className={`flex-1 ml-1 transition-opacity ${
+                                  friendPending
+                                    ? "bg-gray-400 text-white cursor-not-allowed opacity-60"
+                                    : friendshipStatus === "PENDING"
+                                      ? "bg-orange-500 text-white hover:bg-orange-600"
+                                      : "bg-[var(--lavender)] hover:bg-[var(--lavender80)] text-white"
+                                }`}
+                                disabled={friendPending}
                               >
-                                {isFriendRequestPending
+                                {friendPending
                                   ? "En cours..."
-                                  : friendshipStatus === "pending"
+                                  : friendshipStatus === "PENDING"
                                     ? "Demande envoyée"
                                     : "Ajouter en ami"}
                               </Button>
@@ -849,8 +619,12 @@ export default function ProfilePage() {
             <div className="bg-[var(--bgLevel2)]">
               <div className="p-4">
                 {(() => {
-                  // Si le compte est privé et qu'on n'est pas ami accepté
-                  if (profileUser?.visibility === 'PRIVATE' && !isOwnProfile && followStatus == 'accepted') {
+                  // Si le compte est privé, afficher en fonction des permissions du résumé
+                  if (
+                    profileUser?.visibility === "PRIVATE" &&
+                    !isOwnProfile &&
+                    summary?.permissions.canViewPosts
+                  ) {
                     return (
                       <div className="grid grid-cols-3 gap-2">
                         {filteredPosts.map((post) => (
@@ -860,7 +634,11 @@ export default function ProfilePage() {
                     );
                   }
 
-                  if (profileUser?.visibility === 'PRIVATE' && !isOwnProfile && followStatus !== 'accepted') {
+                  if (
+                    profileUser?.visibility === "PRIVATE" &&
+                    !isOwnProfile &&
+                    !summary?.permissions.canViewPosts
+                  ) {
                     return (
                       <div className="text-center py-8">
                         <div className="text-6xl mb-4">🔒</div>
@@ -868,7 +646,8 @@ export default function ProfilePage() {
                           Ce compte est privé
                         </p>
                         <p className="text-[var(--textNeutral)] text-sm">
-                          Suivez @{profileUser.username} pour voir ses publications
+                          Suivez @{profileUser.username} pour voir ses
+                          publications
                         </p>
                       </div>
                     );
@@ -878,7 +657,9 @@ export default function ProfilePage() {
                   if (!posts) {
                     return (
                       <div className="flex justify-center py-8">
-                        <div className="text-[var(--textMinimal)]">Chargement des posts...</div>
+                        <div className="text-[var(--textMinimal)]">
+                          Chargement des posts...
+                        </div>
                       </div>
                     );
                   }
@@ -887,10 +668,16 @@ export default function ProfilePage() {
                     return (
                       <div className="text-center py-8">
                         <p className="text-[var(--textMinimal)]">
-                          {activeFilter === 'photos' && 'Aucune photo à afficher'}
-                          {activeFilter === 'videos' && 'Aucune vidéo à afficher'}
-                          {activeFilter === 'text' && 'Aucun post texte à afficher'}
-                          {activeFilter === 'all' && (isOwnProfile ? 'Vous n\'avez pas encore publié de contenu' : 'Aucun post à afficher')}
+                          {activeFilter === "photos" &&
+                            "Aucune photo à afficher"}
+                          {activeFilter === "videos" &&
+                            "Aucune vidéo à afficher"}
+                          {activeFilter === "text" &&
+                            "Aucun post texte à afficher"}
+                          {activeFilter === "all" &&
+                            (isOwnProfile
+                              ? "Vous n'avez pas encore publié de contenu"
+                              : "Aucun post à afficher")}
                         </p>
                       </div>
                     );
@@ -911,36 +698,44 @@ export default function ProfilePage() {
 
         {/* Dialog pour afficher les détails du post */}
         <Dialog open={isOpen} onOpenChange={handleCloseDialog}>
-          <DialogTitle />
           <DialogContent className="flex flex-col gap-0 p-0 sm:max-h-[min(840px,90vh)] sm:max-w-5xl [&>button:last-child]:top-3.5 [&>button:last-child]:z-50">
-            <DialogHeader className="contents space-y-0 text-left">
-              <DialogDescription asChild>
-                <div className="flex h-[80vh] max-h-[83vh] w-full rounded-md overflow-hidden">
-                  {postDetailsLoading ? (
-                    <LoadingState />
-                  ) : postDetailsError ? (
-                    <ErrorState error={postDetailsError} onRetry={() => selectedPost && fetchPostDetails(selectedPost.id)} />
-                  ) : selectedPostDetails ? (
-                    <div className="flex w-full h-full">
-                      <MediaSection post={selectedPostDetails} />
-                      <div className="flex flex-col w-[500px] bg-[var(--bgLevel1)] border-l border-[var(--detailMinimal)]">
-                        <PostHeader post={selectedPostDetails} />
-                        <div
-                          ref={contentRef}
-                          className="flex-1 overflow-y-auto"
-                        >
-                          <CommentsSection comments={selectedPostDetails.comments || []} />
-                        </div>
-                        <PostFooter
-                          postId={selectedPostDetails.id}
-                          onCommentAdded={() => fetchPostDetails(selectedPostDetails.id)}
-                        />
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
-              </DialogDescription>
+            <DialogHeader className="hidden">
+              <DialogTitle>Détails du post</DialogTitle>
+              <DialogDescription>Affiche les détails du post sélectionné.</DialogDescription>
             </DialogHeader>
+            <div className="flex h-[80vh] max-h-[83vh] w-full rounded-md overflow-hidden">
+              {postDetailsLoading ? (
+                <LoadingState />
+              ) : postDetailsError ? (
+                <ErrorState
+                  error={
+                    postDetailsError instanceof Error
+                      ? postDetailsError.message
+                      : String(postDetailsError)
+                  }
+                  onRetry={() => selectedPost && refreshPostDetails()}
+                />
+              ) : selectedPostDetails ? (
+                <div className="flex w-full h-full">
+                  <MediaSection post={selectedPostDetails} />
+                  <div className="flex flex-col w-[500px] bg-[var(--bgLevel1)] border-l border-[var(--detailMinimal)]">
+                    <PostHeader post={selectedPostDetails} />
+                    <div
+                      ref={contentRef}
+                      className="flex-1 overflow-y-auto"
+                    >
+                      <CommentsSection
+                        comments={selectedPostDetails.comments || []}
+                      />
+                    </div>
+                    <PostFooter
+                      postId={selectedPostDetails.id}
+                      onCommentAdded={() => refreshPostDetails()}
+                    />
+                  </div>
+                </div>
+              ) : null}
+            </div>
           </DialogContent>
         </Dialog>
       </div>

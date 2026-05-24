@@ -2,9 +2,13 @@ import { register } from "@/lib/db/queries/user/registerUser"
 import { signJwt } from "@/lib/jwt/signJwt"
 import { mapRegisterFormToInput } from "@/lib/parsers/formParsers"
 import { handleUploads } from "@/lib/uploads/imageUploads"
+import { checkRateLimit } from "@/lib/security/ratelimit"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
+    const rateLimitResponse = await checkRateLimit(req);
+    if (rateLimitResponse) return rateLimitResponse;
+
     try {
         const formData = await req.formData()
         const userData = await mapRegisterFormToInput(formData)
@@ -19,7 +23,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         const token = await signJwt({ userId: user.id })
 
         const res = NextResponse.json({ success: true }, { status: 200 })
-        res.cookies.set('token', token, {
+        res.cookies.set('authToken', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',

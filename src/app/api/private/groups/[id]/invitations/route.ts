@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -16,7 +18,7 @@ export async function POST(
     const { invitedUserId } = await request.json();
 
     if (!invitedUserId) {
-      return NextResponse.json({ error: 'invitedUserId is required' }, { status: 400 });
+      return NextResponse.json(respondError('invitedUserId is required'), { status: 400 });
     }
 
     // Check if group exists
@@ -25,12 +27,12 @@ export async function POST(
     });
 
     if (!group) {
-      return NextResponse.json({ error: 'Group not found' }, { status: 404 });
+      return NextResponse.json(respondError('Group not found'), { status: 404 });
     }
 
     // Check if user is the owner of the group
     if (group.ownerId !== userId) {
-      return NextResponse.json({ error: 'Only group owner can send invitations' }, { status: 403 });
+      return NextResponse.json(respondError('Only group owner can send invitations'), { status: 403 });
     }
 
     // Check if invited user exists
@@ -39,7 +41,7 @@ export async function POST(
     });
 
     if (!invitedUser) {
-      return NextResponse.json({ error: 'Invited user not found' }, { status: 404 });
+      return NextResponse.json(respondError('Invited user not found'), { status: 404 });
     }
 
     // Check if user is already a member
@@ -51,7 +53,7 @@ export async function POST(
     });
 
     if (existingMember) {
-      return NextResponse.json({ error: 'User is already a member of this group' }, { status: 400 });
+      return NextResponse.json(respondError('User is already a member of this group'), { status: 400 });
     }
 
     // Check if invitation already exists
@@ -64,7 +66,7 @@ export async function POST(
     });
 
     if (existingInvitation) {
-      return NextResponse.json({ error: 'Invitation already sent to this user' }, { status: 400 });
+      return NextResponse.json(respondError('Invitation already sent to this user'), { status: 400 });
     }
 
     // Create the invitation
@@ -103,20 +105,18 @@ export async function POST(
       }
     });
 
-    return NextResponse.json({
-      invitation: {
-        id: invitation.id,
-        groupId: invitation.groupId,
-        group: invitation.Conversation,
-        inviter: invitation.User_GroupInvitation_inviterIdToUser,
-        invited: invitation.User_GroupInvitation_invitedIdToUser,
-        status: invitation.status,
-        createdAt: invitation.createdAt.toISOString()
-      }
-    });
+    return NextResponse.json(respondSuccess({
+      id: invitation.id,
+      groupId: invitation.groupId,
+      group: invitation.Conversation,
+      inviter: invitation.User_GroupInvitation_inviterIdToUser,
+      invited: invitation.User_GroupInvitation_invitedIdToUser,
+      status: invitation.status,
+      createdAt: invitation.createdAt.toISOString()
+    }));
   } catch (error) {
     console.error('Error creating group invitation:', error);
-    return NextResponse.json({ error: 'Failed to create invitation' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to create invitation'), { status: 500 });
   }
 }
 
@@ -124,10 +124,10 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   try {
@@ -139,12 +139,12 @@ export async function GET(
     });
 
     if (!group) {
-      return NextResponse.json({ error: 'Group not found' }, { status: 404 });
+      return NextResponse.json(respondError('Group not found'), { status: 404 });
     }
 
     // Check if user is the owner of the group
     if (group.ownerId !== userId) {
-      return NextResponse.json({ error: 'Only group owner can view invitations' }, { status: 403 });
+      return NextResponse.json(respondError('Only group owner can view invitations'), { status: 403 });
     }
 
     // Get all pending invitations for this group
@@ -169,16 +169,14 @@ export async function GET(
       }
     });
 
-    return NextResponse.json({
-      invitations: invitations.map(invitation => ({
-        id: invitation.id,
-        invited: invitation.User_GroupInvitation_invitedIdToUser,
-        status: invitation.status,
-        createdAt: invitation.createdAt.toISOString()
-      }))
-    });
+    return NextResponse.json(respondSuccess(invitations.map(invitation => ({
+      id: invitation.id,
+      invited: invitation.User_GroupInvitation_invitedIdToUser,
+      status: invitation.status,
+      createdAt: invitation.createdAt.toISOString()
+    }))));
   } catch (error) {
     console.error('Error fetching group invitations:', error);
-    return NextResponse.json({ error: 'Failed to fetch invitations' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to fetch invitations'), { status: 500 });
   }
 }

@@ -37,7 +37,6 @@ export async function resolveGoogleFlow({ userInfo, tokens, origin }: ResolveGoo
 
     // Cas A : utilisateur inconnu, création
     const source = 'google';
-    console.log(console.log("Data : ", { userInfo, tokens, origin, source }))
     const newUser = await registerGoogleOAuthUser({ userInfo, tokens, origin, source });
 
     // Crée un token JWT classique ou onboarding lié à ce user temporaire

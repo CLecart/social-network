@@ -13,94 +13,9 @@ import { formatDate } from "@/app/utils/dateFormat";
 import { ChatWindow } from "@/components/chat/ChatWindow";
 import { NotificationBadge } from "@/components/ui/notification-badge";
 import { useState, useEffect, Suspense } from "react";
-
-interface MessagesPageProps {
-  onBack?: () => void;
-  onChatOpen?: (chatId: string) => void;
-}
-
-const conversations = [
-  {
-    id: "1",
-    user: {
-      username: "alice_photo",
-      displayName: "Alice Martin",
-      avatar: "/placeholder.svg?height=56&width=56",
-      isOnline: true,
-    },
-    lastMessage: {
-      text: "Salut ! Comment ça va ? 😊",
-      timestamp: "2min",
-      isRead: false,
-      isFromMe: false,
-    },
-    unreadCount: 2,
-  },
-  {
-    id: "2",
-    user: {
-      username: "bob_travel",
-      displayName: "Bob Voyage",
-      avatar: "/placeholder.svg?height=56&width=56",
-      isOnline: false,
-    },
-    lastMessage: {
-      text: "Merci pour les photos !",
-      timestamp: "1h",
-      isRead: true,
-      isFromMe: true,
-    },
-    unreadCount: 0,
-  },
-  {
-    id: "3",
-    user: {
-      username: "clara_art",
-      displayName: "Clara Artiste",
-      avatar: "/placeholder.svg?height=56&width=56",
-      isOnline: true,
-    },
-    lastMessage: {
-      text: "Tu as vu ma dernière œuvre ?",
-      timestamp: "3h",
-      isRead: true,
-      isFromMe: false,
-    },
-    unreadCount: 0,
-  },
-  {
-    id: "4",
-    user: {
-      username: "david_food",
-      displayName: "David Chef",
-      avatar: "/placeholder.svg?height=56&width=56",
-      isOnline: false,
-    },
-    lastMessage: {
-      text: "La recette était délicieuse ! 🍝",
-      timestamp: "1j",
-      isRead: true,
-      isFromMe: true,
-    },
-    unreadCount: 0,
-  },
-  {
-    id: "5",
-    user: {
-      username: "emma_fitness",
-      displayName: "Emma Sport",
-      avatar: "/placeholder.svg?height=56&width=56",
-      isOnline: true,
-    },
-    lastMessage: {
-      text: "On se fait un jogging demain ?",
-      timestamp: "2j",
-      isRead: false,
-      isFromMe: false,
-    },
-    unreadCount: 1,
-  },
-];
+import { useUser } from "@/hooks/use-user-data";
+import { useGroup } from "@/hooks/use-group";
+import { apiFetch } from "@/lib/client/api/fetcher";
 
 export default function MessagesPage() {
   return (
@@ -116,55 +31,19 @@ function MessagesPageContent() {
   const groupId = searchParams.get('group');
 
   const { conversations, isLoading, error, refreshConversations } = useConversations();
-  const [currentUserId, setCurrentUserId] = useState<string>('');
-  const [groupInfo, setGroupInfo] = useState<any>(null);
+  const { user: me } = useUser();
+  const currentUserId = me?.id || '';
+  const { data: groupInfo } = useGroup(groupId);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  useEffect(() => {
-    // This would normally come from an auth context
-    // For now, we'll get it from the API response or context
-    const fetchCurrentUser = async () => {
-      try {
-        const response = await fetch('/api/user/me');
-        if (response.ok) {
-          const data = await response.json();
-          setCurrentUserId(data.user.id);
-        }
-      } catch (error) {
-        console.error('Error fetching current user:', error);
-      }
-    };
-    fetchCurrentUser();
-  }, []);
-
-  useEffect(() => {
-    if (groupId) {
-      const fetchGroupInfo = async () => {
-        try {
-          const response = await fetch(`/api/private/groups/${groupId}`);
-          if (response.ok) {
-            const data = await response.json();
-            setGroupInfo(data.group);
-          }
-        } catch (error) {
-          console.error('Error fetching group info:', error);
-        }
-      };
-      fetchGroupInfo();
-    }
-  }, [groupId]);
 
   async function onChatOpen(chatId: string, type: 'direct' | 'group' = 'direct') {
     // Mark conversation as seen when opening
     try {
       if (type === 'group') {
-        await fetch(`/api/private/conversations/${chatId}/mark-seen`, {
-          method: 'POST'
-        });
+        await apiFetch(`/api/private/conversations/${chatId}/mark-seen`, { method: 'POST' });
       } else {
-        await fetch(`/api/private/direct-conversations/${chatId}/mark-seen`, {
-          method: 'POST'
-        });
+        await apiFetch(`/api/private/direct-conversations/${chatId}/mark-seen`, { method: 'POST' });
       }
 
       // Refresh conversations to update unread counts

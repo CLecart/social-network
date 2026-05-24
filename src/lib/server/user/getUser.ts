@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { serializeDates } from "@/lib/utils/serializeDates";
-
-import { ZodSchema, z } from "zod";
+import { normalizeImageUrl } from "@/lib/utils/normalizeImageUrl";
+import { ZodSchema } from "zod";
 
 export async function getUserByIdServer<T>(
     userId: string,
@@ -21,19 +21,21 @@ export async function getUserByIdServer<T>(
                 birthDate: true,
                 firstName: true,
                 visibility: true,
-                friendsWithMe: true,
             },
         });
 
         if (!user) return null;
 
+        user.avatar = normalizeImageUrl(user.avatar) ?? user.avatar;
+        user.banner = normalizeImageUrl(user.banner) ?? user.banner;
 
-        return serializeDates(user);
+        // Serialize date fields then validate/shape result with provided schema
+        const serialized = serializeDates(user);
+        const parsed = schema.parse(serialized);
+        return parsed as T;
     } catch (error) {
         console.error("Database error in getUserByIdServer:", error);
         throw new Error("Failed to fetch user data");
     }
 }
 
-
-//TODO

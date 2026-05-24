@@ -12,118 +12,33 @@ import { CreateEventModal } from '@/components/events/CreateEventModal';
 import { EventCard } from '@/components/events/EventCard';
 import { InviteUserModal } from '@/components/groups/InviteUserModal';
 import Link from 'next/link';
+import { useUser } from '@/hooks/use-user-data';
+import { useGroup } from '@/hooks/use-group';
+import { useGroupEvents } from '@/hooks/use-group-events';
+import { apiFetch } from '@/lib/client/api/fetcher';
+import type { GroupMember } from '@/lib/schemas/group/summary';
+import type { GroupEvent } from '@/lib/schemas/group/event';
 
-interface Group {
-  id: string;
-  title: string;
-  owner: {
-    id: string;
-    username: string;
-    firstName?: string;
-    lastName?: string;
-    avatar?: string;
-  };
-  memberCount: number;
-  members: Array<{
-    id: string;
-    username: string;
-    firstName?: string;
-    lastName?: string;
-    avatar?: string;
-  }>;
-  createdAt: string;
-}
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  datetime: string;
-  owner: {
-    id: string;
-    username: string;
-    firstName?: string;
-    lastName?: string;
-    avatar?: string;
-  };
-  group: {
-    id: string;
-    title: string;
-  };
-  rsvpCounts: {
-    yes: number;
-    no: number;
-    maybe: number;
-  };
-  userRsvp: string | null;
-  createdAt: string;
-}
+// Types are provided by schemas
 
 export default function GroupDetailPage() {
   const params = useParams();
   const router = useRouter();
   const groupId = params.id as string;
 
-  const [group, setGroup] = useState<Group | null>(null);
-  const [events, setEvents] = useState<Event[]>([]);
-  const [currentUserId, setCurrentUserId] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(true);
+  const { user: me } = useUser();
+  const currentUserId = me?.id || '';
+  const { data: group, refresh: refreshGroup } = useGroup(groupId);
+  const { data: eventsResp, isLoading: isLoadingEvents, refresh: refreshEvents } = useGroupEvents(groupId);
+  const [events, setEvents] = useState<GroupEvent[]>([]);
   const [isCreateEventModalOpen, setIsCreateEventModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   useEffect(() => {
-    if (groupId) {
-      loadGroup();
-      loadEvents();
-      loadCurrentUser();
-    }
-  }, [groupId]);
+    setEvents(eventsResp?.events ?? []);
+  }, [eventsResp]);
 
-  const loadCurrentUser = async () => {
-    try {
-      const response = await fetch('/api/user/me');
-      if (response.ok) {
-        const data = await response.json();
-        setCurrentUserId(data.user.id);
-      }
-    } catch (error) {
-      console.error('Error fetching current user:', error);
-    }
-  };
-
-  const loadGroup = async () => {
-    try {
-      const response = await fetch(`/api/private/groups/${groupId}`);
-      const data = await response.json();
-
-      if (data.group) {
-        setGroup(data.group);
-      } else {
-        router.push('/groups');
-      }
-    } catch (error) {
-      console.error('Error loading group:', error);
-      router.push('/groups');
-    }
-  };
-
-  const loadEvents = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(`/api/private/events?groupId=${groupId}`);
-      const data = await response.json();
-
-      if (data.events) {
-        setEvents(data.events);
-      }
-    } catch (error) {
-      console.error('Error loading events:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleEventCreated = (newEvent: Event) => {
+  const handleEventCreated = (newEvent: GroupEvent) => {
     setEvents(prev => [newEvent, ...prev]);
   };
 
@@ -160,14 +75,9 @@ export default function GroupDetailPage() {
     }
 
     try {
-      const response = await fetch(`/api/private/events/${eventId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
+      await apiFetch(`/api/private/events/${eventId}`, { method: 'DELETE' });
+      {
         setEvents(prevEvents => prevEvents.filter(event => event.id !== eventId));
-      } else {
-        alert('Erreur lors de la suppression de l\'événement');
       }
     } catch (error) {
       console.error('Error deleting event:', error);
@@ -177,7 +87,7 @@ export default function GroupDetailPage() {
 
   const handleInviteSent = () => {
     // Refresh group data to show updated member count
-    loadGroup();
+    refreshGroup();
   };
 
   const handleDeleteGroup = async () => {
@@ -186,16 +96,8 @@ export default function GroupDetailPage() {
     }
 
     try {
-      const response = await fetch(`/api/private/groups/${groupId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        router.push('/groups');
-      } else {
-        const data = await response.json();
-        alert(data.error || 'Erreur lors de la suppression du groupe');
-      }
+      await apiFetch(`/api/private/groups/${groupId}`, { method: 'DELETE' });
+      router.push('/groups');
     } catch (error) {
       console.error('Error deleting group:', error);
       alert('Erreur lors de la suppression du groupe');
@@ -208,23 +110,15 @@ export default function GroupDetailPage() {
     }
 
     try {
-      const response = await fetch(`/api/private/groups/${groupId}/leave`, {
-        method: 'POST',
-      });
-
-      if (response.ok) {
-        router.push('/groups');
-      } else {
-        const data = await response.json();
-        alert(data.error || 'Erreur lors de la sortie du groupe');
-      }
+      await apiFetch(`/api/private/groups/${groupId}/leave`, { method: 'POST' });
+      router.push('/groups');
     } catch (error) {
       console.error('Error leaving group:', error);
       alert('Erreur lors de la sortie du groupe');
     }
   };
 
-  const getUserDisplayName = (user: Group['members'][0]) => {
+  const getUserDisplayName = (user: GroupMember) => {
     return user.firstName && user.lastName
       ? `${user.firstName} ${user.lastName}`
       : user.username;
@@ -244,8 +138,8 @@ export default function GroupDetailPage() {
     );
   }
 
-  const isOwner = group.owner.id === currentUserId;
-  const isMember = group.members.some(member => member.id === currentUserId);
+  const isOwner = group?.owner?.id === currentUserId;
+  const isMember = group?.members?.some(member => member.id === currentUserId);
 
   return (
     <div className="container mx-auto px-4 py-8 bg-[var(--bgLevel1)]">
@@ -353,7 +247,7 @@ export default function GroupDetailPage() {
           </div>
 
           {/* Events List */}
-          {isLoading ? (
+          {isLoadingEvents ? (
             <div className="text-center py-8">
               <div className="text-gray-500">Chargement des événements...</div>
             </div>
@@ -416,7 +310,7 @@ export default function GroupDetailPage() {
 
         <TabsContent value="members" className="space-y-6 ">
           <div className="grid gap-4">
-            {group.members.map((member) => (
+            {group?.members?.map((member) => (
               <Card key={member.id}>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
@@ -432,7 +326,7 @@ export default function GroupDetailPage() {
                       </div>
                       <div className="text-sm text-gray-500">@{member.username}</div>
                     </div>
-                    {member.id === group.owner.id && (
+                    {member.id === group?.owner?.id && (
                       <Badge variant="secondary">Propriétaire</Badge>
                     )}
                   </div>
@@ -449,7 +343,7 @@ export default function GroupDetailPage() {
         onClose={() => setIsCreateEventModalOpen(false)}
         onEventCreated={handleEventCreated}
         groupId={groupId}
-        groupTitle={group.title}
+        groupTitle={group?.title}
       />
 
       {/* Invite User Modal */}
@@ -457,7 +351,7 @@ export default function GroupDetailPage() {
         isOpen={isInviteModalOpen}
         onClose={() => setIsInviteModalOpen(false)}
         groupId={groupId}
-        groupTitle={group.title}
+        groupTitle={group?.title}
         onInviteSent={handleInviteSent}
       />
     </div>

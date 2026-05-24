@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
+import { respondError, respondSuccess } from "@/lib/server/api/response";
 
 export async function GET(request: NextRequest) {
   // Get the authenticated user ID from the middleware
-  const userId = request.headers.get('x-user-id');
+  const userId = await getUserIdFromRequest(request);
   
   if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(respondError('Unauthorized'), { status: 401 });
   }
 
   const { searchParams } = new URL(request.url);
@@ -59,7 +61,7 @@ export async function GET(request: NextRequest) {
         readAt: msg.readAt?.toISOString(),
       }));
 
-      return NextResponse.json({ messages: formattedMessages });
+      return NextResponse.json(respondSuccess({ messages: formattedMessages }));
     } else if (type === 'group' && conversationId) {
       // Get group messages
       const messages = await db.groupMessage.findMany({
@@ -94,12 +96,12 @@ export async function GET(request: NextRequest) {
         readAt: msg.readAt?.toISOString(),
       }));
 
-      return NextResponse.json({ messages: formattedGroupMessages });
+      return NextResponse.json(respondSuccess({ messages: formattedGroupMessages }));
     } else {
-      return NextResponse.json({ error: 'Invalid parameters' }, { status: 400 });
+      return NextResponse.json(respondError('Invalid parameters'), { status: 400 });
     }
   } catch (error) {
     console.error('Error fetching messages:', error);
-    return NextResponse.json({ error: 'Failed to fetch messages' }, { status: 500 });
+    return NextResponse.json(respondError('Failed to fetch messages'), { status: 500 });
   }
 }

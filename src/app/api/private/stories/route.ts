@@ -7,15 +7,17 @@ import { createStoriesServer } from "@/lib/server/stories/createStories";
 import { CreateStory, StorySchemas } from "@/lib/schemas/stories";
 import { respondError, respondSuccess } from "@/lib/server/api/response";
 import { parseOrThrow, ValidationError } from "@/lib/utils/validation";
+import { serializeDates } from "@/lib/utils/serializeDates";
 import { parseCreateStory } from "@/lib/parsers/formParsers";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
 export async function GET(req: NextRequest) {
   try {
-    const currentUserId = req.headers.get("x-user-id");
+    const currentUserId = await getUserIdFromRequest(req);
 
     if (!currentUserId) {
       return NextResponse.json(
-        { message: "Invalid user ID." },
+        respondError("Invalid user ID."),
         { status: 401 }
       );
     }
@@ -24,28 +26,12 @@ export async function GET(req: NextRequest) {
     const userId = searchParams.get("userId");
     const publicOnly = searchParams.get("publicOnly") === "true";
 
-    console.log("🔍 userId param:", userId);
-    console.log("🔍 currentUserId:", currentUserId);
-    console.log(
-      "🔍 Will use branch:",
-      userId ? "getStoriesByUserId" : "getAllStoriesGrouped"
-    );
-
-    let storiesData;
-
     if (userId) {
       const rawStories = await getStoriesByUserId(userId, currentUserId);
-      console.log("🔍 Raw story _count:", rawStories[0]?._count);
-      console.log(
-        "🔍 Raw story reactions length:",
-        rawStories[0]?.reactions?.length
-      );
       const mappedStories = rawStories.map((story) => ({
         ...story,
         likesCount: story._count.reactions,
       }));
-
-      console.log("🔍 Mapped story likesCount:", mappedStories[0]?.likesCount);
 
       return NextResponse.json(
         respondSuccess([
@@ -58,7 +44,6 @@ export async function GET(req: NextRequest) {
         { status: 200 }
       );
     } else {
-      console.log("🔍 Using getAllStoriesGrouped branch");
       const rawStoriesGroups = await getAllStoriesGrouped(
         currentUserId,
         publicOnly
@@ -71,10 +56,6 @@ export async function GET(req: NextRequest) {
           likesCount: story._count.reactions,
         })),
       }));
-      console.log(
-        "🔍 Mapped stories groups first story likesCount:",
-        mappedStoriesGroups[0]?.stories[0]?.likesCount
-      );
 
       return NextResponse.json(respondSuccess(mappedStoriesGroups), {
         status: 200,
@@ -85,13 +66,13 @@ export async function GET(req: NextRequest) {
 
     const message =
       error instanceof Error ? error.message : "Unknown server error.";
-    return NextResponse.json({ message }, { status: 500 });
+    return NextResponse.json(respondError(message), { status: 500 });
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const userId = req.headers.get("x-user-id");
+    const userId = await getUserIdFromRequest(req);
 
     if (!userId) {
       return NextResponse.json(respondError("Invalid user ID"), {
@@ -103,9 +84,10 @@ export async function POST(req: NextRequest) {
     try {
       const rawData = parseOrThrow(
         StorySchemas.Create,
-        parseCreateStory(await req.formData())
+        parseCreateStory(await req.formData()),
+        { label: 'CreateStoryBody' }
       );
-      
+
       // Ensure visibility is always defined
       parsedData = {
         ...rawData,
@@ -126,9 +108,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await createStoriesServer(parsedData, userId);
+    const created = await createStoriesServer(parsedData, userId);
 
-    return NextResponse.json(respondSuccess(null), { status: 200 });
+    return NextResponse.json(
+      respondSuccess(serializeDates(created)),
+      { status: 201 }
+    );
   } catch (error) {
     console.error("❌ Failed to updated reaction:", error);
 

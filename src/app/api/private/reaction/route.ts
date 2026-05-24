@@ -3,9 +3,10 @@ import { CreateReaction, ReactionSchemas } from "@/lib/schemas/reaction";
 import { respondError, respondSuccess } from "@/lib/server/api/response";
 import { parseOrThrow, ValidationError } from "@/lib/utils/validation";
 import { NextRequest, NextResponse } from "next/server";
+import { getUserIdFromRequest } from "@/lib/server/api/getUserId";
 
 export async function PUT(req: NextRequest) {
-  const userId = req.headers.get("x-user-id");
+  const userId = await getUserIdFromRequest(req);
 
   if (!userId) {
     return NextResponse.json(respondError("Invalid user ID"), { status: 401 });
@@ -13,8 +14,7 @@ export async function PUT(req: NextRequest) {
 
   let parsedData: CreateReaction;
   try {
-    parsedData = parseOrThrow(ReactionSchemas.Create, await req.json());
-    console.log("✅ Parsed reaction data:", parsedData);
+    parsedData = parseOrThrow(ReactionSchemas.Create, await req.json(), { label: 'CreateReactionBody' });
   } catch (error) {
     if (error instanceof ValidationError) {
       return NextResponse.json(
@@ -29,7 +29,6 @@ export async function PUT(req: NextRequest) {
       { status: 500 }
     );
   }
-  console.log(parsedData, "parsedData in PUT reaction");
   try {
     await updatedReaction(userId, parsedData);
 
