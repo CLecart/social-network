@@ -580,8 +580,8 @@ export default function ProfilePage() {
             </div>
 
             {/* TabBar pour filtrer les posts */}
-            <div className="bg-(--bgLevel2) border-t border-(--detailMinimal) sticky top-18.25 z-40">
-              <div className="flex">
+            <div className="bg-(--bgLevel2) border-t border-(--detailMinimal) sticky top-18.25 z-40 w-full">
+              <div className="flex w-full">
                 <TabButton
                   type="all"
                   icon={Grid3X3}
@@ -674,7 +674,7 @@ export default function ProfilePage() {
                   return (
                     <div className="grid grid-cols-3 gap-2">
                       {filteredPosts.map((post) => (
-                        <PostItem key={post.id} post={post} />
+                        <PostItem key={post.id} post={post} onClick={handlePostClick} />
                       ))}
                     </div>
                   );
