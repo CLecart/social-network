@@ -90,7 +90,7 @@ const PostCard = () => {
     }
 
     return (
-      <div className="relative min-h-[200px] border-b border-(--detailMinimal) bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900">
+      <div className="relative min-h-50 border-b border-(--detailMinimal) bg-linear-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900">
         <div className="flex items-center justify-center h-full p-6">
           <p className="text-center text-lg font-medium text-(--textNeutral) leading-relaxed">
             {post.message || "Post sans contenu"}
