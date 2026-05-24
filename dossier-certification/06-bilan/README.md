@@ -149,7 +149,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 - **RGPD** : Implémenter les droits manquants — suppression de compte (droit à l'oubli) et export des données (droit à la portabilité). Voir l'audit complet dans [04-developpement/securite-rgpd.md](../04-developpement/securite-rgpd.md).
 - **XSS résiduelle** : Corriger la sanitization du markdown dans `ChatMessage.tsx` via `DOMPurify` ou `react-markdown`.
 - **Rate limiting** : Ajouter sur les endpoints sensibles (`/login`, `/register`, `/chat/send`) via `@upstash/ratelimit`.
-- **Headers HTTP de sécurité** : CSP, X-Frame-Options, Referrer-Policy dans `next.config.ts`.
+- **Tests E2E** : Implémenter les 5 parcours Playwright critiques (auth, post, chat, groupe, notifications) — setup technique documenté dans `04-developpement/tests-strategy.md`, prêt à déployer.
 
 ---
 
