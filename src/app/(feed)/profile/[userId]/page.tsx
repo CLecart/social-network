@@ -44,6 +44,31 @@ import PostItem from "@/components/profile/PostItem";
 
 type FilterType = "all" | "photos" | "videos" | "text";
 
+interface TabButtonProps {
+  type: FilterType;
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  count: number;
+  activeFilter: FilterType;
+  onFilterChange: (type: FilterType) => void;
+}
+
+const ProfileTabButton = ({ type, icon: Icon, label, count, activeFilter, onFilterChange }: TabButtonProps) => (
+  <button
+    onClick={() => onFilterChange(type)}
+    className={`flex-1 flex flex-col items-center py-3 px-2 border-b-2 transition-colors ${
+      activeFilter === type
+        ? "border-(--blue) text-(--blue)"
+        : "border-transparent text-(--textMinimal) hover:text-(--textNeutral)"
+    }`}
+  >
+    <Icon className="w-5 h-5 mb-1" />
+    <span className="text-xs font-medium">
+      {label} ({count})
+    </span>
+  </button>
+);
+
 export default function ProfilePage() {
   const params = useParams();
 
@@ -221,31 +246,44 @@ export default function ProfilePage() {
     );
   }
 
-  const TabButton = ({
-    type,
-    icon: Icon,
-    label,
-    count,
-  }: {
-    type: FilterType;
-    icon: any;
-    label: string;
-    count: number;
-  }) => (
-    <button
-      onClick={() => setActiveFilter(type)}
-      className={`flex-1 flex flex-col items-center py-3 px-2 border-b-2 transition-colors ${
-        activeFilter === type
-          ? "border-(--blue) text-(--blue)"
-          : "border-transparent text-(--textMinimal) hover:text-(--textNeutral)"
-      }`}
-    >
-      <Icon className="w-5 h-5 mb-1" />
-      <span className="text-xs font-medium">
-        {label} ({count})
-      </span>
-    </button>
-  );
+  // Button state helpers — flatten nested ternaries (SonarLint S3358)
+  const friendBtnClass = (() => {
+    if (friendPending) return "bg-gray-400 text-white cursor-not-allowed opacity-60";
+    if (friendshipStatus === "PENDING") return "bg-orange-500 text-white hover:bg-orange-600";
+    if (friendshipStatus === "ACCEPTED") return "bg-(--green60) text-(--textNeutral) hover:bg-(--greyHighlighted)";
+    return "bg-(--blue) hover:bg-(--blue80) text-white";
+  })();
+
+  const friendBtnLabel = (() => {
+    if (friendPending) return "En cours...";
+    if (friendshipStatus === "PENDING") return "Demande envoyée";
+    if (friendshipStatus === "ACCEPTED") return "Ami(e)";
+    return "Demander en ami";
+  })();
+
+  const followBtnClass = (() => {
+    if (followPending) return "bg-gray-400 text-white cursor-not-allowed opacity-60";
+    if (isFollowing && followStatus === "ACCEPTED") return "bg-(--green60) text-(--textNeutral) hover:bg-(--greyHighlighted)";
+    return "bg-(--blue) hover:bg-(--blue80) text-white";
+  })();
+
+  const followBtnLabel = (() => {
+    if (followPending) return "En cours...";
+    if (isFollowing && followStatus === "ACCEPTED") return "Suivi(e)";
+    return "Suivre";
+  })();
+
+  const addFriendBtnClass = (() => {
+    if (friendPending) return "bg-gray-400 text-white cursor-not-allowed opacity-60";
+    if (friendshipStatus === "PENDING") return "bg-orange-500 text-white hover:bg-orange-600";
+    return "bg-(--lavender) hover:bg-(--lavender80) text-white";
+  })();
+
+  const addFriendBtnLabel = (() => {
+    if (friendPending) return "En cours...";
+    if (friendshipStatus === "PENDING") return "Demande envoyée";
+    return "Ajouter en ami";
+  })();
 
   return (
     <PostProvider>
@@ -302,7 +340,6 @@ export default function ProfilePage() {
                 ) : (
                   <div className="w-full h-full bg-linear-to-r from-blue-400 via-purple-500 to-pink-500" />
                 )}
-                {/* TODO: Faire en sorte de pouvoir modifier la bannière */}
                 {isOwnProfile && (
                   <div className="absolute top-4 right-4">
                     <Button
@@ -364,12 +401,12 @@ export default function ProfilePage() {
                             {stats?.follower ?? 0} abonnés
                           </button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
+                        <DialogContent className="sm:max-w-106.25">
                           <DialogHeader>
                             <DialogTitle>Abonnés</DialogTitle>
                           </DialogHeader>
 
-                          <div className="max-h-[400px] overflow-y-auto">
+                          <div className="max-h-100 overflow-y-auto">
                             {followers.length === 0 ? (
                               <p className="text-sm text-(--textMinimal)">
                                 Aucun abonné
@@ -408,12 +445,12 @@ export default function ProfilePage() {
                             {stats?.following ?? 0} abonnements
                           </button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
+                        <DialogContent className="sm:max-w-106.25">
                           <DialogHeader>
                             <DialogTitle>Abonnements</DialogTitle>
                           </DialogHeader>
 
-                          <div className="max-h-[400px] overflow-y-auto">
+                          <div className="max-h-100 overflow-y-auto">
                             {following.length === 0 ? (
                               <p className="text-sm text-(--textMinimal)">
                                 Aucun abonné
@@ -490,77 +527,38 @@ export default function ProfilePage() {
                   ) : (
                     <>
                       {profileUser?.visibility === "PRIVATE" ? (
-                        // Profil privé : seulement demande d'ami
                         <Button
                           onClick={handleFriendRequest}
-                          className={`flex-1 transition-opacity ${
-                            friendPending
-                              ? "bg-gray-400 text-white cursor-not-allowed opacity-60"
-                              : friendshipStatus === "PENDING"
-                                ? "bg-orange-500 text-white hover:bg-orange-600"
-                                : friendshipStatus === "ACCEPTED"
-                                  ? "bg-(--green60) text-(--textNeutral) hover:bg-(--greyHighlighted)"
-                                  : "bg-(--blue) hover:bg-(--blue80) text-white"
-                          }`}
+                          className={`flex-1 transition-opacity ${friendBtnClass}`}
                           disabled={friendPending}
                         >
-                          {friendPending
-                            ? "En cours..."
-                            : friendshipStatus === "PENDING"
-                              ? "Demande envoyée"
-                              : friendshipStatus === "ACCEPTED"
-                                ? "Ami(e)"
-                                : "Demander en ami"}
+                          {friendBtnLabel}
                         </Button>
                       ) : (
-                        // Profil public : logique conditionnelle
                         <>
                           {friendshipStatus === "ACCEPTED" ? (
-                            // Si on est ami, ne montrer que le bouton Ami(e)
                             <Button
                               onClick={handleFriendRequest}
                               className="flex-1 transition-opacity bg-(--green60) text-(--textNeutral) hover:bg-(--greyHighlighted)"
                               disabled={friendPending}
                             >
-                              {friendPending ? "En cours..." : "Ami(e)"}
+                              {friendBtnLabel}
                             </Button>
                           ) : (
-                            // Si on n'est pas ami, montrer Follow + Add Friend
                             <>
                               <Button
                                 onClick={handleFollowToggle}
-                                className={`flex-1 transition-opacity mr-1 ${
-                                  followPending
-                                    ? "bg-gray-400 text-white cursor-not-allowed opacity-60"
-                                    : isFollowing && followStatus === "ACCEPTED"
-                                      ? "bg-(--green60) text-(--textNeutral) hover:bg-(--greyHighlighted)"
-                                      : "bg-(--blue) hover:bg-(--blue80) text-white"
-                                }`}
+                                className={`flex-1 transition-opacity mr-1 ${followBtnClass}`}
                                 disabled={followPending}
                               >
-                                {followPending
-                                  ? "En cours..."
-                                  : isFollowing && followStatus === "ACCEPTED"
-                                    ? "Suivi(e)"
-                                    : "Suivre"}
+                                {followBtnLabel}
                               </Button>
-
                               <Button
                                 onClick={handleFriendRequest}
-                                className={`flex-1 ml-1 transition-opacity ${
-                                  friendPending
-                                    ? "bg-gray-400 text-white cursor-not-allowed opacity-60"
-                                    : friendshipStatus === "PENDING"
-                                      ? "bg-orange-500 text-white hover:bg-orange-600"
-                                      : "bg-(--lavender) hover:bg-(--lavender80) text-white"
-                                }`}
+                                className={`flex-1 ml-1 transition-opacity ${addFriendBtnClass}`}
                                 disabled={friendPending}
                               >
-                                {friendPending
-                                  ? "En cours..."
-                                  : friendshipStatus === "PENDING"
-                                    ? "Demande envoyée"
-                                    : "Ajouter en ami"}
+                                {addFriendBtnLabel}
                               </Button>
                             </>
                           )}
@@ -582,24 +580,9 @@ export default function ProfilePage() {
             {/* TabBar pour filtrer les posts */}
             <div className="bg-(--bgLevel2) border-t border-(--detailMinimal) sticky top-18.25 z-40 w-full">
               <div className="flex w-full">
-                <TabButton
-                  type="all"
-                  icon={Grid3X3}
-                  label="Tous"
-                  count={postCounts.all}
-                />
-                <TabButton
-                  type="photos"
-                  icon={Camera}
-                  label="Photos"
-                  count={postCounts.photos}
-                />
-                <TabButton
-                  type="videos"
-                  icon={Video}
-                  label="Vidéos"
-                  count={postCounts.videos}
-                />
+                <ProfileTabButton type="all" icon={Grid3X3} label="Tous" count={postCounts.all} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+                <ProfileTabButton type="photos" icon={Camera} label="Photos" count={postCounts.photos} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+                <ProfileTabButton type="videos" icon={Video} label="Vidéos" count={postCounts.videos} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
               </div>
             </div>
 
@@ -706,7 +689,7 @@ export default function ProfilePage() {
               ) : selectedPostDetails ? (
                 <div className="flex w-full h-full">
                   <MediaSection post={selectedPostDetails} />
-                  <div className="flex flex-col w-[500px] bg-(--bgLevel1) border-l border-(--detailMinimal)">
+                  <div className="flex flex-col w-125 bg-(--bgLevel1) border-l border-(--detailMinimal)">
                     <PostHeader post={selectedPostDetails} />
                     <div
                       ref={contentRef}
