@@ -552,5 +552,5 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 2. [ ] Wireframes créés pour le projet
 3. [ ] Prototype Figma du projet
 4. [ ] Validation avec l'équipe
-5. [ ] Sprint planning
+5. [ ] Planification de phase
 6. [ ] Implémentation Phase 1
