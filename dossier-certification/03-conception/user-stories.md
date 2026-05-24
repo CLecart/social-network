@@ -542,7 +542,7 @@ Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocche
 **DevOps:**
 
 -  Docker containerization
--  CI/CD pipeline (GitHub Actions)
+-  Déploiement Vercel (intégration Git native)
 
 ---
 

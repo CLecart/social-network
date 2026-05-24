@@ -189,43 +189,11 @@ REDIRECT_URL=...
 
 ---
 
-## CI/CD
+## Déploiement continu
 
-### GitHub Actions
+Le déploiement est assuré par l'**intégration Git native de Vercel** — aucun pipeline CI/CD externe. Tout push vers `main` déclenche automatiquement un build et un déploiement en production. Les PR génèrent des environnements de preview dédiés accessibles directement depuis GitHub.
 
-Un pipeline simple suffit pour ce projet de certification :
-
-- `lint` pour ESLint ;
-- `test` pour Jest (via `bun run test`, qui appelle Jest avec `--experimental-vm-modules`) ;
-- `build` pour Next.js (avec `prisma generate` préalable) ;
-- `deploy` pour Vercel ou un déploiement équivalent.
-
-Le projet utilise **Bun** comme package manager et runtime (cohérent avec `bun.lock` et l'image Docker `oven/bun:1`). Le `package-lock.json` est conservé pour interopérabilité, mais Bun est la source de vérité.
-
-Workflow de déploiement du projet :
-
-```yaml
-name: CI
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: "1"
-      - run: bun install --frozen-lockfile
-      - run: bunx prisma generate
-      - run: bun run lint
-      - run: bun run test
-      - run: bun run build
-```
+Le projet utilise **Bun** comme package manager et runtime (cohérent avec `bun.lock` et l'image Docker `oven/bun:1`).
 
 ---
 
@@ -236,7 +204,7 @@ jobs:
 - **Logs applicatifs**: console structurée côté serveur (sortie capturée par Vercel).
 - **Vercel Analytics**: suivi des performances front (à activer côté plateforme).
 - **Sentry**: *non installé à ce jour*. Présenté comme axe d'amélioration ci-dessous.
-- **Alertes**: surveillance des échecs de build et de déploiement via les notifications Vercel + GitHub Actions.
+- **Alertes**: surveillance des échecs de build et de déploiement via les notifications Vercel.
 
 ### Réversibilité
 
@@ -256,7 +224,7 @@ vercel rollback
 - [x] Prisma Migrate pris en compte.
 - [x] Redis documenté pour les sessions et le temps réel.
 - [x] Déploiement cible sur Vercel.
-- [x] Pipeline GitHub Actions documenté.
+- [x] Déploiement continu via intégration Git Vercel.
 - [x] Monitoring des erreurs documenté (Vercel Analytics + logs structurés serveur).
 
 ---

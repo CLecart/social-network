@@ -48,9 +48,7 @@ Cette contrainte nous a conduits à **utiliser GitHub de manière professionnell
 - **Issues** pour tout tracker : chaque fonctionnalité, bug ou tâche DevOps fait l'objet d'une issue dédiée
 - **Pull Requests** pour toute contribution : aucun push direct sur `main`, tout passe par une PR avec revue de code
 - **Branch protection rules** : la branche `main` est protégée — merge impossible sans que tous les checks soient au vert
-- **CI/CD (GitHub Actions)** : lint ESLint, tests Jest, build Next.js déclenchés automatiquement à chaque PR
-- **SonarQube** : analyse statique du code intégrée au pipeline — détection de code smells, vulnérabilités et duplications avant tout merge
-- **Vercel preview deployments** : chaque PR génère automatiquement un environnement de prévisualisation déployé, permettant de tester le rendu réel avant merge en production
+- **Vercel preview deployments** : chaque PR génère automatiquement un environnement de prévisualisation déployé via l'intégration Git native de Vercel, permettant de tester le rendu réel avant merge en production
 - **Branches feature** : chacun travaille sur sa branche, merge après validation de l'ensemble des checks
 - **Labels et milestones** pour prioriser et organiser les lots de travail
 
