@@ -6,7 +6,7 @@ import React, { useState } from "react";
 
 type PostItemProps = {
   post: any;
-  onClick: (post: any) => void;
+  onClick?: (post: any) => void;
 };
 
 export default function PostItem({ post, onClick }: PostItemProps) {
@@ -30,30 +30,26 @@ export default function PostItem({ post, onClick }: PostItemProps) {
     return "image";
   };
 
-  const imageSrc =
-    post.image && !hasImageError
-      ? encodeURI(post.image)
-      : "https://i.pinimg.com/736x/ac/de/54/acde5463c760002ed97dc553eb8238ab.jpg";
-  const mediaType = getMediaType(post.image);
+  const mediaType = hasImageError ? "text" : getMediaType(post.image);
 
   return (
     <div
-      className="aspect-square relative group cursor-pointer bg-[var(--bgLevel1)] rounded-lg overflow-hidden"
-      onClick={() => onClick(post)}
+      className="aspect-square relative group cursor-pointer bg-(--bgLevel1) rounded-lg overflow-hidden"
+      onClick={() => onClick?.(post)}
     >
       {mediaType === "image" ? (
         <Image
-          src={imageSrc}
+          src={encodeURI(post.image)}
           alt="Post"
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover border-[var(--detailMinimal)] border-1 rounded-lg"
+          className="object-cover border-(--detailMinimal) border rounded-lg"
           onError={() => setHasImageError(true)}
         />
       ) : mediaType === "video" ? (
         <video
           src={post.image}
-          className="w-full h-full object-cover border-[var(--detailMinimal)] border-1 rounded-lg"
+          className="w-full h-full object-cover border-(--detailMinimal) border rounded-lg"
           muted
           loop
           onMouseEnter={(e) => {
@@ -67,8 +63,8 @@ export default function PostItem({ post, onClick }: PostItemProps) {
           }}
         />
       ) : (
-        <div className="flex items-center justify-center p-2 h-full text-xs text-[var(--textNeutral)] text-center break-words">
-          <p className="line-clamp-4">{post.content}</p>
+        <div className="flex items-center justify-center p-2 h-full text-xs text-(--textNeutral) text-center wrap-break-word">
+          <p className="line-clamp-4">{post.content || post.message}</p>
         </div>
       )}
 

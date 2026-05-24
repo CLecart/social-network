@@ -616,7 +616,7 @@ export default function ProfilePage() {
                     return (
                       <div className="grid grid-cols-3 gap-2">
                         {filteredPosts.map((post) => (
-                          <PostItem key={post.id} post={post} />
+                          <PostItem key={post.id} post={post} onClick={handlePostClick} />
                         ))}
                       </div>
                     );
