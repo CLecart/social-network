@@ -22,13 +22,13 @@ Cette double qualification permet de prioriser le travail en sprint tout en esti
 
 Au total : **59 issues fermées** et 13 ouvertes au moment de la soutenance, pour un périmètre fonctionnel couvrant l'authentification, le feed, la messagerie temps réel, les groupes, les événements, les notifications et le déploiement.
 
-> **Board Kanban — vue d'ensemble des colonnes et labels priorité/taille**
->
-> *(insérer capture screen 1 — board GitHub Projects)*
+**Board Kanban — vue d'ensemble des colonnes et labels priorité/taille**
 
-> **Liste des issues — open 13 / closed 59**
->
-> *(insérer capture screen 2 — liste GitHub Issues)*
+![Board Kanban GitHub Projects](./screen-kanban.png)
+
+**Liste des issues — open 13 / closed 59**
+
+![Liste GitHub Issues](./screen-issues.png)
 
 ---
 
