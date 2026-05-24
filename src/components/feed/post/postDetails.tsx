@@ -196,7 +196,7 @@ export function ErrorState({
     <div className="flex items-center justify-center h-full w-full">
       <div className="flex flex-col items-center gap-4 text-center max-w-sm">
         <p className="text-sm text-muted-foreground">
-          Erreur lors du chargement: {error}
+          Erreur lors du chargement: {error?.message ?? String(error)}
         </p>
         <Button onClick={onRetry} variant="outline" size="sm">
           Réessayer
