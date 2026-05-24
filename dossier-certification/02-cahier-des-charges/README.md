@@ -32,18 +32,18 @@ Au total : **59 issues fermées** et 13 ouvertes au moment de la soutenance, pou
 
 ---
 
-- [Follow System]([Issue #13](https://github.com/arocchet/social-network/issues/13))
-- [Groups & Events]([Issue #24](https://github.com/arocchet/social-network/issues/24))
-- [Group feed — Posts & comments inside group]([Issue #30](https://github.com/arocchet/social-network/issues/30))
-- [Chat System]([Issue #37](https://github.com/arocchet/social-network/issues/37))
-- [Notifications]([Issue #39](https://github.com/arocchet/social-network/issues/39))
-- [DevOps: Docker, CI/CD]([Issue #40](https://github.com/arocchet/social-network/issues/40))
-- [CI — Lint, test, build, push image]([Issue #45](https://github.com/arocchet/social-network/issues/45))
-- [Seed script — Demo data]([Issue #46](https://github.com/arocchet/social-network/issues/46))
-- [PATCH /notifications/:id/read — Mark as read]([Issue #51](https://github.com/arocchet/social-network/issues/51))
-- [OAuth (Google) authentication]([Issue #66](https://github.com/arocchet/social-network/issues/66))
-- [Internationalization]([Issue #76](https://github.com/arocchet/social-network/issues/76))
-- [Settings]([Issue #111](https://github.com/arocchet/social-network/issues/111))
+- [Follow System](https://github.com/arocchet/social-network/issues/13)
+- [Groups & Events](https://github.com/arocchet/social-network/issues/24)
+- [Group feed — Posts & comments inside group](https://github.com/arocchet/social-network/issues/30)
+- [Chat System](https://github.com/arocchet/social-network/issues/37)
+- [Notifications](https://github.com/arocchet/social-network/issues/39)
+- [DevOps: Docker, CI/CD](https://github.com/arocchet/social-network/issues/40)
+- [CI — Lint, test, build, push image](https://github.com/arocchet/social-network/issues/45)
+- [Seed script — Demo data](https://github.com/arocchet/social-network/issues/46)
+- [PATCH /notifications/:id/read — Mark as read](https://github.com/arocchet/social-network/issues/51)
+- [OAuth (Google) authentication](https://github.com/arocchet/social-network/issues/66)
+- [Internationalization](https://github.com/arocchet/social-network/issues/76)
+- [Settings](https://github.com/arocchet/social-network/issues/111)
 
 La stabilisation du build et du déploiement a ensuite été consolidée par la PR: [PR #118](https://github.com/arocchet/social-network/pull/118)
 
