@@ -60,7 +60,7 @@ const PostCard = () => {
 
     if (mediaType === "video" && post.image) {
       return (
-        <div className="relative aspect-square border-b border-[var(--detailMinimal)]">
+        <div className="relative aspect-square border-b border-(--detailMinimal)">
           <video
             src={post.image}
             className="w-full h-full object-cover"
@@ -76,7 +76,7 @@ const PostCard = () => {
 
     if (mediaType === "image") {
       return (
-        <div className="relative aspect-square border-b border-[var(--detailMinimal)]">
+        <div className="relative aspect-square border-b border-(--detailMinimal)">
           <Image
             src={post.image || "/placeholder.svg"}
             alt="Post"
@@ -90,9 +90,9 @@ const PostCard = () => {
     }
 
     return (
-      <div className="relative min-h-[200px] border-b border-[var(--detailMinimal)] bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900">
+      <div className="relative min-h-[200px] border-b border-(--detailMinimal) bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900">
         <div className="flex items-center justify-center h-full p-6">
-          <p className="text-center text-lg font-medium text-[var(--textNeutral)] leading-relaxed">
+          <p className="text-center text-lg font-medium text-(--textNeutral) leading-relaxed">
             {post.message || "Post sans contenu"}
           </p>
         </div>
@@ -105,10 +105,10 @@ const PostCard = () => {
       {allposts.map((post, index) => (
         <div
           key={post.id || index}
-          className="self-center w-[95%] max-w-lg bg-[var(--bgLevel2)] border rounded-2xl border-[var(--detailMinimal)]"
+          className="self-center w-[95%] max-w-lg bg-(--bgLevel2) border rounded-2xl border-(--detailMinimal)"
         >
           {/* Header du post */}
-          <div className="flex items-center justify-between p-4 border-b border-[var(--detailMinimal)]">
+          <div className="flex items-center justify-between p-4 border-b border-(--detailMinimal)">
             <Link href={`/profile/${post.user.id}`}>
               <div className="flex items-center gap-3">
                 <Avatar className="w-10 h-10">
@@ -117,18 +117,18 @@ const PostCard = () => {
                     alt={post.user?.username || post.user.username}
                     className="object-cover"
                   />
-                  <AvatarFallback className="bg-[var(--greyFill)] text-[var(--textNeutral)]">
+                  <AvatarFallback className="bg-(--greyFill) text-(--textNeutral)">
                     {(post.user?.username ||
                       post.user.username ||
                       "U")[0].toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
-                  <span className="font-semibold text-sm text-[var(--textNeutral)]">
+                  <span className="font-semibold text-sm text-(--textNeutral)">
                     {post.user?.username || post.user.username || "Utilisateur"}
                   </span>
                   {post.user?.firstName && post.user?.lastName && (
-                    <span className="text-xs text-[var(--textMinimal)]">
+                    <span className="text-xs text-(--textMinimal)">
                       {post.user.firstName} {post.user.lastName}
                     </span>
                   )}
@@ -161,14 +161,14 @@ const PostCard = () => {
                   className="p-0 hover:bg-transparent"
                   onClick={() => setOpenPostId(post.id)}
                 >
-                  <MessageCircle className="w-6 h-6 text-[var(--textNeutral)] hover:text-blue-500 transition-colors" />
+                  <MessageCircle className="w-6 h-6 text-(--textNeutral) hover:text-blue-500 transition-colors" />
                 </Button>
               </div>
             </div>
 
             {/* Caption - seulement si ce n'est pas un post texte */}
             {post.image && (
-              <div className="text-sm text-[var(--textNeutral)] mb-2">
+              <div className="text-sm text-(--textNeutral) mb-2">
                 <span className="font-semibold mr-2">
                   {post.user?.username || post.user.username}
                 </span>
@@ -179,7 +179,7 @@ const PostCard = () => {
             {/* Commentaires - juste le compteur avec bouton */}
             {post._count.comments > 0 && (
               <button
-                className="text-sm text-[var(--textMinimal)] mb-2 hover:underline"
+                className="text-sm text-(--textMinimal) mb-2 hover:underline"
                 onClick={() => setOpenPostId(post.id)}
               >
                 Voir les {post._count.comments} commentaires
@@ -187,7 +187,7 @@ const PostCard = () => {
             )}
 
             {/* Time */}
-            <div className="text-xs text-[var(--textMinimal)] uppercase">
+            <div className="text-xs text-(--textMinimal) uppercase">
               {post.datetime
                 ? new Date(post.datetime).toLocaleDateString("fr-FR", {
                   day: "numeric",

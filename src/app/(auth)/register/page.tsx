@@ -20,10 +20,11 @@ export default function RegisterPage() {
             <Link href="/" className="flex items-center gap-2 font-medium">
               <div className="flex items-center space-x-3">
                 <Image
-                  width={128}
-                  height={128}
+                  width={445}
+                  height={103}
                   src={"/konekt-logo-full.png"}
                   alt="konekt-logo-full"
+                  className="w-32 h-auto"
                   priority
                 />
               </div>

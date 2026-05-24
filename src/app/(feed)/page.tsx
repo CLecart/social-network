@@ -85,7 +85,7 @@ export default function HomePage() {
       <NavigationBar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="flex items-center justify-between p-4 border-b border-(--detailMinimal) bg-(--bgLevel1) sticky top-0 z-30">
-          <Image src="/konekt-logo-full.png" alt="Konekt Logo" width={128} height={128} priority />
+          <Image src="/konekt-logo-full.png" alt="Konekt Logo" width={445} height={103} className="h-auto w-32" priority />
           <div className="flex items-center gap-2">
             <ModeToggle />
             <Link href="/chat">

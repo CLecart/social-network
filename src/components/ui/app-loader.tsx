@@ -6,9 +6,9 @@ export default function AppLoader() {
             <Image
                 src="/konekt-logo-full.png"
                 alt="loading..."
-                width={128}
-                height={128}
-                className="animate-bounce"
+                width={445}
+                height={103}
+                className="animate-bounce w-32 h-auto"
                 priority
             />
         </div>
