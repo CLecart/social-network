@@ -447,30 +447,9 @@ describe("POST /api/public/auth/register", () => {
 });
 ```
 
-### GitHub Actions (CI/CD)
+### Déploiement continu
 
-**`.github/workflows/ci.yml`:**
-
-```yaml
-name: CI
-
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: "1"
-
-      - run: bun install --frozen-lockfile
-      - run: bunx prisma generate
-      - run: bun run lint
-      - run: bun run test
-      - run: bun run build
-```
+Le déploiement est assuré par l'**intégration Git native de Vercel** : tout push vers `main` déclenche automatiquement un build et un déploiement en production. Les PR génèrent des environnements de preview dédiés.
 
 > Le projet utilise **Bun** comme package manager et runtime, en cohérence avec `bun.lock` et le `Dockerfile` (image `oven/bun:1`).
 

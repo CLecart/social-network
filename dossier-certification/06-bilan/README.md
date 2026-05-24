@@ -123,7 +123,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 - Dockerfile multi-stage optimisé
 - docker-compose avec PostgreSQL (Upstash Redis configuré via env vars)
 - Variables d'environnement sécurisées
-- Pipeline CI/CD documenté
+- Déploiement continu Vercel documenté
 
  **Documentation**
 
@@ -180,7 +180,7 @@ Présenter le retour d'expérience sur le projet, les acquis techniques, les lim
 - docker-compose avec services
 - Variables d'environnement versionnées
 - Migrations Prisma automatisées
-- CI/CD avec GitHub Actions
+- Déploiement continu via intégration Git native Vercel
 - Déploiement Vercel (serverless) + Neon (PostgreSQL) + Upstash (Redis)
 
 ### Compétences Techniques Consolidées

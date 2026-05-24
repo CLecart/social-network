@@ -40,7 +40,7 @@ L'approche est **honnête** : le projet a un test d'intégration backend fonctio
 | Tests unitaires UI |  | `__tests__/ui/button.test.tsx` — 5 tests RTL, 100% statements/lines |
 | Tests E2E |  | À implémenter |
 | Couverture chiffrée (`--coverage`) |  | Button : 100% stmts, 100% funcs, 100% lines, 50% branch (variant conditionnel) |
-| CI : tests bloquants |  | Configurés dans le workflow GitHub Actions mais lint actuellement en `ignoreDuringBuilds: true` |
+| CI : tests bloquants |  | Non configurés (pas de pipeline CI) — lint en `ignoreDuringBuilds: true` dans `next.config.ts` |
 
 ### 2.2 Test existant — extrait
 
