@@ -80,7 +80,7 @@ Cette approche colle parfaitement à mon profil : je sais apprendre seul (20 ans
 
 ### Compétences transverses gagnées
 
-- **Estimation et priorisation** : découper un gros projet (Social Network) en user stories puis en sprints
+- **Estimation et priorisation** : découper un gros projet (Social Network) en user stories priorisées par phases
 - **Documentation pour pairs** : passer d'un compte-rendu industriel à une doc technique pour développeurs
 - **Code review** : lire le code des coéquipiers, formuler du feedback constructif
 - **Veille technique** : sélectionner les sources qui valent le temps qu'on y passe (voir [04-developpement/veille-technique.md](../04-developpement/veille-technique.md))

@@ -15,7 +15,7 @@ Cette section documente la conception complète du réseau social `social-networ
 
 ### Pilotage du travail
 
-La conception s'appuie sur les issues GitHub du projet Social Network. Les lots fonctionnels ont été organisés autour des sujets suivis dans le dépôt: authentification, follow, chat, notifications, groupes, événements, settings, i18n et DevOps.
+La conception s'appuie sur les issues GitHub du projet Social Network. Les lots fonctionnels ont été organisés autour des sujets suivis dans le dépôt: authentification, follow, chat, notifications, groupes, événements, settings et DevOps.
 
 ### 1. [Pages et Wireframes](./pages.md)
 

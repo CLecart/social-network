@@ -18,7 +18,7 @@ Chaque ticket est qualifié par deux labels :
 - **Priorité** : P2 (haute), P3 (moyenne), P4 (faible)
 - **Taille** : M (medium), L (large), XL (extra-large)
 
-Cette double qualification permet de prioriser le travail en sprint tout en estimant la charge avant d'affecter une tâche. Les épics complexes (Chat System, Groups & Events, Notifications) sont découpés en sous-tâches tracées directement dans l'issue parente — par exemple *Chat System #37* affiche une progression **4/4 sous-tâches** réalisées.
+Cette double qualification permet de prioriser le travail et d'estimer la charge avant d'affecter une tâche. Les épics complexes (Chat System, Groups & Events, Notifications) sont découpés en sous-tâches tracées directement dans l'issue parente — par exemple *Chat System #37* affiche une progression **4/4 sous-tâches** réalisées.
 
 Au total : **59 issues fermées** et 13 ouvertes au moment de la soutenance, pour un périmètre fonctionnel couvrant l'authentification, le feed, la messagerie temps réel, les groupes, les événements, les notifications et le déploiement.
 
@@ -145,5 +145,5 @@ La stabilisation du build et du déploiement a ensuite été consolidée par la 
 Notes:
 
 - Phase 1 (MVP - 25 jours): implémentation des fonctionnalités critiques (auth, posts, feed, basic chat, notifications).
-- Phase 2 (14 jours): fonctionnalités avancées (groups, events, reels, amélioration UX, i18n).
+- Phase 2 (14 jours): fonctionnalités avancées (groups, events, reels, amélioration UX).
 - Phase 3 (7 jours): tests d'intégration, corrections, optimisation performances et préparation de la soutenance.

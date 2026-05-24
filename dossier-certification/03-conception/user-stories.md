@@ -10,19 +10,19 @@ Nous décrivons ci-dessous les user stories que nous avons rédigées et prioris
 
 Nous avons lié les fonctionnalités principales aux tickets du dépôt `arocchet/social-network` :
 
-- [Follow / friendship]([Issue #13](https://github.com/arocchet/social-network/issues/13))
-- [Groups & Events]([Issue #24](https://github.com/arocchet/social-network/issues/24))
-- [Group feed (posts in groups)]([Issue #30](https://github.com/arocchet/social-network/issues/30))
-- [Chat system]([Issue #37](https://github.com/arocchet/social-network/issues/37))
-- [Notifications]([Issue #39](https://github.com/arocchet/social-network/issues/39))
-- [DevOps / Docker / CI]([Issue #40](https://github.com/arocchet/social-network/issues/40))
-- [CI pipeline (lint/test/build)]([Issue #45](https://github.com/arocchet/social-network/issues/45))
-- [Seed script / demo data]([Issue #46](https://github.com/arocchet/social-network/issues/46))
-- [Mark notification as read]([Issue #51](https://github.com/arocchet/social-network/issues/51))
-- [OAuth (Google)]([Issue #66](https://github.com/arocchet/social-network/issues/66))
-- [Internationalization (i18n)]([Issue #76](https://github.com/arocchet/social-network/issues/76))
-- [Settings]([Issue #111](https://github.com/arocchet/social-network/issues/111))
-- [PR stabilisation (Docker/Neon/Prisma/Redis)]([PR #118](https://github.com/arocchet/social-network/pull/118))
+- [Follow / friendship](https://github.com/arocchet/social-network/issues/13)
+- [Groups & Events](https://github.com/arocchet/social-network/issues/24)
+- [Group feed (posts in groups)](https://github.com/arocchet/social-network/issues/30)
+- [Chat system](https://github.com/arocchet/social-network/issues/37)
+- [Notifications](https://github.com/arocchet/social-network/issues/39)
+- [DevOps / Docker / CI](https://github.com/arocchet/social-network/issues/40)
+- [CI pipeline (lint/test/build)](https://github.com/arocchet/social-network/issues/45)
+- [Seed script / demo data](https://github.com/arocchet/social-network/issues/46)
+- [Mark notification as read](https://github.com/arocchet/social-network/issues/51)
+- [OAuth (Google)](https://github.com/arocchet/social-network/issues/66)
+- [Internationalization (i18n)](https://github.com/arocchet/social-network/issues/76)
+- [Settings](https://github.com/arocchet/social-network/issues/111)
+- [PR stabilisation (Docker/Neon/Prisma/Redis)](https://github.com/arocchet/social-network/pull/118)
 
 ---
 
