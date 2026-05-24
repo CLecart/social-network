@@ -43,20 +43,8 @@ const PostCard = () => {
 
   // Composant pour afficher le média d'un post
   const PostMedia = ({ post }: { post: Post }) => {
-    const [isPlaying, setIsPlaying] = useState(false);
+    const [imageError, setImageError] = useState(false);
     const mediaType = getMediaType(post.image);
-
-    const handleVideoPlay = (e: React.MouseEvent<HTMLVideoElement>) => {
-      e.stopPropagation();
-      const video = e.target as HTMLVideoElement;
-      if (video.paused) {
-        video.play();
-        setIsPlaying(true);
-      } else {
-        video.pause();
-        setIsPlaying(false);
-      }
-    };
 
     if (mediaType === "video" && post.image) {
       return (
@@ -66,15 +54,21 @@ const PostCard = () => {
             className="w-full h-full object-cover"
             controls
             loop
-            onClick={handleVideoPlay}
-            onEnded={() => setIsPlaying(false)}
-          />
-
+          >
+            <track kind="captions" />
+          </video>
         </div>
       );
     }
 
     if (mediaType === "image") {
+      if (imageError) {
+        return (
+          <div className="relative aspect-square border-b border-(--detailMinimal) bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center">
+            <span className="text-(--textMinimal) text-sm">Image non disponible</span>
+          </div>
+        );
+      }
       return (
         <div className="relative aspect-square border-b border-(--detailMinimal)">
           <Image
@@ -84,6 +78,7 @@ const PostCard = () => {
             sizes="(max-width: 640px) 100vw, 600px"
             className="object-cover"
             priority={false}
+            onError={() => setImageError(true)}
           />
         </div>
       );
