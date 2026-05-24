@@ -59,6 +59,7 @@ export default function ProfilePage() {
   const [friendPending, setFriendPending] = useState(false);
 
   const contentRef = useRef<HTMLDivElement>(null);
+  const [bannerError, setBannerError] = useState(false);
 
   const {
     data: summary,
@@ -289,7 +290,7 @@ export default function ProfilePage() {
             <div className="bg-[var(--bgLevel2)]">
               {/* Bannière */}
               <div className="relative h-32 md:h-48 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 overflow-hidden">
-                {profileUser.banner ? (
+                {profileUser.banner && !bannerError ? (
                   <div className="relative w-full h-64">
                     <Image
                       src={profileUser.banner}
@@ -297,6 +298,7 @@ export default function ProfilePage() {
                       fill
                       sizes="(max-width: 768px) 100vw, calc(100vw - 256px)"
                       className="object-cover"
+                      onError={() => setBannerError(true)}
                     />
                   </div>
                 ) : (

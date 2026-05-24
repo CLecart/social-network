@@ -76,7 +76,7 @@ const ResultsList: React.FC<ResultsListProps> = ({ query, results = [] }) => {
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white overflow-hidden">
                     {item.image ? (
-                      <img src={item.image} alt={item.username} className="w-full h-full object-cover rounded-full" />
+                      <img src={item.image} alt={item.username} className="w-full h-full object-cover rounded-full" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                     ) : (
                       item.username[0].toUpperCase()
                     )}
@@ -125,7 +125,7 @@ const ResultsList: React.FC<ResultsListProps> = ({ query, results = [] }) => {
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white overflow-hidden flex-shrink-0">
                     {item.user.image ? (
-                      <img src={item.user.image} alt={item.user.username} className="w-full h-full object-cover rounded-full" />
+                      <img src={item.user.image} alt={item.user.username} className="w-full h-full object-cover rounded-full" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                     ) : (
                       item.user.username[0].toUpperCase()
                     )}

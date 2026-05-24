@@ -24,6 +24,7 @@ export default function RegisterPage() {
                   height={128}
                   src={"/konekt-logo-full.png"}
                   alt="konekt-logo-full"
+                  priority
                 />
               </div>
             </Link>
