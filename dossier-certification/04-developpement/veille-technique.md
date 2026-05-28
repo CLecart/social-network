@@ -114,7 +114,7 @@ L'approche est concrète : pour chaque domaine exploré, je détaille **pourquoi
 **Découvertes appliquées au projet :**
 
 - Identification d'une vulnérabilité XSS résiduelle dans `ChatMessage.tsx` (usage de `dangerouslySetInnerHTML` sur un input markdown non sanitisé)
-- Constat de l'absence de rate limiting (anti-brute force) → solution `@upstash/ratelimit` prévue
+- Implémentation du rate limiting anti-brute force via `@upstash/ratelimit` sur `/login` et `/register` (sliding window 5 req/60s/IP)
 - Mise en place du flag `oauth_state` cookie pour le flow Google OAuth (anti-CSRF)
 - Cookie `authToken` avec `SameSite=Lax + httpOnly + secure` (combinaison alignée sur les recommandations OWASP)
 

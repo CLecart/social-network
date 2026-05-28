@@ -156,7 +156,7 @@
 > C'est la limite honnête du projet. L'infrastructure Jest est en place et fonctionnelle. La priorité post-certification sera d'implémenter les tests d'intégration sur les 10 routes critiques identifiées dans `tests-strategy.md`, puis les tests E2E Playwright sur 5 parcours utilisateur.
 
 **Q : Comment avez-vous testé la sécurité ?**
-> Par jeux d'essai manuels documentés : injection SQL (Prisma paramétrise — aucun effet), accès données d'un autre utilisateur (403 via vérification ownership), token falsifié (middleware rejette), accès route protégée sans token (redirection /login). Le rate limiting est identifié comme manquant.
+> Par jeux d'essai manuels documentés : injection SQL (Prisma paramétrise — aucun effet), accès données d'un autre utilisateur (403 via vérification ownership), token falsifié (middleware rejette), accès route protégée sans token (redirection /login). Le rate limiting est implémenté sur `/login` et `/register` (5 req/60s/IP via `@upstash/ratelimit`).
 
 ---
 
@@ -176,7 +176,7 @@
 ### Questions pièges courantes
 
 **Q : Vous dites que le projet est sécurisé — qu'est-ce qui ne l'est pas ?**
-> J'assume les limites : rate limiting absent sur `/login` et `/register` (identifié, à implémenter via `@upstash/ratelimit`), XSS résiduelle dans le rendu markdown de `ChatMessage.tsx` (DOMPurify non intégré), pas de révocation JWT avant expiration (architecture stateless pur — une liste noire Redis résoudrait ça).
+> J'assume les limites : XSS résiduelle dans le rendu markdown de `ChatMessage.tsx` (DOMPurify non intégré), pas de révocation JWT avant expiration (architecture stateless pur — une liste noire Redis résoudrait ça). En revanche le rate limiting est bien en place sur `/login` et `/register` — sliding window 5 tentatives / 60s via `@upstash/ratelimit`, avec fail-open en local si Redis n'est pas configuré.
 
 **Q : Pourquoi pas de refresh tokens ?**
 > Choix délibéré de simplicité. JWT stateless avec expiration 480min. À la déconnexion, le cookie est supprimé. Après expiration, l'utilisateur se reconnecte. Un système de refresh tokens aurait nécessité du stockage serveur, contrairement à l'objectif serverless. C'est un axe d'amélioration identifié.

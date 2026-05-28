@@ -153,7 +153,7 @@ Playwright permet de mocker les services externes (Cloudinary, Google OAuth) en 
 - Injection SQL : tentative `' OR 1=1--` dans les champs login / search → doit échouer
 - XSS : injection `<script>alert(1)</script>` dans un post / message de chat → ne doit pas s'exécuter (à corriger pour `ChatMessage.tsx`, voir [securite-rgpd.md](./securite-rgpd.md))
 - CSRF : tentative POST cross-site → cookie SameSite=Lax bloque
-- Force brute login : 100 tentatives → doit déclencher rate limiting (une fois implémenté)
+- Force brute login : 100 tentatives → doit déclencher rate limiting (implémenté — 5 req/60s/IP via `@upstash/ratelimit`, retourne 429)
 - Privilege escalation : utilisateur A tente de modifier le profil de B → 403
 
 #### 3.6 Tests de performance (Lighthouse)

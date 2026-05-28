@@ -143,13 +143,11 @@ Ces headers sont triviaux à ajouter via la clé `headers` de `next.config.ts`. 
 
 ### 2.6 Rate limiting
 
-**Statut actuel :** **aucun rate limiting** applicatif. Les endpoints sensibles (`/api/public/auth/login`, `/api/public/auth/register`) acceptent un nombre illimité de tentatives par IP.
+**Statut actuel :** rate limiting applicatif **implémenté** sur `/api/public/auth/login` et `/api/public/auth/register` via `@upstash/ratelimit` (sliding window — 5 tentatives par IP par fenêtre de 60 secondes). La logique est centralisée dans `src/lib/security/ratelimit.ts` et fail-open en local si Redis n'est pas configuré.
 
-**Risque :** attaque par force brute sur les mots de passe, énumération d'emails, abus des endpoints d'envoi (chat, posts).
+**Risque résiduel :** les endpoints d'envoi (chat, posts) ne sont pas encore rate-limités — attaque par spam possible.
 
-**Mitigation existante minime :** Vercel applique un rate limiting plateforme global (anti-DDoS), mais ce n'est pas un rate limiting *applicatif* par utilisateur ou par IP, ni configurable.
-
-**Solution prévue (roadmap) :** package `@upstash/ratelimit` (déjà compatible avec `@upstash/redis` que le projet utilise), 5 tentatives login / 15 min / IP par exemple.
+**Roadmap :** étendre le rate limiting à `/api/private/chat/send` et aux endpoints de création de contenu.
 
 ---
 
@@ -251,7 +249,7 @@ Priorisé par impact / facilité d'implémentation.
 
 | # | Action | Effort | Bénéfice |
 |---|---|---|---|
-| 6 | **Rate limiting** sur `/login`, `/register`, `/chat/send` via `@upstash/ratelimit` | 1 j | Anti-brute force, anti-spam |
+| 6 | **Rate limiting** sur `/chat/send` et endpoints de création de contenu via `@upstash/ratelimit` (déjà en place sur `/login` et `/register`) | 0,5 j | Anti-spam |
 | 7 | **Vérification email** à l'inscription (token signé envoyé par mail) | 1-2 j | Anti-bot, conformité |
 | 8 | **Politique mots de passe** : min 8 caractères, exigence complexité (chiffre + symbole optionnel), check contre HaveIBeenPwned API | 0,5 j | Conformité OWASP |
 | 9 | **Validation MIME / taille upload** côté serveur avant Cloudinary | 0,5 j | Anti-abus stockage |
@@ -283,7 +281,7 @@ Priorisé par impact / facilité d'implémentation.
 
 **Ce que j'assume avec honnêteté :**
 
-- Pas de rate limiting → identifié, mitigation prévue avec `@upstash/ratelimit`.
+- Rate limiting en place sur `/login` et `/register` (5 req/60s/IP via `@upstash/ratelimit`) — pas encore étendu à `/chat/send` et aux endpoints de création.
 - Pas de headers de sécurité personnalisés → à ajouter en 30 min dans `next.config.ts`.
 - Vulnérabilité XSS résiduelle dans `ChatMessage.tsx` (`dangerouslySetInnerHTML` sur input markdown non sanitisé) → à corriger avec `DOMPurify` ou `react-markdown`.
 - Droit à l'oubli et droit à la portabilité RGPD non implémentés → bloquant pour une mise en prod réelle, listé en priorité critique.
